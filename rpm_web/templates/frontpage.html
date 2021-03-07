@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="card card-body"> <!-- card item-->
+<div class="container-fluid text-center" style="text-shadow: none;">
+  <p>Welcome to <em>RPM_plus</em>, a website for the new Release Plan Maker.</p>
+
+  <p>Notas por hacer:<br>
+    Importar datos y permitir seleccionar columna donde ecu, version ,fecha etc<br>
+    también permita importar a partir de X fila.<br>
+    Gestión de grupos de users: visitante/proyectista/integrador<br>
+    Solo integradores puedan crear proyectos. El resto solo modificar lo que hayan añadido.<br>
+    Estadísticas uso de la herramienta por usuarios etc.<br>
+    Modo admin controlar como tabla excel.<br>
+  </p>
+
+
+  <h5>Statistics:</h5>
+  <p>The web has the following record counts:</p>
+
+  <p><strong>Users:</strong> {{ num_users }}</p>
+  <p><strong>Projects:</strong> {{ num_projects }}</p>
+
+
+  <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,1798 @@
+{% extends "base_generic.html" %}
+
+
+{% block mainmenu %}
+
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link"  href="{% url 'frontpage' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+          </li>
+          <li class="nav-item">
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+            {% else %}
+            <a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+{% endblock %}
+
+{% block content %}
+
+
+
+<!-- Tabs selectoras de proyecto-->
+<ul id="projects_tab" class="nav nav-tabs "   > 
+    {% for prj in mproject_list %}
+        <li class="nav-item">
+            <a href="{% url 'projects_rp_load' prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
+        </li>
+    {% endfor %}
+    <li class="nav-item">
+        <a href="{% url 'projects_rp_load' 0 %}" class="nav-link"  value="0">
+            <i class="bi bi-plus-square"></i>
+        </a> 
+    </li>
+</ul>
+
+
+<!-- Datos del proyecto-->
+<div class="card card-body"> <!-- card item-->
+<div class="container-fluid " >
+    <form id = id_form name = "form" action = "{% url 'update_prj_form' %}" method = "POST" >{% csrf_token %}
+    <div class="row">
+        <div class="col-8 text-center " >
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Project data</span>
+                </div>
+                <input type="hidden" class="form-control" name = "prjid" placeholder="Project Id" value="" id="id_prj_id_input">
+                <input type="text" class="form-control"  name = "prjname" placeholder="Project name..." value="" id="id_prj_name_input">
+                <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="" id="id_prj_comment_input">
+                <button type="submit" name="update"  class="btn btn-success " >Update</button> <!-- Submit! form.-->
+
+                <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeProject()">X</button>
+            </div>
+        </div>
+        <div class="col-4 text-center " >
+            <button type="button" name="pptGen"  class="btn btn-success " onclick="pptGenerator()">Create PPTx</button>
+        </div>
+    </div>
+    </form> <!-- Cierra form.-->
+</div>
+</div>
+
+
+<!-- Lista de Versiones-->
+<div class="card card-body"> <!-- card item-->
+<div class="container-fluid " >
+    <div class="row">
+        <div class="col-8 text-center " >
+            <div class="input-group">
+                <span class="input-group-text">Version list</span>
+                
+
+                <select class="form-control" id= "id_vers_list" name="versSelect"  onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
+                    {% for vers in version_list %}
+                      <option value="{{ vers.id }}" id="{{ vers.name }}" >{{ vers.name }} -- {{ vers.date }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- <button type="button" name="update"  class="btn btn-success " onclick="selectVersion()">Select</button>-->
+                <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="" id="id_vers_name_input" size=2>
+                <button type="button" name="update"  class="btn btn-success " onclick="updateVersion()">Update</button>
+                <button type="button" name="new"  class="btn btn-primary " onclick="newVersion()">New version</button> 
+                <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeVersion()">X</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Configuracion paint-->
+<div class="card card-body"> <!-- card item-->
+    <div class="container-fluid " >
+        <div class="row">
+            <div class="col-2 text-center " >
+                <div class="input-group"> <!-- Date input -->
+                    <span class="input-group-text">Date ini</span>
+                    <input type="date" class="form-control" id="id_date_ini" name="date" placeholder="DD/MM/YYY"  value={{date_ini}} onchange="updateDatesPrint()"/>
+                </div>
+            </div>
+            <div class="col-2 text-center " >
+                <div class="input-group"> <!-- Date input -->
+                    <span class="input-group-text">Date status</span>
+                    <input type="date" class="form-control" id="id_date_status" name="date" placeholder="DD/MM/YYY"  value={{date_status}} onchange="updateDatesPrint()"/>
+                </div>
+            </div>
+            <div class="col-2 text-center " >
+                <div class="input-group"> <!-- Date input -->
+                    <span class="input-group-text">Date end</span>
+                    <input type="date" class="form-control" id="id_date_end" name="date" placeholder="DD/MM/YYY"  value={{date_end}} onchange="updateDatesPrint()"/>
+                </div>
+            </div>
+            <div class="col-3 text-center " >
+                <div class="input-group"> <!-- factor weeks && max_ecu_slide --> 
+                    <span class="input-group-text">Factor weeks</span>
+                    <input class="form-control" type="number" min="1"  id="id_factor_weeks" value={{factor_weeks}} onchange="updateDatesPrint()">
+                    <span class="input-group-text">Max ECUs in Slide</span>
+                    <input class="form-control" type="number" min="1" id="id_max_ecu_slide"  value={{max_ecu_slide}} onchange="updateDatesPrint()">
+                </div>
+            </div>
+            <div class="col-1 " >
+                <button type="button" name="update"  class="btn btn-success " onclick="updateDatesPrint()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Lista de ECUs-->
+<div class="card card-body"> <!-- card item-->
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseECUs" role="button" aria-expanded="false" aria-controls="collapseECUs"> <!-- collapse control-->
+        <i class="bi bi-arrows-angle-expand"></i>
+    </a>
+</div>
+
+<div class="collapse" id="collapseECUs"> <!-- collapse item-->
+    <div class="card card-body"> <!-- card item-->
+    <div class="container-fluid text-center " >
+        <form name="ecu_list" id="id_ecu_list"> {% csrf_token %} <!-- Abre form.-->
+        <div class="row">
+            <div class="col-md-1  " ></div> <!-- Centra.-->
+            <div class="col-md-4  " >
+                <div class="input-group">
+                    <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
+                    <button type="button" id="id_enviareculist" class="btn btn-warning" onclick="sendDataECUlist()" >Enviar</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1  " ></div> <!-- Centra.-->
+            <div class="col-md-8 text-center " >
+                <table style="margin-bottom:5px; border:1px" class="table table-responsive table-striped "  id="dynamic_field_old">
+                    <thead>
+                        <tr >
+                        <th >ID</th>
+                        <th >ECU Name</th>
+                        <th >ECU Dx</th>
+                        <th >ECU Comment</th>
+                        <th ></th>
+                        </tr>
+                    </thead>
+                    <tbody id="id_ecu_table">
+                        <!--Aqui añade lineas.-->
+                    </tbody>
+                </table> <!-- Cierra table.-->
+            </div>
+        </div>
+    </form> <!-- Cierra form.-->
+    </div>
+</div>
+</div>
+
+
+<!-- Tabla entradas RP-->
+<div class="card card-body"> <!-- card item-->
+<div class="container  style="width:100%; height:100%; >
+    <div class="row">
+        <div class="col-md-4 text-center " >
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2  " ></div> <!-- Centra.-->
+        <div class="col-md-6 text-center " >
+            <div class="input-group-text">
+                <input type="text" class="form-control" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1" id="search_field"  maxlength="4" size="4">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon1" onclick="addRow_RI()">+ row</button>
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="removeRow_RI()">- row</button>
+                <div class="form-check">
+                    <input class="form-check-input " type="checkbox" value="" aria-label="Checkbox for following text input" id="id_autosave" >
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Autosave
+                    </label>
+                </div>
+                <button type="button" class="btn btn-warning"  onclick="sendDataReleaselist()">Save</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2  " ></div> <!-- Centra.-->
+        <div class="col-md-6  text-center" >
+            <div style=" height:487px; overflow:hidden; width: 805px;    margin-bottom:5px" id = "ResultadoTabla" ></div> <!-- Tabla !!!.-->
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+      //Configuro ajax con el CSRFToken---------------------
+      // using jQuery get csrftoken from your HTML
+      var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+      function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              // if not safe, set csrftoken
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+      //-------------------------------------------------------
+
+
+      var version_id = 0 //global 
+      var global_control_v = 0//global
+
+      var date_ini //global
+      var date_status //global
+      var date_end //global
+
+      var factor_weeks //global
+      var max_ecu_slide //global
+
+
+    $(document).ready(function(){
+        console.log("ready function")
+
+        date_ini = "{{date_ini}}"
+        date_status = "{{date_status}}"
+        date_end = "{{date_end}}"
+
+        factor_weeks = "{{factor_weeks}}"
+        max_ecu_slide = "{{max_ecu_slide}}"
+
+        load_RI();
+
+        //select tab
+        // Select tab by name
+        console.log("prj_id: ", "{{prj_id}}")
+        console.log(self.location.pathname)
+        var id_path_array = self.location.pathname.split('/');
+        id_path = id_path_array[id_path_array.length-2]
+
+        if (id_path != "{{prj_id}}"){
+            console.log("reload!")
+            self.location="../"+ "{{prj_id}}";
+        }
+
+        console.log( $('#projects_tab a[value="{{prj_id}}"]'))
+        if($('#projects_tab a[value="{{prj_id}}"]').length>0){
+            $('#projects_tab a[value="{{prj_id}}"]').tab('show') //if exist then select
+        }
+        else{
+            $("#projects_tab a:first").tab('show'); // else show first tab
+            //alert('Seleccionado id de project no existente en esta lista');
+        }
+
+        //update project data
+        prj_tab = $('#projects_tab a[value="{{prj_id}}"]')
+        console.log(prj_tab)
+        for (var i = 0, element; element = prj_tab[i++];) {
+            console.log(element)
+            console.log(".name:",element.name)
+            document.getElementById('id_prj_name_input').value = element.name
+        }
+        document.getElementById('id_prj_id_input').value = "{{prj_id}}"
+
+        console.log(".comment:","{{prj_comment}}")
+        if("{{prj_comment}}" != ""){
+            document.getElementById('id_prj_comment_input').value = "{{prj_comment}}"
+        }
+
+        //select the last version
+        $("#id_vers_list option:last").attr("selected", "selected");
+        v_selected = $("#id_vers_list option:last")
+        vers_name = ""
+        for (var i = 0, element; element = v_selected[i++];) {
+            console.log(".e:",element)
+            console.log(".value:",element.value)
+            console.log(".name:",element.id)
+            version_id = element.value
+            vers_name = element.id
+        }
+        document.getElementById("id_vers_name_input").setAttribute('value',vers_name);
+
+        
+        update_data_project("{{prj_id}}",version_id);
+
+        
+        //add ecu list control
+        $('#add').click(function(){  
+            i++;
+            //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%"><input type="text" name="id"  required="required" size="2" value = '+0+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+            //$('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+            $('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+
+            //document.getElementById("id_enviareculist").disabled = false
+        });  
+
+
+        $(document).on('click', '*[name="remove_ecu"]', function(){
+            var button_id = $(this).attr("id");
+
+            bootbox.confirm({
+                closeButton: false,
+                title: "Remove ECU?",
+                message: "Si elimina esta ECU, eliminará todas las entradas asociadas",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-success'
+                    }
+                },
+                callback: function (result) {
+                    console.log('This was logged in the callback: ' + result);
+                    if (result == true) {
+                        $('#row'+button_id+'').remove()
+                    }
+                }
+            }).css({'background-color': '#f99', 'font-weight' : 'bold', color: '#F00', 'font-size': '2em', 'font-weight' : 'bold'} );
+        });  
+
+
+    });
+
+    //Project manager functions---------------------------------------------------
+    function removeProject(){
+        console.log("removeProject()")
+        bootbox.confirm({
+                closeButton: false,
+                title: "Remove Project?",
+                message: "¿Está seguro de que desea eliminar el proyecto?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-success'
+                    }
+                },
+                callback: function (result) {
+                    console.log('callback: ' + result);
+                    if (result == true) {
+                        //eliminar
+                        select_value = "{{prj_id}}"; //this is the ID project
+                        $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'remove_project' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { select_value } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        console.log("Eliminado ID:" + respuesta.id_removed); 
+                                        //select first project in the list
+                                        console.log("Selecciona ID:" + respuesta.id_first_prj); 
+                                        //Update url with new id -> retrocede uno y añade id: http://127.0.0.1:8000/rpm_web/projects/rp/6/ -> http://127.0.0.1:8000/rpm_web/projects/rp/3/
+                                        self.location="../"+respuesta.id_first_prj;
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+                            });
+          
+                    }
+                }
+            }).css({'background-color': '#f99', 'font-weight' : 'bold', color: '#F00', 'font-size': '2em', 'font-weight' : 'bold'} );
+    }
+
+    
+    //Version manager functions---------------------------------------------------
+    function changesSelectVersion(){
+        console.log("changesSelectVersion()")
+        v_selected = document.getElementById("id_vers_list")
+        vers_name = ""
+        for (var i = 0, element; element = v_selected[i++];) {
+            console.log(".e:",element)
+            console.log(".value:",element.value)
+            console.log(".name:",element.id)
+            console.log(".s:",element.selected)
+            if(element.selected == true){
+                version_id = element.value
+                vers_name = element.id
+            }
+
+        }
+        console.log("vers_name->",vers_name)
+        document.getElementById("id_vers_name_input").setAttribute('value',vers_name);
+        global_control_v = 0
+        selectVersion()
+    }
+    function updateVersion(){
+        console.log("changesSelectVersion()")
+        global_control_v = -1
+        selectVersion()
+    }
+    function selectVersion(){
+        console.log("selectVersion()")
+        var version = document.getElementById("id_vers_list")
+        console.log("version_id:",version.value)
+        version_id = version.value
+        new_version = global_control_v
+        global_control_v = 0
+        project_id =  "{{prj_id}}";
+        version_name = document.getElementById("id_vers_name_input").value
+        $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'update_version_form' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { version_id, new_version, project_id, version_name } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        if(respuesta.reload == true){
+                                            console.log("reload")
+                                            self.location=self.location //Reload the page
+                                        }
+                                        else{
+                                        console.log("Select version ID:" + respuesta.vers_id); 
+                                        //Aquí recibir datos para las ecus
+                                        //document.getElementById("id_enviareculist").disabled = false
+                                        version_id = respuesta.vers_id //global
+                                        update_data_project(project_id,respuesta.vers_id);
+                                        }
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+                            });
+    }
+
+    function newVersion(){
+        console.log("newVersion()")
+        var version = document.getElementById("id_vers_list")
+        version_id = version.value
+        new_version = 1
+        project_id =  "{{prj_id}}";
+        version_name = document.getElementById("id_vers_name_input").value
+        $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'update_version_form' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { version_id, new_version, project_id, version_name } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        console.log("Received:" + respuesta.flag_ok); 
+                                        if(respuesta.reload == true){
+                                            console.log("reload")
+                                            self.location=self.location //Reload the page
+                                        }
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+                            });
+    }
+    
+
+    
+    function removeVersion(){
+        console.log("removeVersion()")
+        bootbox.confirm({
+                closeButton: false,
+                title: "Remove Version?",
+                message: "¿Está seguro de que desea eliminar la versión?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-success'
+                    }
+                },
+                callback: function (result) {
+                    console.log('callback: ' + result);
+                    if (result == true) {
+                        //eliminar
+                        select_value = document.getElementById("id_vers_list").value
+                        console.log("select_value:",select_value)
+                        $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'remove_version' %}"  ,
+                                    name: "testname",
+                                    data: JSON.stringify( { select_value } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        console.log("Eliminado ID:" + respuesta.id_removed); 
+                                        //select first project in the list
+                                        //Update url with new id -> retrocede uno y añade id: http://127.0.0.1:8000/rpm_web/projects/rp/6/ -> http://127.0.0.1:8000/rpm_web/projects/rp/3/
+                                        self.location=self.location
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+                            });
+          
+                    }
+                }
+            }).css({'background-color': '#f99', 'font-weight' : 'bold', color: '#F00', 'font-size': '2em', 'font-weight' : 'bold'} );
+    }
+    
+function update_data_project(prj_id, vers_id){
+    console.log("update_data_project()")
+    console.log("prj_id: ",prj_id)
+    console.log("vers_id: ",vers_id)
+                        $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'updatedataproject'%}"  ,
+                                    name: "testname",
+                                    data: JSON.stringify( { prj_id , vers_id} ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(resp){
+                                        console.log(resp.ecuList_id)
+                                        console.log(resp.ecuList_name)
+                                        console.log(resp.ecuList_comment)
+                                        console.log(resp.ecuList_dx)
+                                        //clean table
+                                        $("#id_ecu_table tr").remove();  //remove all rows
+                                        load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx)
+                                    },
+                                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+                            });
+}
+
+
+//ECU manager functions---------------------------------------------------
+var flag_first_time = true
+function load_ecu_list(id_list,name_list,comment_list, dx_list){
+    console.log("load_ecu_list()")
+    for (i = 0; i < id_list.length; i++) {
+            var dx = dx_list[i];
+            console.log("dx: ",dx)
+            var comment = comment_list[i];
+            console.log("comment: ",comment) // para espacios: value = '+'"commentario con espacios"'+'  -> value = "'+ comment +'"" 
+            var name = name_list[i]; // value = "'+ name +'"" 
+            console.log("name: ",name)
+            id = id_list[i];
+            console.log("id: ",id)
+            if(id == ""){id=0;}
+            //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%" ><input type="text" name="id"  required="required" size="2" value = '+id+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+            //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+            $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+
+        }
+
+    if(flag_first_time == true){
+        flag_first_time = false
+        sendDataECUlist();
+    }
+
+}
+
+
+function sendDataECUlist(){
+    console.log("sendDataECUlist")
+            ecu_list = [];
+            form  = document.getElementById('id_ecu_list');
+            console.log("form:" ,form)
+            
+            var id;
+            var name;
+            var dx;
+            var comment;
+            var list_name = []
+            var flag_name_empty = false;
+            for (var i = 0, element; element = form[i++];) {
+                //console.log(element.name)
+                if (element.name == "id"){
+                    id = element.value
+                }
+                if (element.name == "name"){
+                    name = element.value
+                    if(element.value == ""){
+                        flag_name_empty = true;
+                        element.style.border = "1px solid red";
+                    }
+                    else{
+                        element.style.border = "1px solid black";
+                }
+                }
+                if (element.name == "dx"){
+                    dx = element.value
+                    //list_name.push(name)
+                    //ecu_list.push({id:id,name:name,dx:dx,comment:comment}) //Formato correcto para JSON!!
+                }
+                if (element.name == "comment"){
+                    comment = element.value
+                    list_name.push(name)
+                    ecu_list.push({id:id,name:name,dx:dx,comment:comment}) //Formato correcto para JSON!!
+                }
+            };
+            console.log(ecu_list)
+            //check unique name
+            flag_name_rep = false;
+            var name_rep
+            for (var i = 0; i < list_name.length; i++) {
+                for (var j = i+1; j < list_name.length; j++) {
+                    if(list_name[i] == list_name[j]){
+                        flag_name_rep = true;
+                        name_rep = list_name[i]
+                    }
+                }
+            } 
+            console.log("flag_name_rep: ",flag_name_rep)
+            
+            if(flag_name_rep != true){
+            if(flag_name_empty != true){
+                console.log("SEND!")
+                $.ajax({  
+                    url: "{% url 'update_ECU_list' %}", 
+                    method:"POST",  
+                    data: JSON.stringify( {
+                        ecu_list,
+                        version_id, //global
+                    } ),
+                    success: function(resp)
+                    {  
+                        
+                        if(resp.flag_ok == true){
+                            console.log("Envio correcto!");  
+                        }
+                        //console.log("{{ecuList_name}}")//no actualizado
+                        //console.log(resp.ecuList_name);//actualizado
+
+                        //clean table
+                        $("#id_ecu_table tr").remove();  //remove all rows
+
+                        //populate table
+                        load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx);
+                    
+                        //update ReleaseInput table
+                        updateRinputs(resp);
+                    }  
+            });
+            }
+        }
+        else{
+            alert("NO puede haber 2 o más nombres repetidos: "+name_rep);
+        }
+    }
+
+//Table RP manager functions---------------------------------------------------
+   //Release_inputs--------------------------------------------------------
+    //Variables globales    
+    var tblExcel;
+    //variables para configuración usuario
+        var column_sort_n = 0;
+        var column_sort_dir = 'asc';
+        var autosave = true;
+
+    //Listeners
+    var checkbox = document.querySelector("input[id=id_autosave]");
+    //inicializa
+    if (checkbox.checked) {
+        console.log("Checkbox is checked..");
+        autosave = true;
+    } else {
+        console.log("Checkbox is not checked..");
+        autosave = false;
+    }
+    //añade listener
+    checkbox.addEventListener('change', function() {
+    if (this.checked) {
+        console.log("Checkbox is checked..");
+        autosave = true;
+    } else {
+        console.log("Checkbox is not checked..");
+        autosave = false;
+    }
+    });
+
+
+
+    function load_RI(){
+        console.log("load_RI()")
+        var RelInList_id = "{{ RelInList_id }}".split(";");
+        var RelInList_id_ecu = "{{ RelInList_id_ecu }}".split(";");
+        var RelInList_id_type = "{{ RelInList_id_type }}".split(";");
+        var RelInList_n_version = "{{ RelInList_n_version }}".split(";");
+        var RelInList_date = "{{ RelInList_date }}".split(";");
+        var RelInList_plan = "{{ RelInList_plan }}".split(";");
+        var RelInList_id_plan = "{{ RelInList_id_plan }}".split(";");
+        var RelInList_visual = "{{ RelInList_visual }}".split(";");
+        var RelInList_dx = "{{ RelInList_dx }}".split(";");
+        var RelInList_comment = "{{ RelInList_comment }}".split(";");
+        
+        var RelInList_ecu_name = "{{ RelInList_ecu_name }}".split(";");
+        var RelInList_type_name = "{{ RelInList_type_name }}".split(";");
+
+        var type_list_id = "{{ type_list_id }}".split(";");
+        var type_list_name = "{{ type_list_name }}".split(";");
+        var type_list_comment = "{{ type_list_comment }}".split(";");
+
+        var plan_list_id = "{{ plan_list_id }}".split(";");
+        var plan_list_name = "{{ plan_list_name }}".split(";");
+        var plan_list_comment = "{{ plan_list_comment }}".split(";");
+
+        var ecuList_name = "{{ ecuList_name }}".split(";");
+        var ecuList_comment = "{{ ecuList_comment }}".split(";");
+        var ecuList_dx = "{{ ecuList_dx }}".split(";");
+        var ecuList_id = "{{ ecuList_id }}".split(";");
+
+        /*
+        console.log(RelInList_id);
+        console.log(RelInList_id_ecu);
+        console.log(RelInList_id_type);
+        console.log(RelInList_n_version);
+        console.log(RelInList_date);
+        console.log(RelInList_plan);
+        console.log(RelInList_id_plan);
+        console.log(RelInList_visual);
+        console.log(RelInList_dx);
+        console.log(RelInList_comment);
+
+        console.log(RelInList_ecu_name);
+        console.log(RelInList_type_name);
+        */
+
+        //console.log("ecuList_name: ",ecuList_name);
+        //console.log("ecuList_dx: ",ecuList_dx);
+        //console.log(ecuList_comment);
+        //console.log(ecuList_id);
+
+
+
+        console.log("plan_list_name: ",plan_list_name);
+
+
+        //populate data
+        var data_table = []
+        for (i = 0; i < RelInList_id.length; i++) {
+            data_table.push({
+                "RelInList_id":RelInList_id[i],
+                "RelInList_id_ecu":RelInList_id_ecu[i],
+                "RelInList_id_type":RelInList_id_type[i],
+                "RelInList_n_version":RelInList_n_version[i],
+                "RelInList_date":RelInList_date[i],
+                "RelInList_plan":RelInList_plan[i],
+                "RelInList_id_plan":RelInList_id_plan[i],
+                "RelInList_visual":RelInList_visual[i],
+                "RelInList_dx":RelInList_dx[i],
+                "RelInList_comment":RelInList_comment[i],
+
+                "RelInList_ecu_name":RelInList_ecu_name[i],
+                "RelInList_type_name":RelInList_type_name[i],
+            })
+        }
+
+        console.log("data_table: ",data_table);
+
+        searchFiled = document.getElementById('search_field');
+
+        config_resultados = {
+            data: data_table,
+            //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
+            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null},
+            //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
+            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment',],
+            columns:[
+                {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
+                //{data: "ecu_name",allowEmpty:true },
+                //{data: "ecu_name",type:'dropdown',source: ecu_name_list_array, allowEmptyboolean:true},
+                //{data: "type_version",type:'dropdown',source: [type_version_array[0], type_version_array[1], type_version_array[2]],allowEmptyboolean:true},
+                //{data: "type_version",type:'dropdown',source: type_version_array,allowEmptyboolean:true},
+                {data: "RelInList_id_ecu", type: 'numeric', readOnly: true, editor: false,allowEmpty:true},
+                {data: "RelInList_dx", readOnly: true, editor: false,allowEmpty:true},
+                //{data: "RelInList_n_version",allowEmpty:true},
+                {data: "RelInList_ecu_name",type:'dropdown',source: ecuList_name, strict:true, },
+                //{data: "RelInList_n_version", allowEmpty:false},
+                {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
+                    if (value === '' || value == null) {
+                    callback(this.allowEmpty);
+                    return;
+                    }
+                    callback(true);
+                },
+                },
+
+                //{data: "RelInList_date",validator: Handsontable.validators.DateValidator, allowInvalid: true},
+                {data: "RelInList_date",type:'date',allowEmpty:true},
+                {data: "RelInList_type_name",type:'dropdown',source: type_list_name,  strict:true,},
+                //{data: "RelInList_plan",allowEmpty:true},
+                {data: "RelInList_plan",type:'dropdown',source: plan_list_name,  strict:true,},
+                {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},
+                //{data: "RelInList_dx",allowEmpty:true},
+                //{data: "week",type: 'numeric',allowEmpty:true},
+                {data: "RelInList_comment",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('comment Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                },
+            ],
+            fillHandle: {
+                direction: 'vertical',
+                autoInsertRow: true //dejar si quiero que se añada una fila al arrastrar
+            },
+            rowHeaders:true,
+            //fixedRowsTop: 2,
+            height: 487,
+            //height: '100%',
+            width: 805,
+            //width: '100%',
+            //height: 500,
+            //overflow: 'hidden',
+            preventOverflow: 'horizontal',
+            //colWidths: [45, 55, 160, 200, 200, 65, 65,40,500],
+            //autoColumnSize: {useHeaders: true},
+
+            manualColumnResize: true,
+            manualRowResize: true,
+            contextMenu:true,
+            manualRowMove: true,
+            columnSorting: true,
+            
+            columnSorting: {
+                initialConfig: {
+                    column: column_sort_n,
+                    sortOrder: column_sort_dir,
+                }
+            },
+            
+            search: true,
+            licenseKey: 'non-commercial-and-evaluation',
+            
+            afterChange: function(registrosModificados,accionesHandsontable){
+                console.log("afterChange");
+                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                    if(autosave){
+                    sendDataReleaselist();
+                    }
+                }
+            },
+            afterColumnSort:function(currentSortConfig,destinationSortConfigs){
+                console.log("afterColumnSort");
+                //console.log(currentSortConfig);
+                //console.log(destinationSortConfigs);
+                for (var el of destinationSortConfigs) {
+                    //console.log(el["column"]);
+                    column_sort_n = el["column"]
+                    column_sort_dir = el["sortOrder"]
+                    //console.log(column_sort_dir);
+                }
+                
+                }
+            /*
+            afterCreateRow: function(registrosModificados,accionesHandsontable){
+                console.log("afterCreateRow");
+                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                //sendDataReleaselist();
+                //add_empty_last_row_Releaselist();
+                }
+            },
+            afterRemoveRow: function(registrosModificados,accionesHandsontable){
+                console.log("afterRemoveRow");
+                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                sendDataReleaselist();
+                add_empty_last_row_Releaselist();
+                }
+            },
+            afterValidate: function(isValid, value, row, prop){
+                if(!isValid){
+                    console.log(row, tblExcel.propToCol(prop))
+                }
+            },
+            */
+            
+        };
+
+        //Add table for ResultadoTabla
+        tblExcel = new Handsontable(document.getElementById('ResultadoTabla'),config_resultados);
+        tblExcel.render();
+
+        tblExcel.validateCells();//launch the validator after load the page
+
+
+
+        Handsontable.dom.addEvent(searchFiled, 'keyup', function (event) {
+            var search = tblExcel.getPlugin('search');
+            var queryResult = search.query(this.value);
+
+            console.log(queryResult);
+            tblExcel.render();
+        });
+    }
+
+
+        function updateRinputs(resp) {
+                console.log("updateRinputs()")
+                console.log("RelInList_id: ",resp.RelInList_id);
+                //formato: resp.
+                //ej: resp.ecuList_name
+                var data_table = []
+                for (i = 0; i < resp.RelInList_id.length; i++) {
+                    data_table.push({
+                        "RelInList_id":resp.RelInList_id[i],
+                        "RelInList_id_ecu":resp.RelInList_id_ecu[i],
+                        "RelInList_id_type":resp.RelInList_id_type[i],
+                        "RelInList_n_version":resp.RelInList_n_version[i],
+                        "RelInList_date":resp.RelInList_date[i],
+                        "RelInList_plan":resp.RelInList_plan[i],
+                        "RelInList_id_plan":resp.RelInList_id_plan[i],
+                        "RelInList_visual":resp.RelInList_visual[i],
+                        "RelInList_dx":resp.RelInList_dx[i],
+                        "RelInList_comment":resp.RelInList_comment[i],
+
+                        "RelInList_ecu_name":resp.RelInList_ecu_name[i],
+                        "RelInList_type_name":resp.RelInList_type_name[i],
+                    })
+                }
+                console.log(resp.RelInList_id);
+                console.log(resp.RelInList_id_ecu);
+                console.log(resp.RelInList_id_type);
+                /*
+                for (i = 0; i < resp.ecuList_name.length; i++) {
+                    console.log("ecuList_name: ",resp.ecuList_name[i])
+                    if(resp.ecuList_dx[i] != ""){
+                        resp.ecuList_name[i] = resp.ecuList_name[i] + " - " + resp.ecuList_dx[i]
+                    }
+                    console.log("ecuList_dx: ",resp.ecuList_dx[i])
+                }
+                */
+
+
+                console.log("data_table: ",data_table);
+            
+                //update table values
+                tblExcel.updateSettings({
+                data: data_table,
+                //dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null},
+                columns:[
+                {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
+                {data: "RelInList_id_ecu", type: 'numeric', readOnly: true, editor: false,allowEmpty:true},
+                {data: "RelInList_dx", readOnly: true, editor: false,allowEmpty:true},
+                //{data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true, validator: emptyValidator},
+                {data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true},
+                {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
+                    if (value === '' || value == null) {
+                    callback(this.allowEmpty);
+                    return;
+                    }
+                    callback(true);
+                },
+                },
+                {data: "RelInList_date",type:'date',allowEmpty:true},
+                {data: "RelInList_type_name",type:'dropdown',source: resp.type_list_name, strict:true,},
+                //{data: "RelInList_plan",allowEmpty:true},
+                {data: "RelInList_plan",type:'dropdown',source: resp.plan_list_name, strict:true,},
+                {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},
+                {data: "RelInList_comment",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('comment Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                },
+                ],
+
+                columnSorting: {
+                initialConfig: {
+                    column: column_sort_n,
+                    sortOrder: 'asc',
+                    sortOrder: column_sort_dir,
+                }
+            },
+
+                });
+
+                //tblExcel.render();
+                //Launch validator
+                tblExcel.validateCells(); 
+
+                //tblExcel.loadData(data_table);
+            }
+
+        function addRow_RI(){
+            console.log("addRow_RI")
+            tblExcel.alter('insert_row');
+        }
+
+        function removeRow_RI(){
+            console.log("removeRow_RI")
+            tblExcel.alter('remove_row');
+        }
+
+
+
+
+        //Validate and send (save) the table
+        function sendDataReleaselist(){
+            console.log("sendDataReleaselist()");
+
+            //remove the last empty row
+            //remove_empty_last_row_Releaselist();
+
+            //Validate all cells and only pass if all are valids
+            tblExcel.validateCells((valid) => {
+            if (valid) {
+                //is valid
+                //var all_data = tblExcel.getData()//all data table. Formato Array
+                var all_data = tblExcel.getSourceData()//all data table. Formato JSON
+                console.log("all_data: ",all_data);
+                //console.log("all_data-0: ",all_data[all_data.length-1]);
+                //revalidate if is empty
+                var flag_empty = false
+                var i = 0
+                var info_log = "No puede dejar vacias las celdas: <p></p>"
+                for (var el of all_data) {
+                    f = tblExcel.toPhysicalRow(i)
+                    v = tblExcel.toVisualRow(i)
+                    
+                    console.log("i: ",i," f: ",f," v: ",v);
+                    v_1 = v + 1
+                    i = i + 1;
+                    
+                    //console.log(el["RelInList_type_name"])
+                    if((el["RelInList_ecu_name"] ==="") || (el["RelInList_ecu_name"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: ecu_name <p></p>"
+                        var cell = tblExcel.getCell(v,2)
+                        cell.style.background = '#ff3300';
+                    }
+                    if((el["RelInList_n_version"] ==="") || (el["RelInList_n_version"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: n_version <p></p>"
+                        var cell = tblExcel.getCell(v,3)
+                        cell.style.background = '#ff3300';
+                    }
+                    if((el["RelInList_type_name"] ==="") || (el["RelInList_type_name"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: type <p></p>"
+                        var cell = tblExcel.getCell(v,5)
+                        cell.style.background = '#ff3300';
+                    }
+                    if((el["RelInList_plan"] ==="") || (el["RelInList_plan"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: type <p></p>"
+                        var cell = tblExcel.getCell(v,5)
+                        cell.style.background = '#ff3300';
+                    }
+                    
+                    
+                }
+                console.log("flag_empty: ",flag_empty)
+                if(flag_empty == true){
+                    document.getElementById("id_info_log").innerHTML = info_log
+                }
+                else{
+                    var all_data = tblExcel.getSourceData()
+                    //implementar sistema que almacene orden de usuario (id_ecu visual) y reinserte las filas en el mismo al actualizar
+                    id_v = version_id
+                    $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'update_Release_list' %}",
+                                    name: "testname",
+                                    //data: JSON.stringify({tblExcel:[fila]}),
+                                    //data: JSON.stringify( { all_data } ),
+                                    data: JSON.stringify( {
+                                        all_data,
+                                        id_v
+                                    } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        console.log("Informacion actualizada:" + respuesta.RelInList_id);
+                                        updateRinputs(respuesta)
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+
+                            });
+                    }
+            }
+            else{
+                //is invalid
+                console.log("one or some cells are invalid!")
+            }
+            })
+        }
+
+    //--------------------------------------------------------------------------------------
+    //funciones generador PPTx--------------------------------------------------------------
+    //--------------------------------------------------------------------------------------
+    function pptGenerator(){
+        console.log("pptGenerator()")
+        prj_id = "{{prj_id}}"; //this is the ID project
+        $.ajax({
+                type: "POST",
+                url: "{% url 'generatePptData' %}",
+                name: "testname",
+                data: JSON.stringify( {
+                    prj_id,
+                    version_id
+                } ),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(resp){
+                    console.log("Informacion actualizada:" + resp);
+                    console.log("ecuList_name:" + resp.ecuList_name);
+                    console.log("RelInList_ecu_name:" + resp.RelInList_ecu_name);
+                    pptGenerator_admin(resp)
+                },
+                failure: function(resp){console.log("Hay un error:" + resp.d);},
+        });
+    }
+
+    //var slide = []; //global
+    function pptGenerator_admin(resp){
+        console.log("pptGenerator_admin()")
+        //Create ppt & conf--------------------
+        //Create a new Presentation
+
+        //variables globales
+        let pptx = new PptxGenJS();
+        var slide = [];
+        
+        //variables configurables by user
+        //var MaxecuForSlide = 4 //variable configurable por user
+
+        //var date_ini =  "{{date_ini}}"//moment("21-12-2020", 'DD-MM-YYYY'); //variable configurable por user //tiene que ser menor que date_status y date_end
+        date_ini = moment(date_ini, 'YYYY-MM-DD'); 
+        //var date_end = "{{date_end}}"//moment("04-06-2021", 'DD-MM-YYYY'); //variable configurable por user //tiene que ser mayor que date_status y date_ini
+        date_end = moment(date_end, 'YYYY-MM-DD'); 
+        //var date_status = "{{date_status}}"//moment("04-01-2021", 'DD-MM-YYYY') //variable configurable por user (aaaa/mm/dd)
+        date_status = moment(date_status, 'YYYY-MM-DD'); 
+        console.log("date_ini:",date_ini)
+        console.log("date_status:",date_status)
+        console.log("date_end:",date_end)
+
+        //var factor_weeks = 1 //variable configurable por user
+
+        //factor_weeks = "{{factor_weeks}}"
+        //max_ecu_slide = "{{max_ecu_slide}}"
+
+        //variables contadores
+        var cont_ecu_slide = 0
+        var cont_slides = 0
+        var slideIndex = -1;
+
+        //variables size slide
+        var h_printZone = 5.88 //inches
+        var w_printZone = 10.71 //inches
+        var w_printZone2 = 8.26 
+
+        //variables margenes
+        var margin_t = 0.88
+        var margin_b = 1
+        var margin_r = 1
+        var margin_l = 0.86
+        var margin_t2 = 0.87
+        var margin_b2 = 1
+        var margin_r2 = 1
+        var margin_l2 = 2.15
+
+        //variables espacios
+        var space_btwn_ecus = h_printZone / max_ecu_slide
+        console.log("space_btwn_ecus:",space_btwn_ecus)
+
+        //calcula semanas entre fechas a visualizar
+
+        //var hoxe = new Date();
+
+        //var diff = moment.duration(date_end.diff(date_ini));
+
+        //console.log(diff.months() + " months, " + diff.weeks() + " weeks, " + diff.days()%7 + " days.");
+
+        //console.log(Math.floor(diff.asWeeks()) + " weeks, " + diff.days()%7 + " days.");
+
+
+        //var n_weeks = weeksBetween(date_ini, date_end); //variable n_weeks
+        
+        var n_weeks = myDiffWeeks(date_ini,date_end)
+        console.log("weeksBetween: ",n_weeks)
+
+        //calcula distancia entre semanas
+        var w_weeks = w_printZone2 / n_weeks
+
+        //m = moment(date_end, 'YYYY-MM-DD');
+        //console.log(m.format('W'));
+
+        //console.log('The current ISO week number is ' + new Date().getWeekNumber());
+
+
+        //Add metadata
+        pptx.author = 'Alexandre Filgueira Lago';
+        pptx.company = 'SEAT.S.A.';
+        pptx.revision = '01';
+        pptx.subject = 'Release Plan Maker v2.0';
+        pptx.title = 'Release Plan';
+        //--------------------------------------
+
+        //Slide sizes
+        pptx.layout = 'LAYOUT_WIDE'; //13.3 x 7.5 inches
+
+        //let image = new Image();
+        //image.src = "/static/brand/logos_seat_cupra.png";
+
+        //Generate slide master--------------------------
+        pptx.defineSlideMaster({
+            title: "MASTER_SLIDE",
+            background: { color: "FFFFFF" },
+            //cabecera
+            objects: [
+                //Head---- ->  ver que sacar del slidemaster
+                { rect: { x: 0.46, y: 0.17, w: 12.39, h: 0.55, line: { color: "808080", width: 0.75  },}},
+                { image: { x: 0.55, y: 0.18, w: 1.36, h: 0.55, path: "/static/brand/logos_seat_cupra.png" } },
+                { line: { x: 4.42, y: 0.17, w: 0, h: 0.55, line: { color: "808080", width: 0.75 } } },
+                { line: { x: 8.89, y: 0.17, w: 0, h: 0.55, line: { color: "808080", width: 0.75 } } },
+                { text: { text: "Created by \n [EE-32]", options: { x: 0.70, y: 0.19, w: 3.73, h: 0.55,  align:'right', fontSize: 10.9, color: "808080" } } },
+                { text: { text: "STATUS REPORT E/E", options: { x: 4.59, y: 0.23, w: 4.13, h: 0.28, align:'center', fontSize: 10.9,color: "000000" } } },
+                { text: { text: "STATUS DATE: " + moment(date_status).format("DD-MM-YYYY"), options: { x: 8.92, y: 0.23, w: 2.99, h: 0.28,  align:'left', fontSize: 10.9, color: "000000" } } },
+                
+                { text: { text: "Sheet", options: { x: 10.99, y: 0.46, w: 1.7, h: 0.27,  align:'right', fontSize: 10.9, color: "808080" } } },
+                
+
+                //Foot
+                { rect: { x: 0.46, y: 6.82, w: 12.39, h: 0.50, line: { color: "808080", width: 0.75  },}},
+                //{ text: { text: "Powered by Alexandre Filgueira Lago [EE-32]", options: { x: 0.4, y: 7.3, w: 4, h: 0.27,  align:'left', fontSize: 8.0, color: "808080" } } },
+
+                //Paint zone ->  sacar del slidemaster
+                //{ rect: { x: margin_l, y: margin_t, w: w_printZone, h: h_printZone, line: { color: "808080", width: 0.50  },}},
+                //{ text: { text: "ECU-ReleasePlan", options: { x: 0.99, y: 0.83, w: 1.49, h: 0.28,  align:'center', fontSize: 10.9, color: "000000", bold:true } } },
+
+                //project name ->  sacar del slidemaster
+                //{ text: { text: resp.prj_name, options: { x: 0.99, y: 1.1, w: 1.71, h: 0.22,  align:'center', fontSize: 7, color: "000000", bold:true, fill:"ffc000", line:{ pt:'0.75', color:'000000' } } } },
+
+            ],
+
+            slideNumber : { x: 12.55, y: 0.46, w: 1.7, h: 0.27,  align:'left', fontSize: 10.9, color: "808080", },
+        });
+
+
+        //Calcula slides en función de max_ecu_slide--------------------
+
+        console.log("resp.nECU:",resp.nECU)
+        ecuList = resp.ecuList_name
+
+        Nslides = Math.floor(resp.nECU / max_ecu_slide)
+        if((resp.nECU % max_ecu_slide)>0){
+            Nslides = Nslides + 1
+        }
+        console.log("Nslides:",Nslides)
+        
+        //Slide by slide (Not master)--------------------------
+        //Recorre lista Ecus que se visualizan--------------
+        for (i = 0; i < resp.ecuList_name.length; i++) {
+            console.log("i",i)
+            console.log("ecu:",resp.ecuList_name[i])
+            //checkea si toca añadir slide
+            if ((i+1) > (cont_slides * max_ecu_slide)){
+                cont_slides = cont_slides + 1
+                console.log("Create slide")
+                //var slide = pptx.addNewSlide();
+                //Genera nueva slide y añade elementos comunes---------------------
+                //Añade slide
+                slideIndex = slideIndex + 1
+                slide[slideIndex] = pptx.addSlide({ masterName: "MASTER_SLIDE" }); // addSlide Vs addNewSlide ¿?
+
+                var s_week_mark = 0.28
+                var cont_factor_weeks = 0
+                //linea semanas
+                for (s = 0; s < n_weeks; s++) {
+                    var m_ini = moment(date_ini, 'YYYY-MM-DD').add(7*s, 'd');
+                    var week_s = Number(m_ini.format('W'))
+                    //console.log("week_s: ",week_s)
+                    cont_factor_weeks = cont_factor_weeks + 1
+                    console.log("cont_factor_weeks: ",cont_factor_weeks)
+                    if(cont_factor_weeks == factor_weeks){
+                        slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" }, line: { color: "7f7f7f", width: 0.50  } });
+                    }
+                    if(cont_factor_weeks == factor_weeks){
+                        cont_factor_weeks = 0
+                    }
+                }
+
+                //Paint zone ->  sacar del slidemaster
+                slide[slideIndex].addShape(pptx.ShapeType.rect, {x: margin_l, y: margin_t, w: w_printZone, h: h_printZone, line: { color: "808080", width: 0.50  } });
+                slide[slideIndex].addText("ECU-ReleasePlan", { x: 0.99, y: 0.83, w: 1.49, h: 0.28,  align:'center', fontSize: 10.9, color: "000000", bold:true   });
+
+                //project name ->  sacar del slidemaster
+                slide[slideIndex].addText(resp.prj_name, { x: 0.99, y: 1.1, w: 1.71, h: 0.22,  align:'center', fontSize: 7, color: "000000", bold:true, fill:"ffc000", line:{ pt:'0.75', color:'000000' }   });
+
+                //Powered by..
+                slide[slideIndex].addText("Powered by Alexandre Filgueira Lago [EE-32]", { x: 0.4, y: 7.3, w: 4, h: 0.27,  align:'left', fontSize: 8.0, color: "808080"    });
+
+                //line actual week
+                diff_actual_weeks = myDiffWeeks(date_ini,date_status)
+                console.log("myDiffWeeks: ",diff_actual_weeks)
+                slide[slideIndex].addShape(pptx.ShapeType.rect, {x: margin_l + margin_l2 + w_weeks * diff_actual_weeks + s_week_mark/2 - 0.05/2, y: 1.01 + s_week_mark, w: 0.05, h: h_printZone  - s_week_mark*1.5, fill:"d9d9d9" });
+
+                //Leyenda
+                var delta_y = 0
+                //SW
+                s_mark = 0.2
+                slide[slideIndex].addText("SW:", {margin: 0, align:'center',valign:'top', fontSize: 10, color: "000000",bold:false, shape:pptx.ShapeType.roundRect, x: margin_l - 1.05/2 , y: 1.82+delta_y , w: 1.05, h: 1.3 , fill:"ffffff",line:{ pt:'0.75', color:'000000' } });
+                fig_form = figure_format(pptx,"SW", "vbv",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.09+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("VBV", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.09+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"SW", "te.vbv",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.34+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("te.VBV", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.34+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"SW", "planned",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.61+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("Planned", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.61+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"SW", "",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.86+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("Additional", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.86+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                //HW
+                delta_y = 1.4
+                slide[slideIndex].addText("HW:", {margin: 0, align:'center',valign:'top', fontSize: 10, color: "000000",bold:false, shape:pptx.ShapeType.roundRect, x: margin_l - 1.05/2 , y: 1.82+delta_y , w: 1.05, h: 1.3 , fill:"ffffff",line:{ pt:'0.75', color:'000000' } });
+                fig_form = figure_format(pptx,"HW", "vbv",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.09+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("VBV", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.09+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"HW", "te.vbv",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.34+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("te.VBV", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.34+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"HW", "planned",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.61+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("Planned", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.61+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"HW", "",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.86+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("Additional", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.86+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                
+                //ZDC
+                delta_y = 2.8
+                slide[slideIndex].addText("ZDC:", {margin: 0, align:'center',valign:'top', fontSize: 10, color: "000000",bold:false, shape:pptx.ShapeType.roundRect, x: margin_l - 1.05/2 , y: 1.82+delta_y , w: 1.05, h: 1.3 , fill:"ffffff",line:{ pt:'0.75', color:'000000' } });
+                fig_form = figure_format(pptx,"ZDC", "vbv",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.09+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("VBV", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.09+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"ZDC", "te.vbv",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.34+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("te.VBV", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.34+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"ZDC", "planned",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.61+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("Planned", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.61+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                fig_form = figure_format(pptx,"ZDC", "",s_mark)
+                slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.86+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                slide[slideIndex].addText("Additional", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.86+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+
+
+                cont_ecu_slide = 0 //resetea contador ecus por slide
+            }
+            //añade datos de cada ECU y sus entradas------------------
+
+            //checkea que haya alguna entrada para esta ECU dentro del tiempo
+            var flag_entrada_in = false
+            for(j=0;j<resp.RelInList_id_ecu.length;j++){
+                if(resp.RelInList_id_ecu[j] == resp.ecuList_id[i]){
+                    var date_ReIn = moment(resp.RelInList_date[j], 'DD-MM-YYYY')
+                    if(date_ReIn.isBetween(date_ini, date_end)){
+                        flag_entrada_in = true
+                    }
+                }
+            }
+            if(flag_entrada_in == true){
+                //añade linea ECU
+                //console.log("Add ECU line")
+                pos_y = margin_t + margin_t2 + cont_ecu_slide * space_btwn_ecus
+                slide[slideIndex].addShape(pptx.shapes.LINE,{y: pos_y, x: margin_l + margin_l2, w: w_printZone2 , h: 0.0, line:{color: "808080",width: 1, },},);
+
+                //Add ecu box and text
+                ecu_name = resp.ecuList_name[i]
+                if( resp.ecuList_dx[i] != ""){
+                    ecu_name = ecu_name + ' - ' + resp.ecuList_dx[i]
+                }
+                slide[slideIndex].addText(ecu_name, { x: 1.58, y: pos_y - (0.22/2), w: 1.29, h: 0.22, align:'left', fontSize: 6, color: "000000",  line:{ pt:'0.75', color:'d9d9d9' }  });
+
+
+                //Add ecu comments
+                if(resp.ecuList_comment[i] != ""){
+                    //comment_l = resp.ecuList_comment[i].length
+                    //fontSize: 6 
+                    //h_factor = Math.ceil( comment_l / 23);
+                    var w = get_tex_width(resp.ecuList_comment[i])
+                    console.log(w);
+                    h_factor =  Math.ceil( w / 170) //170 es una aproximación de pixel a inch que mas o menos funciona
+                    //autoFit + shrinkText no afecta hasta que el usuario realiza un cambio en el texto (manualmente)
+                    slide[slideIndex].addText(resp.ecuList_comment[i], { x: 11.76, y: pos_y - (0.22/2), w: 1.15, h: 0.22*h_factor, align:'left', fontSize: 6, color: "000000",  line:{ pt:'0.75', color:'d9d9d9' },fill: { color: 'fdfdf0' },autoFit:true });
+                }
+
+
+                cont_ecu_slide = cont_ecu_slide + 1
+
+
+                var input_ = new Array(3)
+                for (var m = 0; m < input_.length; m++) {
+                    input_[m] = new Array(n_weeks).fill("");
+                }
+
+
+                //Add Inputs for each ECU-------------------------------
+                //busca en las entradas la ecu actual por id
+                for(j=0;j<resp.RelInList_id_ecu.length;j++){
+                    //console.log(resp.RelInList_id_ecu[j])
+                    if(resp.RelInList_id_ecu[j] == resp.ecuList_id[i]){
+                        //encontrada una entrada asociada a la ecu del bucle
+                        console.log("Encontrada id_input:",resp.RelInList_id[j], ' Para ecu_id: ', resp.ecuList_id[i])
+                        //añade entrada a la linea ECUactual
+                        //....
+                        var date_ReIn = moment(resp.RelInList_date[j], 'DD-MM-YYYY')
+                        console.log("date_ini: ", date_ini , " date_end: ", date_end)
+                        console.log("date_ReIn: ",date_ReIn)
+
+                        if(date_ReIn.isBetween(date_ini, date_end)){
+                            //si la fecha se encuentra entre las fechas ini and end
+                            console.log("date IN")
+                            
+                            date_reIn = moment(resp.RelInList_date[j], 'DD-MM-YYYY');
+
+                            diff_weeks = myDiffWeeks(date_ini, date_reIn)
+                            console.log("myDiffWeeks: ",diff_weeks)
+
+                            var week_s = Number(date_reIn.format('W'))
+
+                            var pos_x = margin_l + margin_l2 + w_weeks * diff_weeks  + s_week_mark/2
+
+                            //ellipse
+                            //slide[slideIndex].addText(resp.RelInList_n_version[j], {margin: 0, align:'center', fontSize: 8, color: "000000", shape: pptx.ShapeType.ellipse, x: pos_x, y: pos_y- (s_week_mark/2), w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" } });
+                            //diamond
+                            console.log(resp.RelInList_type_name[j])
+                            //Esto puede se rmodificable para que sea modificado por el usuario---
+                            fig_form = figure_format(pptx,resp.RelInList_type_name[j], resp.RelInList_plan[j],s_week_mark)
+
+                            //Posiciona entradas (centro-arriba-abajo) en función de si ya hay o no otra en la misma semana y linea ECU
+                            var vers_name = "";
+                            var pose = 0;
+                            var flag_paint = true
+                            switch(resp.RelInList_type_name[j]){
+                                case "SW":
+                                if(input_[0][diff_weeks] != ""){
+                                    input_[0][diff_weeks] = input_[0][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
+                                    flag_paint = false
+                                }
+                                else{
+                                    input_[0][diff_weeks] = resp.RelInList_n_version[j]
+                                }
+                                vers_name =  input_[0][diff_weeks]
+
+                                //pose
+                                if(input_[1][diff_weeks] != ""){
+                                    if(input_[2][diff_weeks] != ""){pose = 3}
+                                    else{pose = 2}}
+                                else{
+                                    if(input_[2][diff_weeks] != ""){pose = 2}
+                                    else{pose = 1}}
+                                //---
+
+                                break;
+                                case "HW":
+                                if(input_[1][diff_weeks] != ""){
+                                    input_[1][diff_weeks] = input_[1][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
+                                    flag_paint = false
+                                }
+                                else{
+                                    input_[1][diff_weeks] = resp.RelInList_n_version[j]
+                                }
+                                vers_name =  input_[1][diff_weeks] 
+
+                                //pose
+                                if(input_[0][diff_weeks] != ""){
+                                    if(input_[2][diff_weeks] != ""){pose = 3}
+                                    else{pose = 2}}
+                                else{
+                                    if(input_[2][diff_weeks] != ""){pose = 2}
+                                    else{pose = 1}}
+                                //---
+
+                                break;
+                                case "ZDC":
+                                if(input_[2][diff_weeks] != ""){
+                                    input_[2][diff_weeks] = input_[2][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
+                                    flag_paint = false
+                                }
+                                else{
+                                    input_[2][diff_weeks] = resp.RelInList_n_version[j]
+                                }
+                                vers_name =  input_[2][diff_weeks] 
+
+                                //pose
+                                if(input_[1][diff_weeks] != ""){
+                                    if(input_[0][diff_weeks] != ""){pose = 3}
+                                    else{pose = 2}}
+                                else{
+                                    if(input_[0][diff_weeks] != ""){pose = 2}
+                                    else{pose = 1}}
+                                //---
+                                break;
+                            }
+
+                            //console.log("pose: ",pose)
+                            var delta_y = 0
+                            if(pose == 2){
+                                delta_y = -s_week_mark- s_week_mark*0.1
+                            }
+                            if(pose == 3){
+                                delta_y =  s_week_mark + s_week_mark*0.1
+                            }
+
+                            //Pinta figura---
+                            //if(flag_paint == true){ //de momento lo pinta siempre y así el usuario elije cual desea
+                            //añade comentario de la entrada como hyperlink
+                            var hyperlink = ""
+                            if(resp.RelInList_comment[j] !=""){
+                                slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 8, color: "000000",bold:true,
+                                shape: fig_form[0], x: pos_x - fig_form[1]/2, y: pos_y- (s_week_mark/2) + delta_y, w: fig_form[1], h: s_week_mark,
+                                fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]  },hyperlink: { slide: slideIndex+1, tooltip: resp.RelInList_comment[j] } });
+                            }
+                            else{
+                                slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 8, color: "000000",bold:true,
+                                shape: fig_form[0], x: pos_x - fig_form[1]/2, y: pos_y- (s_week_mark/2) + delta_y, w: fig_form[1], h: s_week_mark,
+                                fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]  },});
+                            }
+                            //}
+
+                            //version name (text)
+                            //slide[slideIndex].addText(resp.RelInList_n_version[j], { x: pos_x + s_week_mark/2, y: pos_y, w: 1.29, h: 0.22, align:'left', fontSize: 7, color: "000000",bold:true,  });
+                            slide[slideIndex].addText(vers_name, { x: pos_x- fig_form[1]/2 + s_week_mark/2, y: pos_y + delta_y, w: 1.29, h: 0.22, align:'left', fontSize: 7, color: "000000",bold:true,  });
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        //Save pptx
+        //........
+        pptx.writeFile("Sample Presentation.pptx");
+
+    }
+
+
+    function get_tex_width(txt, font) {
+        this.element = document.createElement('canvas');
+        this.context = this.element.getContext("2d");
+        this.context.font = font;
+        w = this.context.measureText(txt).width
+
+        console.log(window.devicePixelRatio)
+        
+        return w;
+    }
+
+    function figure_format(pptx,type, plan,w){
+        var figure_type;
+        var figure_w;
+        switch(type){
+            case "SW":
+                figure_type =  pptx.ShapeType.diamond
+                figure_w = w
+            break;
+            case "HW":
+                figure_type =  pptx.ShapeType.diamond
+                figure_w = w / 2
+            break;
+            case "ZDC":
+                figure_type =  pptx.ShapeType.hexagon
+                figure_w = w
+            break;
+            default:
+                figure_type =  pptx.ShapeType.ellipse
+                figure_w = w
+            break;
+        }
+        //Selecciona color figura en función del plan
+        var fill_color;
+        var border_color;
+        var w_border;
+        switch(plan){
+            case "vbv":
+                fill_color = "00b0f0" //azul
+                border_color = "000000" //negro
+                w_border = 1.75 //Gruesa
+            break;
+            case "te.vbv":
+                fill_color = "00b0f0" //azul
+                border_color = "7f7f7f" //gris oscuro
+                w_border = 0.75 //fina
+            break;
+            case "planned":
+                fill_color = "d9d9d9" //gris
+                border_color = "7f7f7f" //gris oscuro
+                w_border = 0.75 //fina
+            break;
+            default:
+                fill_color = "d9d9d9" //gris
+                border_color = "ff0000" //rojo
+                w_border = 1.75 //Gruesa
+            break;
+        }
+        let output = [figure_type, figure_w, fill_color,border_color, w_border ];
+        return(output)
+    }
+
+    function myDiffWeeks(d1, d2){
+        console.log("d1: ",d1, " d2: ",d2)
+        //var diff_actual_weeks = weeksBetween(d1, d2);
+        //console.log("diff_actual_weeks: ",diff_actual_weeks)
+
+        d1 = moment(d1).format("YYYY-MM-DD")
+        d2 = moment(d2).format("YYYY-MM-DD");
+        console.log("d1: ",d1, " d2: ",d2)
+
+        var m_ini = moment(d1, 'YYYY-MM-DD')
+        var week_ini = Number(m_ini.format('W'))
+        console.log("week_ini: ",week_ini)
+
+        var m_status = moment(d2, 'YYYY-MM-DD')
+        var week_status = Number(m_status.format('W'))
+        console.log("week_status: ",week_status)
+
+        var diff_weeks = 0
+
+        var d1_year = moment(d1).format('YYYY')
+        var m_ini_last = moment(d1_year+'-12-31', 'YYYY-MM-DD')
+        var week_ini_last = Number(m_ini_last.format('W'))
+        console.log("week_ini_last: ",week_ini_last)
+
+        var d2_year = moment(d2).format('YYYY')
+        var m_status_last = moment(d2_year+'-12-31', 'YYYY-MM-DD')
+        var week_status_last = Number(m_status_last.format('W'))
+        console.log("week_status_last: ",week_status_last)
+
+        if(d1_year < d2_year){
+            week_ini = week_ini - week_ini_last
+        }
+
+        if(week_ini > week_ini_last){
+            //estas en la primera semana iso (ej: 01/02/03- 01-21 -> week 53 pero 31/12/21 -> week 52)
+            week_ini = 0
+        }
+        if(week_status > week_status_last){
+            //estas en la primera semana iso (ej: 01/02/03- 01-21 -> week 53 pero 31/12/21 -> week 52)
+            week_status = 0
+        }
+        diff_weeks = week_status - week_ini
+
+        //console.log("diff_weeks: ",diff_weeks)
+        return(diff_weeks)
+    }
+
+    function weeksBetween(d1, d2) {
+        return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
+    }
+
+    Date.prototype.getWeekNumber = function(){
+        var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+        var dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+    };
+
+
+
+    function updateDatesPrint(){
+        date_ini = document.getElementById("id_date_ini").value
+        date_status = document.getElementById("id_date_status").value
+        date_end = document.getElementById("id_date_end").value
+        console.log("date_ini:",date_ini)
+        console.log("date_status:",date_status)
+        console.log("date_end:",date_end)
+
+        var flag_date_ok = true
+        //checkea fechas
+        if((date_ini > date_status) || (date_ini > date_end)){
+            document.getElementById("id_date_ini").style.backgroundColor = "red";
+            flag_date_ok = false
+        }
+        else{
+            document.getElementById("id_date_ini").style.backgroundColor = "white"; 
+        }
+        if((date_end < date_status) || (date_end < date_ini)){
+            document.getElementById("id_date_end").style.backgroundColor = "red";
+            flag_date_ok = false
+        }
+        else{
+            document.getElementById("id_date_end").style.backgroundColor = "white"; 
+        }
+        if((date_ini > date_status) || (date_status > date_end)){
+            document.getElementById("id_date_status").style.backgroundColor = "red"; 
+            flag_date_ok = false
+        }
+        else{
+            document.getElementById("id_date_status").style.backgroundColor = "white"; 
+        }
+
+        factor_weeks = document.getElementById("id_factor_weeks").value
+        max_ecu_slide = document.getElementById("id_max_ecu_slide").value
+
+        if(factor_weeks<1){
+            document.getElementById("id_factor_weeks").style.backgroundColor = "red";
+            flag_date_ok = false
+        }
+        else{
+            document.getElementById("id_factor_weeks").style.backgroundColor = "white";
+        }
+        if(max_ecu_slide<1){
+            document.getElementById("id_max_ecu_slide").style.backgroundColor = "red";
+            flag_date_ok = false
+        }
+        else{
+            document.getElementById("id_max_ecu_slide").style.backgroundColor = "white";
+        }
+
+        if(flag_date_ok == true){
+            //send values
+            factor_weeks = document.getElementById("id_factor_weeks").value
+            max_ecu_slide = document.getElementById("id_max_ecu_slide").value
+
+
+            prj_id = "{{prj_id}}"; //this is the ID project
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'updatedatevalues' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        prj_id,
+                        date_ini,
+                        date_status,
+                        date_end,
+                        factor_weeks,
+                        max_ecu_slide,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                        date_ini = resp.date_ini
+                        date_status = resp.date_status
+                        date_end = resp.date_end
+                        factor_weeks = resp.factor_weeks
+                        max_ecu_slide = resp.max_ecu_slide
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+        }
+
+    }
+
+</script>
+
+{% endblock %}

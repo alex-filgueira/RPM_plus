@@ -1,0 +1,756 @@
+{% extends "base_generic.html" %}
+
+
+{% block mainmenu %}
+
+<div class="mb-3 container-fluid text-center ">
+  <nav class="nav nav-masthead justify-content-center ">
+    <a class="nav-link"href="{% url 'frontpage' %}">Home</a>
+    <a class="nav-link" href="{% url 'projects'%}">Projects</a>
+    <a class="nav-link active" href="#" >RP</a>
+    {% if user.is_authenticated %}
+    <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a>
+    {% endif %}
+  </nav>
+</div>
+  
+{% endblock %}
+
+
+
+{% block content %}
+
+
+
+<div class="container-fluid " >
+    <div class="row">
+        <div class="col-md-4 text-center " > </div>
+        <div class="col-md-4 text-center " > <!-- Extra small<576pxSmall≥576pxMedium≥768pxLarge≥992pxExtra large≥1200px-->
+            <h6>ECU list</h6>
+        </div>
+    </div>
+    <form name="add_name" id="add_name"> {% csrf_token %} <!-- Abre form.-->
+    <div class="row">
+        <div class="col-md-4 text-center " > </div>
+        <div class="col-md-4 text-center" > 
+            <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 text-center " > </div>
+        <div class="col-md-4 text-center" > 
+                <!-- Tabla ECU-->
+                <table style="margin-bottom:5px; border:1px" class="table table-responsive table-striped table-dark"  id="dynamic_field_old">
+
+                    <thead>
+                        <tr >
+                        <th style="width: 10%"  >ID</th>
+                        <th style="width: 40%">ECU Name</th>
+                        <th ctyle="width: 40%" >ECU Comment</th>
+                        <th style="width:  10%" ></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="dynamic_field">
+                        <!--Aqui añade lineas.-->
+                    </tbody>
+                </table> <!-- Cierra table.-->
+        </div>
+    </div>
+    </form> <!-- Cierra form.-->
+    <div class="row">
+        <div class="col-md-4 text-center " > </div>
+        <div class="col-md-4 text-center " > 
+            <button type="button" class="btn btn-outline-warning" onclick="sendDataECUlist()" >Enviar</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid " >
+    <div class="row">
+        <div class="col-md-12 text-center " >
+            <h6>RP Data</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 text-center " ></div>
+        <div class="col-md-4 text-center " > 
+            <div class="input-group-text">
+                <input type="text" class="form-control" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1" id="search_field"  maxlength="4" size="4">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon1" onclick="addRow_RI()">+ row</button>
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="removeRow_RI()">- row</button>
+                <div class="input-group-text">
+                    <span class="input-group-text" id="basic-addon1">Autosave</span>
+                    <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input" id="id_autosave" >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 text-center " ></div>
+        <div class="col-md-10 text-center " >
+            <div style="margin-bottom:5px" id = "ResultadoTabla" ></div> <!-- Tabla !!!.-->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center " > 
+            <button type="button" class="btn btn-outline-warning"  onclick="sendDataReleaselist()">Save</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    // inside JavaScript------------
+    console.log("start javascript");
+
+
+    //Configuro ajax con el CSRFToken
+    // using jQuery get csrftoken from your HTML
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+        // if not safe, set csrftoken
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+    //--------------
+    //ECU_list--------------------------------------------------------
+
+    var ecuList_name = "{{ ecuList_name }}".split(';');
+    console.log(ecuList_name);
+    var ecuList_comment = "{{ ecuList_comment }}".split(';');
+    console.log(ecuList_comment);
+    var ecuList_id = "{{ ecuList_id }}".split(';');
+    console.log(ecuList_id);
+
+    const  id_v = "{{id_v}}";
+
+    $(document).ready(function(){  
+        var i=1;  
+        $('#add').click(function(){  
+            i++;
+            $('#dynamic_field').append('<tr id="row'+i+'"><td style="width:  10%" >'+0+'</td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+
+        });  
+
+        $(document).on('click', '.btn_remove', function(){
+            var button_id = $(this).attr("id");
+
+            bootbox.confirm({
+                closeButton: false,
+                title: "Remove ECU?",
+                message: "Si elimina esta ECU, eliminará todas las entradas asociadas",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-success'
+                    }
+                },
+                callback: function (result) {
+                    console.log('This was logged in the callback: ' + result);
+                    if (result == true) {
+                        $('#row'+button_id+'').remove()
+                    }
+                }
+            }).css({'background-color': '#f99', 'font-weight' : 'bold', color: '#F00', 'font-size': '2em', 'font-weight' : 'bold'} );
+
+        });  
+    });
+    
+    window.onload = function() {
+        load_ecu_list(ecuList_name,ecuList_id,ecuList_comment);
+        load_RI();
+    };
+
+function load_ecu_list(name_list,id_list,comment_list){
+    console.log("load_ecu_list()")
+    for (i = 0; i < name_list.length; i++) {
+            var comment = comment_list[i];
+            console.log("comment: ",comment)
+            var name = name_list[i];
+            console.log("name: ",name)
+            id = id_list[i];
+            console.log("id: ",id)
+            if(id == ""){id=0;}
+            $('#dynamic_field').append('<tr id="row'+i+'"><td style="width:  10%" >'+id+'</td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+    }
+}
+
+
+function sendDataECUlist(){
+    console.log("sendDataECUlist")
+            ecu_list = [];
+            form  = document.getElementById('add_name');
+            console.log("form:" ,form)
+            
+            var id;
+            var name;
+            var comment;
+            var list_name = []
+            var flag_name_empty = false;
+            for (var i = 0, element; element = form[i++];) {
+                if (element.name == "id"){
+                    id = element.value
+                }
+                if (element.name == "name"){
+                    name = element.value
+                    if(element.value == ""){
+                        flag_name_empty = true;
+                        element.style.border = "1px solid red";
+                    }
+                    else{
+                        element.style.border = "1px solid black";
+                }
+                }
+                if (element.name == "comment"){
+                    comment = element.value
+
+                    list_name.push(name)
+                    ecu_list.push({id:id,name:name,comment:comment}) //Formato correcto para JSON!!
+                }
+            };
+            console.log(ecu_list)
+            //check unique name
+            flag_name_rep = false;
+            var name_rep
+            for (var i = 0; i < list_name.length; i++) {
+                for (var j = i+1; j < list_name.length; j++) {
+                    if(list_name[i] == list_name[j]){
+                        flag_name_rep = true;
+                        name_rep = list_name[i]
+                    }
+                }
+            } 
+            console.log("flag_name_rep: ",flag_name_rep)
+            
+            if(flag_name_rep != true){
+            if(flag_name_empty != true){
+                console.log("SEND!")
+                $.ajax({  
+                    url: "{% url 'update_ECU_list' %}", 
+                    method:"POST",  
+                    data: JSON.stringify( {
+                        ecu_list,
+                        id_v
+                    } ),
+                    success: function(resp)
+                    {  
+                        console.log("Envio correcto!");  
+                        console.log("{{ecuList_name}}")//no actualizado
+                        console.log(resp.ecuList_name);//actualizado
+
+                        //clean table
+                        $("#dynamic_field tr").remove();  //remove all rows
+
+                        //populate table
+                        load_ecu_list(resp.ecuList_name,resp.ecuList_id,resp.ecuList_comment);
+                    
+                        //update ReleaseInput table
+                        updateRinputs(resp);
+                    }  
+            });
+            }
+        }
+        else{
+            alert("NO puede haber 2 o más nombres repetidos: "+name_rep);
+        }
+    }
+    //--------------------------------------------------------
+</script> 
+
+
+
+<!--
+
+<div>
+    <p></p>
+    ResultadoTabla<p></p>
+    <div id = "id_info_log" ></div>
+    <input type="text" placeholder="Search.." id="search_field"> <p></p>
+    <button type="button" onclick="addRow_RI()">+ row</button>  
+    <button type="button" onclick="removeRow_RI()">- row</button>  
+    <input type="checkbox" id="id_autosave" name="as"checked>
+    <label for="as">Autosave</label><p></p>
+    
+    
+    <div id = "ResultadoTabla" ></div>
+    <button type="button" onclick="sendDataReleaselist()">Save</button>
+
+</div>
+-->
+
+
+<script type="text/javascript">
+    //Release_inputs--------------------------------------------------------
+    //Variables globales    
+    var tblExcel;
+    //variables para configuración usuario
+        var column_sort_n = 0;
+        var column_sort_dir = 'asc';
+        var autosave = true;
+
+    //Listeners
+    var checkbox = document.querySelector("input[id=id_autosave]");
+    //inicializa
+    if (checkbox.checked) {
+        console.log("Checkbox is checked..");
+        autosave = true;
+    } else {
+        console.log("Checkbox is not checked..");
+        autosave = false;
+    }
+    //añade listener
+    checkbox.addEventListener('change', function() {
+    if (this.checked) {
+        console.log("Checkbox is checked..");
+        autosave = true;
+    } else {
+        console.log("Checkbox is not checked..");
+        autosave = false;
+    }
+    });
+
+
+
+    function load_RI(){
+        var RelInList_id = "{{ RelInList_id }}".split(";");
+        var RelInList_id_ecu = "{{ RelInList_id_ecu }}".split(";");
+        var RelInList_id_type = "{{ RelInList_id_type }}".split(";");
+        var RelInList_n_version = "{{ RelInList_n_version }}".split(";");
+        var RelInList_date = "{{ RelInList_date }}".split(";");
+        var RelInList_plan = "{{ RelInList_plan }}".split(";");
+        var RelInList_visual = "{{ RelInList_visual }}".split(";");
+        var RelInList_dx = "{{ RelInList_dx }}".split(";");
+        var RelInList_comment = "{{ RelInList_comment }}".split(";");
+        
+        var RelInList_ecu_name = "{{ RelInList_ecu_name }}".split(";");
+        var RelInList_type_name = "{{ RelInList_type_name }}".split(";");
+
+        var type_list_id = "{{ type_list_id }}".split(";");
+        var type_list_name = "{{ type_list_name }}".split(";");
+        var type_list_comment = "{{ type_list_comment }}".split(";");
+
+        var ecuList_name = "{{ ecuList_name }}".split(";");
+        var ecuList_comment = "{{ ecuList_comment }}".split(";");
+        var ecuList_id = "{{ ecuList_id }}".split(";");
+
+        console.log(RelInList_id);
+        console.log(RelInList_id_ecu);
+        console.log(RelInList_id_type);
+        console.log(RelInList_n_version);
+        console.log(RelInList_date);
+        console.log(RelInList_plan);
+        console.log(RelInList_visual);
+        console.log(RelInList_dx);
+        console.log(RelInList_comment);
+
+        console.log(RelInList_ecu_name);
+        console.log(RelInList_type_name);
+
+        console.log(ecuList_name);
+        console.log(ecuList_comment);
+        console.log(ecuList_id);
+
+
+        //populate data
+        var data_table = []
+        for (i = 0; i < RelInList_id.length; i++) {
+            data_table.push({
+                "RelInList_id":RelInList_id[i],
+                "RelInList_id_ecu":RelInList_id_ecu[i],
+                "RelInList_id_type":RelInList_id_type[i],
+                "RelInList_n_version":RelInList_n_version[i],
+                "RelInList_date":RelInList_date[i],
+                "RelInList_plan":RelInList_plan[i],
+                "RelInList_visual":RelInList_visual[i],
+                "RelInList_dx":RelInList_dx[i],
+                "RelInList_comment":RelInList_comment[i],
+
+                "RelInList_ecu_name":RelInList_ecu_name[i],
+                "RelInList_type_name":RelInList_type_name[i],
+            })
+        }
+
+        console.log("data_table: ",data_table);
+
+        searchFiled = document.getElementById('search_field');
+
+        config_resultados = {
+            data: data_table,
+            //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
+            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null},
+            //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
+            colHeaders:['ID', 'id_ecu','ecu_name','n_version','date','type','plan','visual', 'comment',],
+            columns:[
+                {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
+                //{data: "ecu_name",allowEmpty:true },
+                //{data: "ecu_name",type:'dropdown',source: ecu_name_list_array, allowEmptyboolean:true},
+                //{data: "type_version",type:'dropdown',source: [type_version_array[0], type_version_array[1], type_version_array[2]],allowEmptyboolean:true},
+                //{data: "type_version",type:'dropdown',source: type_version_array,allowEmptyboolean:true},
+                {data: "RelInList_id_ecu", type: 'numeric', readOnly: true, editor: false,allowEmpty:true},
+                //{data: "RelInList_n_version",allowEmpty:true},
+                {data: "RelInList_ecu_name",type:'dropdown',source: ecuList_name, strict:true, },
+                //{data: "RelInList_n_version", allowEmpty:false},
+                {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
+                    if (value === '' || value == null) {
+                    callback(this.allowEmpty);
+                    return;
+                    }
+                    callback(true);
+                },
+                },
+
+                //{data: "RelInList_date",validator: Handsontable.validators.DateValidator, allowInvalid: true},
+                {data: "RelInList_date",type:'date',allowEmpty:true},
+                {data: "RelInList_type_name",type:'dropdown',source: type_list_name,  strict:true,},
+                {data: "RelInList_plan",allowEmpty:true},
+                {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},
+                //{data: "RelInList_dx",allowEmpty:true},
+                //{data: "week",type: 'numeric',allowEmpty:true},
+                {data: "RelInList_comment",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('comment Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                },
+            ],
+            fillHandle: {
+                direction: 'vertical',
+                autoInsertRow: true //dejar si quiero que se añada una fila al arrastrar
+            },
+            rowHeaders:true,
+            //fixedRowsTop: 2,
+            //height: 320,
+            //width: 900,
+            //width: '100%',
+            //height: 500,
+            //overflow: 'hidden',
+            preventOverflow: 'horizontal',
+            colWidths: [45, 55, 160, 200, 200, 55, 65,40,500],
+            //autoColumnSize: {useHeaders: true},
+
+            manualColumnResize: true,
+            manualRowResize: true,
+            contextMenu:true,
+            manualRowMove: true,
+            columnSorting: true,
+            
+            columnSorting: {
+                initialConfig: {
+                    column: column_sort_n,
+                    sortOrder: column_sort_dir,
+                }
+            },
+            
+            search: true,
+            licenseKey: 'non-commercial-and-evaluation',
+            
+            afterChange: function(registrosModificados,accionesHandsontable){
+                console.log("afterChange");
+                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                    if(autosave){
+                    sendDataReleaselist();
+                    }
+                }
+            },
+            afterColumnSort:function(currentSortConfig,destinationSortConfigs){
+                console.log("afterColumnSort");
+                //console.log(currentSortConfig);
+                //console.log(destinationSortConfigs);
+                for (var el of destinationSortConfigs) {
+                    //console.log(el["column"]);
+                    column_sort_n = el["column"]
+                    column_sort_dir = el["sortOrder"]
+                    //console.log(column_sort_dir);
+                }
+                
+                }
+            /*
+            afterCreateRow: function(registrosModificados,accionesHandsontable){
+                console.log("afterCreateRow");
+                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                //sendDataReleaselist();
+                //add_empty_last_row_Releaselist();
+                }
+            },
+            afterRemoveRow: function(registrosModificados,accionesHandsontable){
+                console.log("afterRemoveRow");
+                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                sendDataReleaselist();
+                add_empty_last_row_Releaselist();
+                }
+            },
+            afterValidate: function(isValid, value, row, prop){
+                if(!isValid){
+                    console.log(row, tblExcel.propToCol(prop))
+                }
+            },
+            */
+            
+        };
+
+        //Add table for ResultadoTabla
+        tblExcel = new Handsontable(document.getElementById('ResultadoTabla'),config_resultados);
+        tblExcel.render();
+
+        tblExcel.validateCells();//launch the validator after load the page
+
+
+
+        Handsontable.dom.addEvent(searchFiled, 'keyup', function (event) {
+            var search = tblExcel.getPlugin('search');
+            var queryResult = search.query(this.value);
+
+            console.log(queryResult);
+            tblExcel.render();
+        });
+    }
+
+
+        function updateRinputs(resp) {
+                console.log("updateRinputs()")
+                console.log("RelInList_id: ",resp.RelInList_id);
+                //formato: resp.
+                //ej: resp.ecuList_name
+                var data_table = []
+                for (i = 0; i < resp.RelInList_id.length; i++) {
+                    data_table.push({
+                        "RelInList_id":resp.RelInList_id[i],
+                        "RelInList_id_ecu":resp.RelInList_id_ecu[i],
+                        "RelInList_id_type":resp.RelInList_id_type[i],
+                        "RelInList_n_version":resp.RelInList_n_version[i],
+                        "RelInList_date":resp.RelInList_date[i],
+                        "RelInList_plan":resp.RelInList_plan[i],
+                        "RelInList_visual":resp.RelInList_visual[i],
+                        "RelInList_dx":resp.RelInList_dx[i],
+                        "RelInList_comment":resp.RelInList_comment[i],
+
+                        "RelInList_ecu_name":resp.RelInList_ecu_name[i],
+                        "RelInList_type_name":resp.RelInList_type_name[i],
+                    })
+                }
+                console.log(resp.RelInList_id);
+                console.log(resp.RelInList_id_ecu);
+                console.log(resp.RelInList_id_type);
+
+
+                console.log("data_table: ",data_table);
+            
+                //update table values
+                tblExcel.updateSettings({
+                data: data_table,
+                //dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null},
+                columns:[
+                {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
+                {data: "RelInList_id_ecu", type: 'numeric', readOnly: true, editor: false,allowEmpty:true},
+                //{data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true, validator: emptyValidator},
+                {data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true},
+                {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
+                    if (value === '' || value == null) {
+                    callback(this.allowEmpty);
+                    return;
+                    }
+                    callback(true);
+                },
+                },
+                {data: "RelInList_date",type:'date',allowEmpty:true},
+                {data: "RelInList_type_name",type:'dropdown',source: resp.type_list_name, strict:true,},
+                {data: "RelInList_plan",allowEmpty:true},
+                {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},
+                {data: "RelInList_comment",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('comment Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                },
+                ],
+
+                columnSorting: {
+                initialConfig: {
+                    column: column_sort_n,
+                    sortOrder: 'asc',
+                    sortOrder: column_sort_dir,
+                }
+            },
+
+                });
+
+                //tblExcel.render();
+                //Launch validator
+                tblExcel.validateCells(); 
+
+                //tblExcel.loadData(data_table);
+            }
+
+        function addRow_RI(){
+            console.log("addRow_RI")
+            tblExcel.alter('insert_row');
+        }
+
+        function removeRow_RI(){
+            console.log("removeRow_RI")
+            tblExcel.alter('remove_row');
+        }
+
+
+
+
+        //Validate and send (save) the table
+        function sendDataReleaselist(){
+            console.log("sendDataReleaselist()");
+
+            //remove the last empty row
+            //remove_empty_last_row_Releaselist();
+
+            //Validate all cells and only pass if all are valids
+            tblExcel.validateCells((valid) => {
+            if (valid) {
+                //is valid
+                //var all_data = tblExcel.getData()//all data table. Formato Array
+                var all_data = tblExcel.getSourceData()//all data table. Formato JSON
+                console.log("all_data: ",all_data);
+                //console.log("all_data-0: ",all_data[all_data.length-1]);
+                //revalidate if is empty
+                var flag_empty = false
+                var i = 0
+                var info_log = "No puede dejar vacias las celdas: <p></p>"
+                for (var el of all_data) {
+                    f = tblExcel.toPhysicalRow(i)
+                    v = tblExcel.toVisualRow(i)
+                    
+                    console.log("i: ",i," f: ",f," v: ",v);
+                    v_1 = v + 1
+                    i = i + 1;
+                    
+                    //console.log(el["RelInList_type_name"])
+                    if((el["RelInList_ecu_name"] ==="") || (el["RelInList_ecu_name"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: ecu_name <p></p>"
+                        var cell = tblExcel.getCell(v,2)
+                        cell.style.background = '#ff3300';
+
+                    }
+                    if((el["RelInList_n_version"] ==="") || (el["RelInList_n_version"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: n_version <p></p>"
+                        var cell = tblExcel.getCell(v,3)
+                        cell.style.background = '#ff3300';
+                    }
+                    if((el["RelInList_type_name"] ==="") || (el["RelInList_type_name"] ===null)) {
+                        flag_empty = true;
+                        info_log = info_log + "Fila:" + v_1 + " columna: type <p></p>"
+                        var cell = tblExcel.getCell(v,5)
+                        cell.style.background = '#ff3300';
+                    }
+                    
+                }
+                console.log("flag_empty: ",flag_empty)
+                if(flag_empty == true){
+                    document.getElementById("id_info_log").innerHTML = info_log
+                }
+                else{
+                    //implementar sistema que almacene orden de usuario (id_ecu visual) y reinserte las filas en el mismo al actualizar
+                    $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'update_Release_list' %}",
+                                    name: "testname",
+                                    //data: JSON.stringify({tblExcel:[fila]}),
+                                    data: JSON.stringify( { all_data } ),
+                                    data: JSON.stringify( {
+                                        all_data,
+                                        id_v
+                                    } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        console.log("Informacion actualizada:" + respuesta.RelInList_id);
+                                        updateRinputs(respuesta)
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+
+                                });
+                            }
+            }
+            else{
+                //is invalid
+                console.log("one or some cells are invalid!")
+            }
+            })
+        }
+
+        /*
+        function add_empty_last_row_Releaselist(){
+            console.log("add_empty_last_row_Releaselist")
+            var all_data = tblExcel.getSourceData()//all data table. Formato JSON
+            var last_row = all_data[all_data.length - 1]
+            var flag_row_empty_comment = true;
+
+            for (const property in last_row) {
+                console.log(`${property}: ${last_row[property]}`);
+                if(last_row[property] !=null){
+                    if(last_row[property].length > 0){
+                        flag_row_empty_comment = false
+                    }
+                }
+            }
+            if(flag_row_empty_comment == false){
+                console.log("Add a Empty row")
+                tblExcel.alter('insert_row');
+            }
+        }
+
+        function remove_empty_last_row_Releaselist(){
+            var all_data = tblExcel.getSourceData()//all data table. Formato JSON
+            var last_row = all_data[all_data.length - 1]
+            var flag_row_empty_comment = true;
+
+            for (const property in last_row) {
+                console.log(`${property}: ${last_row[property]}`);
+                if(last_row[property] !=null){
+                    if(last_row[property].length > 0){
+                        flag_row_empty_comment = false
+                    }
+                }
+            }
+            if(flag_row_empty_comment == true){
+                console.log("Remove a Empty row")
+                tblExcel.alter('remove_row');
+            }
+        }
+        */
+
+        //--------------------------------------------------------
+    </script>
+
+
+{% endblock %}

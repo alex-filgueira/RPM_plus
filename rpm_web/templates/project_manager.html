@@ -1,0 +1,257 @@
+{% extends "base_generic.html" %}
+
+
+{% block mainmenu %}
+
+<div class="mb-3 container-fluid text-center ">
+  <nav class="nav nav-masthead justify-content-center ">
+    <a class="nav-link"href="{% url 'frontpage' %}">Home</a>
+    <a class="nav-link active" href="{% url 'projects'%}">Projects</a>
+    <a class="nav-link disabled" href="#" >RP</a>
+    {% if user.is_authenticated %}
+    <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a>
+    {% endif %}
+  </nav>
+</div>
+  
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Bootstrap's grid system allows up to 12 columns across the page.-->
+<div class="container text-center">
+  <div class="row" style="margin-bottom: 1px;" > <!-- Fila 1.-->
+    <div class="col-sm">
+      <h5>Project List</h5>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom: 5px;" > <!-- Fila 2.-->
+    <div class="col-sm">
+      <b id= id_label_prj_slected >prj selected: </b> <br>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom: 5px;" > <!-- Fila 3.-->
+    <div class="col-sm">
+      <!-- Desplegable selector proyectos-->
+      <select id= "id_prj_list" name="{{ mproject_list.name }}" class="form-control form-control-lg text-center"> <!-- Campo Desplegable proyectos.-->
+        {% for prj in mproject_list %}
+          <option value="{{ prj.id }}">{{ prj.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- Formulario proyectos (name + comment + Submit)--> <!-- Abre form.-->
+  <form id = id_form name = "form" action = "{% url 'update_prj_form' %}" 
+  method = "POST" >{% csrf_token %}
+  <div class="row" style="margin-bottom: 5px;" > <!-- Fila 4.-->
+    <div class="col-sm">
+      <input type="text" class="form-control text-center"  id="id_prjname" name="prjname"  placeholder="Project Name" required> <!-- Campo Name.-->
+    </div>
+  </div>
+  <div class="row" style="margin-bottom: 10px;" > <!-- Fila 5.-->
+    <div class="col-sm">
+      <!--<input type="text" id="id_prjcomment" name="prjcomment"> --> <!-- Campo Comment.-->
+      <textarea class="form-control text-center" id="id_prjcomment" name="prjcomment" rows="3" maxlength="199"  placeholder="Project Comment"></textarea> <!-- Campo Comment. maxlength del modelo = 200-->
+    </div>
+  </div>
+  <div class="row" style="margin-bottom: 15px;" > <!-- Fila 6.-->
+    <div class="col-sm">
+      <button id="id_button_remove" onclick="remove_prj()" type="button" disabled =true class="btn btn-outline-danger">Remove</button> <!-- Button independiente del form.-->
+      <button id="id_button_clean" onclick="clean_prj()" type="button" class="btn btn-outline-warning">Clean</button> <!-- Button independiente del form.-->
+      <input id="id_button_update_prj" type="submit" value="Actualizar" disabled =true class="btn btn-outline-success"> <!-- Submit del form.-->
+      <input id="id_button_new_prj" type="submit" value="NEW" disabled =true class="btn btn-outline-primary"> <!-- Submit del form.-->
+    </div>
+  </div>
+</form> <!-- Cierra form.-->
+
+<div class="row" style="margin-bottom: 5px;" > <!-- Fila 7.-->
+  <div class="col-sm">
+    <button id="id_button_select" onclick="select_prj()" type="button" disabled =true  class="btn btn-primary btn-lg btn-block">Select</button> <!-- Button Seleccionar proyecto.-->
+  </div>
+</div>
+
+</div>
+
+
+    
+    <script>
+
+      //Configuro ajax con el CSRFToken---------------------
+      // using jQuery get csrftoken from your HTML
+      var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+      function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              // if not safe, set csrftoken
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+      //-------------------------------------------------------
+
+      window.onload = function() {
+          prj_selected();
+      };
+
+
+      //control <select> name project selected (id_prj_list)
+      const prj_name_list = document.getElementById('id_prj_list');
+
+      prj_name_list.addEventListener('change', (event) => {
+          console.log("change-> ",event.target.value);
+          prj_selected();
+      });
+
+      function prj_selected(){
+          console.log("prj_selected()");
+
+          if (prj_name_list.options.length != 0){
+              select_value = prj_name_list.value; //this is the ID project
+              select_txt = prj_name_list.options[prj_name_list.selectedIndex].text;
+
+              console.log(select_value);
+              console.log(select_txt);
+
+              document.getElementById("id_label_prj_slected").innerHTML = "Seleccionado Proyecto: " + select_txt
+
+              $.ajax({
+                      type: "POST",  
+                      url: "{% url 'change_prj_select' %}" , 
+                      
+                      name: "testname",
+                      data: JSON.stringify( { select_value } ),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function(respuesta){
+                          console.log("Informacion actualizada:" + respuesta.prj_name);
+                          document.getElementById("id_prjname").value = respuesta.prj_name
+                          document.getElementById("id_prjcomment").value = respuesta.prj_comment
+                          //document.getElementById("id_id").value = respuesta.prj_id
+                          
+                          document.getElementById("id_button_update_prj").disabled = false
+                          document.getElementById("id_button_new_prj").disabled = true
+                          document.getElementById("id_button_remove").disabled = false
+                          document.getElementById("id_button_select").disabled = false
+                          
+
+                          /*
+                          //populate version list
+                          v_list = document.getElementById("id_v_list")
+
+                          //first clean
+                          var length = v_list.options.length;
+                          for (i = length-1; i >= 0; i--) {
+                              v_list.options[i] = null;
+                          }
+
+                          //second populate
+                          console.log(respuesta.v_id)
+                          for (i = 0; i < respuesta.v_name.length; i++) {
+                              var opt = document.createElement('option');
+                              opt.value = respuesta.v_id[i];
+                              opt.innerHTML  = respuesta.v_name[i];
+                              v_list.appendChild(opt);
+                          }
+                          */
+
+                      },
+                      failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+              });
+
+              
+          }
+          else{
+              console.log("prj_name_list = 0")
+              document.getElementById("id_label_prj_slected").innerHTML = "No hay Proyectos seleccionables"
+              document.getElementById("id_prjname").value = ""
+              document.getElementById("id_prjcomment").value = ""
+               //document.getElementById("id_id").value = ""
+                          
+              document.getElementById("id_button_update_prj").disabled = true
+              document.getElementById("id_button_new_prj").disabled = false
+              document.getElementById("id_button_remove").disabled = true
+              document.getElementById("id_button_select").disabled = true
+          }   
+      }
+
+      function clean_prj(){
+          console.log("clean_prj()")
+          //Clean
+          document.getElementById("id_label_prj_slected").innerHTML = "Seleccionado Proyecto: " + "Ninguno"
+          document.getElementById("id_prjname").value = ""
+          document.getElementById("id_prjcomment").value = ""
+          //document.getElementById("id_id").value = ""  
+          
+          document.getElementById("id_button_update_prj").disabled = true
+          document.getElementById("id_button_new_prj").disabled = false
+          document.getElementById("id_button_remove").disabled = true
+          document.getElementById("id_button_select").disabled = true
+          }
+
+          
+      function remove_prj(){
+          console.log("remove_prj()");
+          select_value = prj_name_list.value; //this is the ID project
+          select_txt = prj_name_list.options[prj_name_list.selectedIndex].text;
+          var r = confirm("Are you sure that you want remove: "+select_txt);
+          if (r == true) {
+          $.ajax({
+                      type: "POST",
+                      url: "{% url 'remove_project' %}"  ,
+                      
+                      name: "testname",
+                      data: JSON.stringify( { select_value } ),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function(respuesta){
+                          console.log("Eliminado ID:" + respuesta.id_removed); 
+                          id_rem = respuesta.id_removed
+                          selectobject = document.getElementById("id_prj_list")
+                          for (var i=0; i<selectobject.length; i++) {
+                              if (selectobject.options[i].value == id_rem)
+                                  selectobject.remove(i);
+                          }
+                          prj_selected(); //update info project
+                          
+                      },
+                      failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
+              });
+          }
+      }
+
+      function select_prj(){
+          console.log("select_prj()");
+          if (prj_name_list.options.length != 0){
+            prj_id = prj_name_list.value; //this is the ID project
+            console.log(prj_id);
+                      $.ajax({
+                              type: "POST",
+                              url: "{% url 'prj_selected' %}"  ,
+                              name: "testname",
+                              data: JSON.stringify( {prj_id}),
+                              contentType: "application/json; charset=utf-8",
+                              dataType: "json",
+                              success: function(respuesta){
+                                  console.log("flag_ok:" + respuesta.flag_ok);
+                                  if(respuesta.flag_ok == true){
+                                      self.location="../projects/prj_/"+respuesta.prj_id;
+                                  }
+                                  
+                              },
+                              failure: function(respuesta){console.log("Hay un error:" + respuesta);},
+                      });
+            }
+      }
+
+
+  </script>
+{% endblock %}

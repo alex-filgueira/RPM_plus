@@ -721,6 +721,7 @@ function sendDataECUlist(){
         var RelInList_visual = "{{ RelInList_visual }}".split(";");
         var RelInList_dx = "{{ RelInList_dx }}".split(";");
         var RelInList_comment = "{{ RelInList_comment }}".split(";");
+        var RelInList_marked1 = "{{ RelInList_marked1}}".split(";");
         
         var RelInList_ecu_name = "{{ RelInList_ecu_name }}".split(";");
         var RelInList_type_name = "{{ RelInList_type_name }}".split(";");
@@ -778,6 +779,7 @@ function sendDataECUlist(){
                 "RelInList_visual":RelInList_visual[i],
                 "RelInList_dx":RelInList_dx[i],
                 "RelInList_comment":RelInList_comment[i],
+                "RelInList_marked1":RelInList_marked1[i],
 
                 "RelInList_ecu_name":RelInList_ecu_name[i],
                 "RelInList_type_name":RelInList_type_name[i],
@@ -793,7 +795,7 @@ function sendDataECUlist(){
             //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
             dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null},
             //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
-            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment',],
+            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment', 'marked1',],
             columns:[
                 {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
                 //{data: "ecu_name",allowEmpty:true },
@@ -832,6 +834,7 @@ function sendDataECUlist(){
                     callback(true);
                 },
                 },
+                {data: "RelInList_marked1",type: 'checkbox',allowEmpty:true},
             ],
             fillHandle: {
                 direction: 'vertical',
@@ -945,6 +948,7 @@ function sendDataECUlist(){
                         "RelInList_visual":resp.RelInList_visual[i],
                         "RelInList_dx":resp.RelInList_dx[i],
                         "RelInList_comment":resp.RelInList_comment[i],
+                        "RelInList_marked1":resp.RelInList_marked1[i],
 
                         "RelInList_ecu_name":resp.RelInList_ecu_name[i],
                         "RelInList_type_name":resp.RelInList_type_name[i],
@@ -999,6 +1003,7 @@ function sendDataECUlist(){
                     callback(true);
                 },
                 },
+                {data: "RelInList_marked1",type: 'checkbox',allowEmpty:true},
                 ],
 
                 columnSorting: {
@@ -1157,6 +1162,9 @@ function sendDataECUlist(){
         //variables globales
         let pptx = new PptxGenJS();
         var slide = [];
+
+        var marked1_x = [];
+        var marked1_y = [];
         
         //variables configurables by user
         //var MaxecuForSlide = 4 //variable configurable por user
@@ -1309,7 +1317,7 @@ function sendDataECUlist(){
                     var week_s = Number(m_ini.format('W'))
                     //console.log("week_s: ",week_s)
                     cont_factor_weeks = cont_factor_weeks + 1
-                    console.log("cont_factor_weeks: ",cont_factor_weeks)
+                    //console.log("cont_factor_weeks: ",cont_factor_weeks)
                     if(cont_factor_weeks == factor_weeks){
                         slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" }, line: { color: "7f7f7f", width: 0.50  } });
                     }
@@ -1556,15 +1564,25 @@ function sendDataECUlist(){
                             //Pinta figura---
                             //if(flag_paint == true){ //de momento lo pinta siempre y así el usuario elije cual desea
                             //añade comentario de la entrada como hyperlink
-                            var hyperlink = ""
+                            //var hyperlink = ""
+                            var fpos_x =  pos_x - fig_form[1]/2
+                            var fpos_y = pos_y- (s_week_mark/2) + delta_y
+                            //checkea si hay marked
+                            console.log("marked1:",resp.RelInList_marked1[j])
+
+                            if(resp.RelInList_marked1[j] == "True"){
+                                marked1_x.push(fpos_x + fig_form[1] /2)
+                                marked1_y.push(fpos_y + s_week_mark /2)
+                            }
+
                             if(resp.RelInList_comment[j] !=""){
                                 slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 8, color: "000000",bold:true,
-                                shape: fig_form[0], x: pos_x - fig_form[1]/2, y: pos_y- (s_week_mark/2) + delta_y, w: fig_form[1], h: s_week_mark,
+                                shape: fig_form[0], x: fpos_x, y: fpos_y, w: fig_form[1], h: s_week_mark,
                                 fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]  },hyperlink: { slide: slideIndex+1, tooltip: resp.RelInList_comment[j] } });
                             }
                             else{
                                 slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 8, color: "000000",bold:true,
-                                shape: fig_form[0], x: pos_x - fig_form[1]/2, y: pos_y- (s_week_mark/2) + delta_y, w: fig_form[1], h: s_week_mark,
+                                shape: fig_form[0], x: fpos_x, y: fpos_y, w: fig_form[1], h: s_week_mark,
                                 fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]  },});
                             }
                             //}
@@ -1574,7 +1592,45 @@ function sendDataECUlist(){
                             slide[slideIndex].addText(vers_name, { x: pos_x- fig_form[1]/2 + s_week_mark/2, y: pos_y + delta_y, w: 1.29, h: 0.22, align:'left', fontSize: 7, color: "000000",bold:true,  });
                         }
                     }
+                    //aqui es una vez por entrada
+                    //checkea si hay marked anterior
+                    if(marked1_x.length == 2){
+                        //puede crear linea
+                        console.log("Create line marked")
+                        var xm1 = 0
+                        var ym1 = 0
+                        
+                        if(marked1_y[0] < marked1_y[1])
+                        {
+                            ym1 = marked1_y[0]
+                            xm1 = marked1_x[0]
+
+                        }
+                        else{
+                            ym1 = marked1_y[1]
+                            xm1 = marked1_x[1]
+                        }
+
+                        var wm1 = Math.abs(marked1_x[0] - marked1_x[1])
+                        var hm1 = Math.abs(marked1_y[0] - marked1_y[1])
+
+                        flag_flipV = false
+                        if(marked1_x[0] > marked1_x[1])
+                        {
+                            xm1 = xm1-wm1
+                            flag_flipV = true
+                        }
+
+                        console.log("wm1:", wm1, " hm1:",hm1," xm1:",xm1, " ym1:",ym1)
+
+                        slide[slideIndex].addShape(pptx.shapes.LINE,{ x: xm1, y: ym1, w:wm1 , h: hm1, rotate: (0),flipV:flag_flipV, line:{color: "dc143c",width: 4, },},);
+                        //remove first element
+                        marked1_x.shift();
+                        marked1_y.shift();
+                    }
                 }
+                //Aquí e suna vez por ecu
+
             }
         }
 

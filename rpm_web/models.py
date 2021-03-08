@@ -143,6 +143,10 @@ class MRelease_input(models.Model):
     #dx_ecu = models.CharField(max_length = 50,default='',blank=True)
     comment = models.CharField(max_length = 200,default='',blank=True)
 
+    flag_marked1 = models.BooleanField(default=False,blank=True)
+    flag_marked2 = models.BooleanField(default=False,blank=True)
+    flag_marked3 = models.BooleanField(default=False,blank=True)
+
 
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Release_input"

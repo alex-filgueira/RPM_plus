@@ -99,9 +99,10 @@ def generatePptData(request):
             RelInList_visual = []
             RelInList_dx = []
             RelInList_comment = []
+            RelInList_marked1 = []
+
             RelInList_ecu_name = []#Extra
             RelInList_type_name = []#Extra
-
 
             nECU = 0
             ecu_id = 0
@@ -138,6 +139,7 @@ def generatePptData(request):
 
                     #RelInList_dx.append(elt.dx_ecu)
                     RelInList_comment.append(elt.comment)
+                    RelInList_marked1.append(str(elt.flag_marked1))
 
                     ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                     print("ecu_name:",ecu_name)
@@ -163,13 +165,14 @@ def generatePptData(request):
                     'RelInList_date': RelInList_date,
                     'RelInList_plan': RelInList_plan,
                     'RelInList_id_plan': RelInList_id_plan,
+                    'RelInList_type_name': RelInList_type_name,
                     'RelInList_visual': RelInList_visual,
                     'RelInList_dx': RelInList_dx,
                     'RelInList_comment': RelInList_comment,
+                    'RelInList_marked1': RelInList_marked1,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
-                    'RelInList_type_name': RelInList_type_name,
-
+                    
                     'ecuList_comment': ecuList_comment,
                     'ecuList_dx': ecuList_dx,
                     'ecuList_name': ecuList_name,
@@ -634,6 +637,8 @@ def update_version_form(request):
                         new_Ri.id_plan = obj.id_plan
                         new_Ri.flag_visual = obj.flag_visual
                         new_Ri.comment = obj.comment
+                        new_Ri.flag_marked1 = obj.flag_marked1
+                        
 
                         new_Ri.save()
 
@@ -782,6 +787,7 @@ def rp_load(request,pk):
         RelInList_visual = []
         RelInList_dx = []
         RelInList_comment = []
+        RelInList_marked1 = []
         
         RelInList_ecu_name = []#Extra
         RelInList_type_name = []#Extra
@@ -802,6 +808,8 @@ def rp_load(request,pk):
 
                 #RelInList_dx.append(elt.dx_ecu)
                 RelInList_comment.append(elt.comment)
+
+                RelInList_marked1.append(str(elt.flag_marked1))
 
                 ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                 RelInList_ecu_name.append(ecu_name)
@@ -850,6 +858,7 @@ def rp_load(request,pk):
         RelInList_visual = ';'.join(RelInList_visual)
         RelInList_dx = ';'.join(RelInList_dx)
         RelInList_comment = ';'.join(RelInList_comment)
+        RelInList_marked1 = ';'.join(RelInList_marked1)
         
         RelInList_ecu_name = ';'.join(RelInList_ecu_name)
         RelInList_type_name = ';'.join(RelInList_type_name)
@@ -881,6 +890,7 @@ def rp_load(request,pk):
             'RelInList_visual': RelInList_visual,
             'RelInList_dx': RelInList_dx,
             'RelInList_comment': RelInList_comment,
+            'RelInList_marked1': RelInList_marked1,
 
             'RelInList_ecu_name': RelInList_ecu_name,
             'RelInList_type_name': RelInList_type_name,
@@ -936,6 +946,7 @@ def rp_load(request,pk):
         RelInList_visual = []
         RelInList_dx = []
         RelInList_comment = []
+        RelInList_marked1= []
         
         RelInList_ecu_name = []#Extra
         RelInList_type_name = []#Extra
@@ -956,6 +967,8 @@ def rp_load(request,pk):
 
                 #RelInList_dx.append(elt.dx_ecu)
                 RelInList_comment.append(elt.comment)
+
+                RelInList_marked1.append(str(elt.flag_marked1))
 
                 ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                 RelInList_ecu_name.append(ecu_name)
@@ -1004,6 +1017,7 @@ def rp_load(request,pk):
         RelInList_visual = ';'.join(RelInList_visual)
         RelInList_dx = ';'.join(RelInList_dx)
         RelInList_comment = ';'.join(RelInList_comment)
+        RelInList_marked1 = ';'.join(RelInList_marked1)
         
         RelInList_ecu_name = ';'.join(RelInList_ecu_name)
         RelInList_type_name = ';'.join(RelInList_type_name)
@@ -1035,6 +1049,7 @@ def rp_load(request,pk):
             'RelInList_visual': RelInList_visual,
             'RelInList_dx': RelInList_dx,
             'RelInList_comment': RelInList_comment,
+            'RelInList_marked1': RelInList_marked1,
 
             'RelInList_ecu_name': RelInList_ecu_name,
             'RelInList_type_name': RelInList_type_name,
@@ -1163,6 +1178,7 @@ def update_ECU_list(request):
                 RelInList_visual = []
                 RelInList_dx = []
                 RelInList_comment = []
+                RelInList_marked1 = []
                 
                 RelInList_ecu_name = []#Extra
                 RelInList_type_name = []#Extra
@@ -1183,6 +1199,7 @@ def update_ECU_list(request):
 
                         #RelInList_dx.append(elt.dx_ecu)
                         RelInList_comment.append(elt.comment)
+                        RelInList_marked1.append(str(elt.flag_marked1))
 
                         ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                         RelInList_ecu_name.append(ecu_name)
@@ -1242,6 +1259,7 @@ def update_ECU_list(request):
                     'RelInList_visual': RelInList_visual,
                     'RelInList_dx': RelInList_dx,
                     'RelInList_comment': RelInList_comment,
+                    'RelInList_marked1': RelInList_marked1,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
                     'RelInList_type_name': RelInList_type_name,
@@ -1358,6 +1376,16 @@ def update_Release_list(request):
                     if row['RelInList_visual'] == 'False':
                         flag_visual = False
 
+                    flag_marked1 = True
+                    if row['RelInList_marked1'] == None:
+                        flag_marked1 = False
+                    if row['RelInList_marked1'] == "":
+                        flag_marked1 = False
+                    if row['RelInList_marked1'] == False:
+                        flag_marked1 = False
+                    if row['RelInList_marked1'] == 'False':
+                        flag_marked1 = False
+
                     if int(row['RelInList_id'])!= 0: #añadir checkeo de vacio ""
                         print("update value")
                         RI_selected = MRelease_input.objects.get(id = int(row['RelInList_id']))
@@ -1371,6 +1399,7 @@ def update_Release_list(request):
 
                         RI_selected.flag_visual = flag_visual
                         RI_selected.comment = row['RelInList_comment']
+                        RI_selected.flag_marked1= flag_marked1
                         RI_selected.save()
                         """
                         #Otro método
@@ -1399,6 +1428,7 @@ def update_Release_list(request):
                             id_plan_id = plan_id,
                             flag_visual = flag_visual,
                             comment = row['RelInList_comment'],
+                            flag_marked1 = flag_marked1,
                         )
                         RI_model.save()
 
@@ -1413,6 +1443,7 @@ def update_Release_list(request):
             RelInList_visual = []
             RelInList_dx = []
             RelInList_comment = []
+            RelInList_marked1 = []
                 
             RelInList_ecu_name = []#Extra
             RelInList_type_name = []#Extra
@@ -1442,6 +1473,7 @@ def update_Release_list(request):
 
                     #RelInList_dx.append(elt.dx_ecu)
                     RelInList_comment.append(elt.comment)
+                    RelInList_marked1.append(str(elt.flag_marked1))
 
                     ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                     RelInList_ecu_name.append(ecu_name)
@@ -1495,6 +1527,7 @@ def update_Release_list(request):
                     'RelInList_visual': RelInList_visual,
                     'RelInList_dx': RelInList_dx,
                     'RelInList_comment': RelInList_comment,
+                    'RelInList_marked1': RelInList_marked1,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
                     'RelInList_type_name': RelInList_type_name,

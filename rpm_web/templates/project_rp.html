@@ -536,8 +536,8 @@
     
 function update_data_project(prj_id, vers_id){
     console.log("update_data_project()")
-    console.log("prj_id: ",prj_id)
-    console.log("vers_id: ",vers_id)
+    //console.log("prj_id: ",prj_id)
+    //console.log("vers_id: ",vers_id)
                         $.ajax({
                                     type: "POST",
                                     url: "{% url 'updatedataproject'%}"  ,
@@ -552,6 +552,9 @@ function update_data_project(prj_id, vers_id){
                                         console.log(resp.ecuList_dx)
                                         //clean table
                                         $("#id_ecu_table tr").remove();  //remove all rows
+
+                                        flag_first_time = true //test for load table R input
+
                                         load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx)
                                     },
                                     failure: function(resp){console.log("Hay un error:" + resp.d);},
@@ -560,30 +563,29 @@ function update_data_project(prj_id, vers_id){
 
 
 //ECU manager functions---------------------------------------------------
-var flag_first_time = true
+var flag_first_time = true //global
+
 function load_ecu_list(id_list,name_list,comment_list, dx_list){
     console.log("load_ecu_list()")
     for (i = 0; i < id_list.length; i++) {
-            var dx = dx_list[i];
-            console.log("dx: ",dx)
-            var comment = comment_list[i];
-            console.log("comment: ",comment) // para espacios: value = '+'"commentario con espacios"'+'  -> value = "'+ comment +'"" 
-            var name = name_list[i]; // value = "'+ name +'"" 
-            console.log("name: ",name)
-            id = id_list[i];
-            console.log("id: ",id)
-            if(id == ""){id=0;}
-            //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%" ><input type="text" name="id"  required="required" size="2" value = '+id+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
-            //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
-            $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
-
-        }
+        var dx = dx_list[i];
+        console.log("dx: ",dx)
+        var comment = comment_list[i];
+        console.log("comment: ",comment) // para espacios: value = '+'"commentario con espacios"'+'  -> value = "'+ comment +'"" 
+        var name = name_list[i]; // value = "'+ name +'"" 
+        console.log("name: ",name)
+        id = id_list[i];
+        console.log("id: ",id)
+        if(id == ""){id=0;}
+        //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%" ><input type="text" name="id"  required="required" size="2" value = '+id+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+        //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+        $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+    }
 
     if(flag_first_time == true){
         flag_first_time = false
         sendDataECUlist();
     }
-
 }
 
 
@@ -1236,6 +1238,7 @@ function sendDataECUlist(){
 
         //let image = new Image();
         //image.src = "/static/brand/logos_seat_cupra.png";
+        var logo_path = "/static/brand/logos_seat_cupra.png"
 
         //Generate slide master--------------------------
         pptx.defineSlideMaster({
@@ -1245,7 +1248,7 @@ function sendDataECUlist(){
             objects: [
                 //Head---- ->  ver que sacar del slidemaster
                 { rect: { x: 0.46, y: 0.17, w: 12.39, h: 0.55, line: { color: "808080", width: 0.75  },}},
-                { image: { x: 0.55, y: 0.18, w: 1.36, h: 0.55, path: "/static/brand/logos_seat_cupra.png" } },
+                { image: { x: 0.55, y: 0.18, w: 1.36, h: 0.55, path: logo_path } },
                 { line: { x: 4.42, y: 0.17, w: 0, h: 0.55, line: { color: "808080", width: 0.75 } } },
                 { line: { x: 8.89, y: 0.17, w: 0, h: 0.55, line: { color: "808080", width: 0.75 } } },
                 { text: { text: "Created by \n [EE-32]", options: { x: 0.70, y: 0.19, w: 3.73, h: 0.55,  align:'right', fontSize: 10.9, color: "808080" } } },

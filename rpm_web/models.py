@@ -128,7 +128,8 @@ class MECU(models.Model):
 
 class MRelease_input(models.Model):
     id = models.AutoField(primary_key=True)
-    id_ecu = models.ForeignKey(to=MECU, on_delete=models.SET_NULL, null=True, blank=True)
+    #id_ecu = models.ForeignKey(to=MECU, on_delete=models.SET_NULL, null=True, blank=True)
+    id_ecu = models.ForeignKey(to=MECU,  on_delete=models.CASCADE)
     id_type_input = models.ForeignKey(to=MType_input, on_delete=models.SET_NULL, null=True, blank=True) # pondrá en null el campo si el registro del ECU relacionado es eliminado de la base de datos
 
     n_version = models.CharField(max_length = 50,default='',blank=True)

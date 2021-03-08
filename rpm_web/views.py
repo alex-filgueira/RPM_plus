@@ -585,9 +585,8 @@ def update_version_form(request):
             print("body:",request.body)
                 
             json_request= json.loads(request.body)
-            version_id = json_request['version_id']
-            print("version_id:",version_id)
-            vers_id = version_id
+            vers_id = json_request['version_id']
+            print("vers_id:",vers_id)
 
             new_version = json_request['new_version']
             project_id = json_request['project_id']
@@ -612,13 +611,31 @@ def update_version_form(request):
                 new_v.date = dt_string
                 new_v.save()
 
+                #Copy all ECUs to new version
                 ECU_objt_selected = MECU.objects.filter(id_version=vers_id)
+                print("Copia lista ECUs para nueva version_id:",new_v.id) 
                 for elt in ECU_objt_selected:
                     new_ecu = MECU()
                     new_ecu.name = elt.name
+                    new_ecu.dx_ecu = elt.dx_ecu
                     new_ecu.comment = elt.comment
                     new_ecu.id_version_id = new_v.id
                     new_ecu.save()
+
+                    #Copy all MRelease_input to new version for each ecu
+                    MRelease_objt_selected = MRelease_input.objects.filter(id_ecu=elt.id)
+                    print("Copia lista R_inputs para cada nueva ECU_id:", new_ecu.id, " desde la anterior ECU_id:", elt.id) 
+                    for obj in MRelease_objt_selected:
+                        new_Ri = MRelease_input()
+                        new_Ri.id_ecu_id = new_ecu.id
+                        new_Ri.id_type_input = obj.id_type_input
+                        new_Ri.n_version = obj.n_version
+                        new_Ri.date_beantragt = obj.date_beantragt
+                        new_Ri.id_plan = obj.id_plan
+                        new_Ri.flag_visual = obj.flag_visual
+                        new_Ri.comment = obj.comment
+
+                        new_Ri.save()
 
                 vers_id = new_v.id
                 reload = True
@@ -684,7 +701,7 @@ def updatedataproject(request):
                 ecuList_dx = []
                 ecuList_id = []
                 for elt in ECUlist_objt_selected:
-                    print("name eculist: ",elt.name)
+                    #print("name eculist: ",elt.name)
                     ecuList_name.append(elt.name)
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)

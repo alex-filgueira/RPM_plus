@@ -1402,6 +1402,9 @@ function sendDataECUlist(){
                 slide[slideIndex].addText("Additional", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.86+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
 
 
+                //clean array marked
+                marked1_x = [];
+                marked1_y = [];
 
                 cont_ecu_slide = 0 //resetea contador ecus por slide
             }
@@ -1599,25 +1602,26 @@ function sendDataECUlist(){
                         console.log("Create line marked")
                         var xm1_0 = 0
                         var xm1_1 = 0
-                        var ym1 = 0
+                        var ym1_0 = 0
+                        var ym1_1 = 0
                         var wm1 = 0
                         var hm1 = 0
                         var flag_flipV = false
                         
                         if(marked1_y[0] <= marked1_y[1])
                         {
-                            ym1 = marked1_y[0]
+                            ym1_0 = marked1_y[0]
                             xm1_0 = marked1_x[0]
                             xm1_1 = marked1_x[1]
                         }
                         else{
-                            ym1 = marked1_y[1]
+                            ym1_0 = marked1_y[1]
                             xm1_0 = marked1_x[1]
                             xm1_1 = marked1_x[0]
                         }
 
-                        wm1 = Math.abs(marked1_x[0] - marked1_x[1])
-                        hm1 = Math.abs(marked1_y[0] - marked1_y[1])
+                        wm1 = Math.abs(marked1_x[0] - marked1_x[1]) - s_week_mark
+                        hm1 = Math.abs(marked1_y[0] - marked1_y[1]) 
 
                         if(xm1_0 > xm1_1)//Check if need flip the shape
                         {
@@ -1625,15 +1629,39 @@ function sendDataECUlist(){
                             flag_flipV = true
                         }
 
-                        console.log("wm1:", wm1, " hm1:",hm1," xm1_0:",xm1_0, " ym1:",ym1)
+                        console.log("wm1:", wm1, " hm1:",hm1," xm1_0:",xm1_0, " ym1_0:",ym1_0)
 
-                        slide[slideIndex].addShape(pptx.shapes.LINE,{ x: xm1_0, y: ym1, w:wm1 , h: hm1, rotate: (0),flipV:flag_flipV, line:{color: "dc143c",width: 4, },},);
+                        //add line
+                        //correct size
+                        if(xm1_0 < xm1_1){
+                            xm1_0 = xm1_0 + s_week_mark/2
+                        }
+                        else{
+                            xm1_0 = xm1_0 - s_week_mark/2
+                        }
+
+                        if(xm1_0 <0){xm1_0 = 0}
+                        if(ym1_0 <0){ym1_0 = 0}
+                        if(wm1 <0){wm1 = 0}
+                        if(hm1 <0){hm1 = 0}
+
+                        console.log("wm1:", wm1, " hm1:",hm1," xm1_0:",xm1_0, " ym1_0:",ym1_0)
+                        slide[slideIndex].addShape(pptx.shapes.LINE,{ x: xm1_0, y: ym1_0, w:wm1 , h: hm1, rotate: (0),flipV:flag_flipV, line:{color: "dc143c",width: 1, },},);
+
+                        //add markedS
+                        xm1_0 = marked1_x[0] - s_week_mark / 2
+                        xm1_1 = marked1_x[1] - s_week_mark / 2
+                        ym1_0 = marked1_y[0] - s_week_mark / 2
+                        ym1_1 = marked1_y[1] - s_week_mark / 2
+                        slide[slideIndex].addShape(pptx.ShapeType.ellipse,{ x:xm1_0, y: ym1_0, w:s_week_mark , h: s_week_mark, line:{color: "dc143c",width: 1, },},);
+                        slide[slideIndex].addShape(pptx.ShapeType.ellipse,{ x:xm1_1, y: ym1_1, w:s_week_mark , h: s_week_mark, line:{color: "dc143c",width: 1, },},);
+
                         //remove first element
                         marked1_x.shift();
                         marked1_y.shift();
                     }
                 }
-                //Aquí e suna vez por ecu
+                //Aquí es una vez por ecu
 
             }
         }

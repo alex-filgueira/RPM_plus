@@ -1165,6 +1165,7 @@ function sendDataECUlist(){
 
         var marked1_x = [];
         var marked1_y = [];
+        //var cont_marked1 = 0
         
         //variables configurables by user
         //var MaxecuForSlide = 4 //variable configurable por user
@@ -1313,6 +1314,7 @@ function sendDataECUlist(){
                 }
             }
             if(flag_entrada_in == false){
+                //correct the problem when some ecu is out the time interval
                 cont_jump = cont_jump + 1
             }
 
@@ -1423,6 +1425,7 @@ function sendDataECUlist(){
                 //clean array marked
                 marked1_x = [];
                 marked1_y = [];
+                //cont_marked1 = 0
 
                 cont_ecu_slide = 0 //resetea contador ecus por slide
             }
@@ -1595,6 +1598,7 @@ function sendDataECUlist(){
                             if(resp.RelInList_marked1[j] == "True"){
                                 marked1_x.push(fpos_x + fig_form[1] /2)
                                 marked1_y.push(fpos_y + s_week_mark /2)
+                                //cont_marked1 = cont_marked1 + 1
                             }
 
                             if(resp.RelInList_comment[j] !=""){
@@ -1615,7 +1619,7 @@ function sendDataECUlist(){
                         }
                     }
                     //aqui es una vez por entrada
-                    //checkea si hay marked anterior
+                    //checkea si hay 2 marked -> cuando solo hay una marked, no se marcará 
                     if(marked1_x.length == 2){
                         //puede crear linea
                         console.log("Create line marked")

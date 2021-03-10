@@ -14,6 +14,9 @@
             <a class="nav-link active" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="{% url 'config_prj'%}">Conf Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+          </li>
+          <li class="nav-item">
             {% if user.is_authenticated %}
             <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
             {% else %}
@@ -1677,8 +1680,8 @@ function sendDataECUlist(){
                         xm1_1 = marked1_x[1] - s_week_mark / 2
                         ym1_0 = marked1_y[0] - s_week_mark / 2
                         ym1_1 = marked1_y[1] - s_week_mark / 2
-                        slide[slideIndex].addShape(pptx.ShapeType.ellipse,{ x:xm1_0, y: ym1_0, w:s_week_mark , h: s_week_mark, line:{color: "dc143c",width: 1, },},);
-                        slide[slideIndex].addShape(pptx.ShapeType.ellipse,{ x:xm1_1, y: ym1_1, w:s_week_mark , h: s_week_mark, line:{color: "dc143c",width: 1, },},);
+                        slide[slideIndex].addShape(pptx.ShapeType.ellipse,{ x:xm1_0, y: ym1_0, w:s_week_mark , h: s_week_mark, line:{color: "#dc143c",width: 1, },},);
+                        slide[slideIndex].addShape(pptx.ShapeType.ellipse,{ x:xm1_1, y: ym1_1, w:s_week_mark , h: s_week_mark, line:{color: "#dc143c",width: 1, },},);
 
                         //remove first element
                         marked1_x.shift();

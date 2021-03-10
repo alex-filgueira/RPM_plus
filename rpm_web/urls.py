@@ -40,6 +40,9 @@ urlpatterns += [
     url(r'^updatedatevalues/$', views.updatedatevalues, name='updatedatevalues'),                                                                                                                        
 ]
 
+urlpatterns += [
+    url(r'^config_prj/$', views.config_prj, name='config_prj'),                                                                                                                           
+]
 
 
 

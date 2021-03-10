@@ -1,0 +1,194 @@
+{% extends "base_generic.html" %}
+
+
+{% block mainmenu %}
+
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link"  href="{% url 'frontpage' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'config_prj'%}">Conf Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+          </li>
+          <li class="nav-item">
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+            {% else %}
+            <a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+{% endblock %}
+
+{% block content %}
+
+<!-- Colors-->
+<div class="card card-body"> <!-- card item-->
+    <div class="container-fluid " >
+        <div class="row">
+            <div class="col-5 text-center " ></div>
+            <div class="col-1 text-center " >
+                <div id="colorpicker"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2 text-center " ></div>
+            <div class="col-8 text-center " >
+                <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
+
+                <div class="input-group">
+                    <span class="input-group-text">Marked1 color</span>
+                    <input type="text" class="form-control"  name = "marked1_color" placeholder="Marked1 color..." s value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"  > 
+                    <span class="input-group-text">Marked1 w</span>
+                    <input class="form-control" type="number" min="1" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)" >
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text">Marked2 color</span>
+                    <input type="text" class="form-control"  name = "marked2_color" placeholder="Marked2 color..." s value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"  > 
+                    <span class="input-group-text">Marked2 w</span>
+                    <input class="form-control" type="number" min="1" id="id_marked2_w"  value="{{config_prj.marked2_w}}" onchange="update_w(this)" >
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text">Marked3 color</span>
+                    <input type="text" class="form-control"  name = "marked3_color" placeholder="Marked3 color..." s value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"  > 
+                    <span class="input-group-text">Marked3 w</span>
+                    <input class="form-control" type="number" min="1" id="id_marked3_w"  value="{{config_prj.marked3_w}}" onchange="update_w(this)" >
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text">Week color</span>
+                    <input type="text" class="form-control"  name = "week_color" placeholder="Week color..." s value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"  > 
+                    <span class="input-group-text">Week s</span>
+                    <input class="form-control" type="number" min="0.01" step="0.01" id="id_week_s"  value="{{config_prj.week_s}}" onchange="update_w(this)" >
+                </div>
+                <button type="button" name="update"  class="btn btn-success " onclick="updateConfig()">Update</button>
+                <button type="button" name="default"  class="btn btn-primary " onclick="defaultConfig()">Default</button>
+                
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Image ppt-->
+<div class="card card-body"> <!-- card item-->
+    <div class="container-fluid " >
+        <div class="row">
+            <div class="col-2 text-center " ></div>
+            <div class="col-8 text-center " >
+                <img src="/static/brand/ppt_example.PNG" class="img-fluid" alt="Responsive image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id = id_form name = "form" action = "{% url 'update_prj_form' %}" method = "POST" >{% csrf_token %}</form>
+
+
+
+<script type="text/javascript">
+      //Configuro ajax con el CSRFToken---------------------
+      // using jQuery get csrftoken from your HTML
+      var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+      function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              // if not safe, set csrftoken
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+      //-------------------------------------------------------
+
+    //colorpicker
+    $(document).ready(function() {
+        console.log("{{config_prj.id_user}}")
+
+        //$('#colorpicker').farbtastic('#id_marked1_color');
+        $.farbtastic('#colorpicker').setColor('{{config_prj.marked1_color}}')//"#{{config_prj.marked1_color}}"
+
+        //init backgrounds
+        document.getElementById("id_marked1_color").style.backgroundColor = "{{config_prj.marked1_color}}";
+        document.getElementById("id_marked2_color").style.backgroundColor = "{{config_prj.marked2_color}}";
+        document.getElementById("id_marked3_color").style.backgroundColor = "{{config_prj.marked3_color}}";
+        document.getElementById("id_week_color").style.backgroundColor = "{{config_prj.week_color}}";
+        
+    });
+
+    function select_color(param) {
+        console.log("select_color():",param.id)
+        color = $.farbtastic(colorpicker).color
+        picker = document.getElementById(param.id)
+        console.log("color",color)
+
+        picker.value = color
+        picker.style.backgroundColor = color
+    };
+
+    function update_w(param) {
+        console.log("update_w():",param.id)
+    };
+
+    function updateConfig(){
+        console.log("updateConfig()")
+
+        marked1_color = document.getElementById("id_marked1_color").value
+        marked1_w= document.getElementById("id_marked1_w").value
+        marked2_color = document.getElementById("id_marked2_color").value
+        marked2_w= document.getElementById("id_marked2_w").value
+        marked3_color = document.getElementById("id_marked3_color").value
+        marked3_w= document.getElementById("id_marked3_w").value
+
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'config_prj' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        marked1_color,
+                        marked1_w,
+                        marked2_color,
+                        marked2_w,
+                        marked3_color,
+                        marked3_w,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+    }
+
+    function defaultConfig(){
+        console.log("defaultConfig()")
+        document.getElementById("id_marked1_color").value = '#dc143c'
+        document.getElementById("id_marked1_w").value = '1'
+        document.getElementById("id_marked1_color").style.backgroundColor ='#dc143c'
+        document.getElementById("id_marked2_color").value = '#5feb4c'
+        document.getElementById("id_marked2_w").value = '1'
+        document.getElementById("id_marked2_color").style.backgroundColor ='#5feb4c'
+        document.getElementById("id_marked3_color").value = '#eb4cc2'
+        document.getElementById("id_marked3_w").value = '1'
+        document.getElementById("id_marked3_color").style.backgroundColor ='#eb4cc2'
+    }
+
+
+</script>
+
+{% endblock %}

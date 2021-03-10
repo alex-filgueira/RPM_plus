@@ -69,7 +69,46 @@ class MPlan(models.Model):
     def __str__(self):
         return '%s, %s' % (self.id, self.name)
 
+class MConfig_prj(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    marked1_color = models.CharField(max_length = 10,default='#dc143c',blank=True)
+    marked1_w= models.IntegerField(default=1)
+    marked2_color = models.CharField(max_length = 10,default='#5feb4c',blank=True)
+    marked2_w= models.IntegerField(default=1)
+    marked3_color = models.CharField(max_length = 10,default='#eb4cc2',blank=True)
+    marked3_w= models.IntegerField(default=1)
+
+    week_color = models.CharField(max_length = 10,default='#bbe0e3',blank=True)
+    week_s= models.FloatField(default=0.28)
+
+    flag_head = models.BooleanField(default=True,blank=True)
+    flag_footer = models.BooleanField(default=True,blank=True)
+    flag_title = models.BooleanField(default=True,blank=True)
+    flag_legend = models.BooleanField(default=True,blank=True)
+    flag_logo = models.BooleanField(default=True,blank=True)
+    flag_status_date= models.BooleanField(default=True,blank=True)
+
+    title = models.CharField(max_length = 200,default='',blank=True)
+    created_by = models.CharField(max_length = 200,default='',blank=True)
+    logo_url = models.CharField(max_length = 500,default='',blank=True)
+
+    fig1_color_1 = models.CharField(max_length = 10,default='',blank=True)
+    fig1_color_2 = models.CharField(max_length = 10,default='',blank=True)
+    fig1_color_3 = models.CharField(max_length = 10,default='',blank=True)
+    fig1_w= models.IntegerField(default=1)
+    fig1_border_w= models.IntegerField(default=1)
+    fig1_name= models.CharField(max_length = 50,default='',blank=True)
+
+    class Meta: # This class will let you force the name of the table to what you like.
+        db_table = "Config_prj"
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.name)
+
+    def get_absolute_url(self):
+        return reverse('project-detail', args=[str(self.id)])
 class MProject(models.Model):
     id = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)

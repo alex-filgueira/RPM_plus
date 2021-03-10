@@ -23,6 +23,79 @@ from datetime import datetime
 
 from django.contrib.auth.forms import UserCreationForm
 
+#------------Config projects----------------------------------------
+#------------------------------------------------------------------------
+def config_prj(request):
+    print("config_prj()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            config_prj = MConfig_prj.objects.get(id_user=request.user.id)
+
+            config_prj.marked1_color = json_table['marked1_color']
+            config_prj.marked1_w = json_table['marked1_w']
+            config_prj.marked2_color = json_table['marked2_color']
+            config_prj.marked2_w = json_table['marked2_w']
+            config_prj.marked3_color = json_table['marked3_color']
+            config_prj.marked3_w = json_table['marked3_w']
+
+            config_prj.save()
+        """
+        marked1_color
+        marked1_w
+        marked2_color
+        marked2_w
+        marked3_color
+        marked3_w
+
+        week_color
+        week_w
+
+        flag_head
+        flag_footer
+        flag_title
+        flag_legend
+        flag_logo
+        flag_status_date
+
+        title
+        created_by
+        logo_url
+
+        fig1_color_1
+        fig1_color_2
+        fig1_color_3
+        fig1_w
+        fig1_border_w 
+        fig1_name
+        """
+        print("request.user.id:",request.user.id)
+        config_prj_list = MConfig_prj.objects.filter(id_user=request.user.id)
+        if(len(config_prj_list) == 0):
+            print("config_prj If is empty, create")
+            config_prj = MConfig_prj()
+            config_prj.id_user_id = request.user.id
+            config_prj.save()
+
+        #Check
+        config_prj_list = MConfig_prj.objects.get(id_user=request.user.id)
+        print("config_prj_list.id",config_prj_list.id)
+
+        context = {
+            'ok':True,
+            'config_prj':config_prj_list,
+        } 
+
+        # Renderiza la plantilla HTML index.html con los datos en la variable contexto
+        return render(request,'config_prj.html',context=context)
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+
+
+
 
 #------------PPT generation----------------------------------------
 #------------------------------------------------------------------------

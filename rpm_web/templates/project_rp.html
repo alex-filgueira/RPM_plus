@@ -795,7 +795,7 @@ function sendDataECUlist(){
         config_resultados = {
             data: data_table,
             //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
-            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null, RelInList_marked1:null},
+            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: true, RelInList_comment: null, RelInList_marked1:null},
             //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
             colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment', 'marked1',],
             columns:[
@@ -1592,8 +1592,9 @@ function sendDataECUlist(){
                             var vers_name = "";
                             var pose = 0;
                             var flag_paint = true
+                            //console.log("resp.type_list[0]:",resp.type_list[0])
                             switch(resp.RelInList_type_name[j]){
-                                case "SW":
+                                case resp.type_list[0]: //tradicionalmente SW
                                 if(input_[0][diff_weeks] != ""){
                                     input_[0][diff_weeks] = input_[0][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
                                     flag_paint = false
@@ -1613,7 +1614,7 @@ function sendDataECUlist(){
                                 //---
 
                                 break;
-                                case "HW":
+                                case resp.type_list[3]: //tradicionalmente HW
                                 if(input_[1][diff_weeks] != ""){
                                     input_[1][diff_weeks] = input_[1][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
                                     flag_paint = false
@@ -1633,7 +1634,7 @@ function sendDataECUlist(){
                                 //---
 
                                 break;
-                                case "ZDC":
+                                case resp.type_list[6]: //tradicionalmente ZDC
                                 if(input_[2][diff_weeks] != ""){
                                     input_[2][diff_weeks] = input_[2][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
                                     flag_paint = false
@@ -1651,6 +1652,16 @@ function sendDataECUlist(){
                                     if(input_[0][diff_weeks] != ""){pose = 2}
                                     else{pose = 1}}
                                 //---
+                                break;
+                                default://como SW
+                                if(input_[0][diff_weeks] != ""){
+                                    input_[0][diff_weeks] = input_[0][diff_weeks] + ' / ' + resp.RelInList_n_version[j]
+                                    flag_paint = false
+                                }
+                                else{
+                                    input_[0][diff_weeks] = resp.RelInList_n_version[j]
+                                }
+                                vers_name =  input_[0][diff_weeks]
                                 break;
                             }
 

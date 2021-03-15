@@ -210,14 +210,14 @@ class MRelease_input(models.Model):
     id = models.AutoField(primary_key=True)
     #id_ecu = models.ForeignKey(to=MECU, on_delete=models.SET_NULL, null=True, blank=True)
     id_ecu = models.ForeignKey(to=MECU,  on_delete=models.CASCADE)
-    id_type_input = models.ForeignKey(to=MType_input, on_delete=models.SET_NULL, null=True, blank=True) # pondrá en null el campo si el registro del ECU relacionado es eliminado de la base de datos
+    id_type_input = models.ForeignKey(to=MType_input2, on_delete=models.SET_NULL, null=True, blank=True) # pondrá en null el campo si el registro del ECU relacionado es eliminado de la base de datos
 
     n_version = models.CharField(max_length = 50,default='',blank=True)
     #date_beantragt = models.CharField(max_length = 50,default=datetime.today,blank=True)
     date_beantragt = models.CharField(max_length = 50,default=datetime.now().strftime("%d%m%Y"), blank=True)
     
     #plan = models.CharField(max_length = 50,default='',blank=True)
-    id_plan = models.ForeignKey(to=MPlan, on_delete=models.SET_NULL, null=True, blank=True) # pondrá en null el campo si el registro del ECU relacionado es eliminado de la base de datos
+    id_plan = models.ForeignKey(to=MPlan2, on_delete=models.SET_NULL, null=True, blank=True) # pondrá en null el campo si el registro del ECU relacionado es eliminado de la base de datos
     
     flag_visual = models.BooleanField(default=True,blank=True)
     #dx_ecu = models.CharField(max_length = 50,default='',blank=True)

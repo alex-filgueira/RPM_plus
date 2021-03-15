@@ -1364,6 +1364,7 @@ function sendDataECUlist(){
                 slide[slideIndex].addShape(pptx.ShapeType.rect, {x: margin_l + margin_l2 + w_weeks * diff_actual_weeks + s_week_mark/2 - 0.05/2, y: 1.01 + s_week_mark, w: 0.05, h: h_printZone  - s_week_mark*1.5, fill:"d9d9d9" });
 
                 //Leyenda
+                /*
                 var delta_y = 0
                 //SW
                 s_mark = 0.2
@@ -1422,6 +1423,65 @@ function sendDataECUlist(){
                 fig_form = figure_format(pptx,"ZDC", "",s_mark)
                 slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.86+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
                 slide[slideIndex].addText("Additional", { x:margin_l - 1.05/2 +0.1 + fig_form[1], y:2.86+delta_y, w: 4, h: 0.27,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+
+                */
+                //Leyenda 2.0 --------------
+                var legend_y0 = 1.4
+                var legend_x0 = 0.34
+                var legend_h = 5.26
+                var legend_w = 1.05
+                var margin = 0.2
+                var margin2 = 0.1
+                
+                console.log("resp.type_list:",resp.type_list)
+                console.log("resp.plan_list:",resp.plan_list)
+                
+
+                cont_type = resp.type_list.length / 3 //3= name, type_name , s
+                cont_plan = (resp.plan_list.length /5) // 5 = name, color1, color2, color3, w
+                console.log("cont_type:",cont_type)
+                console.log("cont_plan:",cont_plan)
+
+
+                h_main = legend_h / cont_type - margin
+
+                //h_each = (h_main - margin) / cont_plan
+                h_each = h_main / (cont_plan+1) - margin2
+
+                if(h_main<0){h_main = 0}
+                if(h_each<0){h_each = 0}
+                if(h_each>0.2){h_each = 0.2}
+                console.log("h_main:",h_main)
+                console.log("h_each:",h_each)
+
+                for (t = 0; t < cont_type; t++) {
+                    //add main blocks -> type
+                    y_pos =legend_y0 + h_main * t + margin * (t)
+                    
+                    slide[slideIndex].addText(resp.type_list[3*t], {margin: 0, align:'center',valign:'top', fontSize: 10, color: "000000",bold:false, shape:pptx.ShapeType.roundRect, x: margin_l - 1.05/2 , y: y_pos , w: legend_w, h: h_main , fill:"ffffff",line:{ pt:'0.75', color:'000000' } });
+
+                    shape_obj = resp.type_list[3*t + 1]
+                    shape_list = shape_obj.split(".")
+                    shape = shape_list[shape_list.length - 1]
+                    console.log("shape:",shape)
+
+                    //add -> plans
+                    for (p = 0; p < cont_plan; p++) {
+                        y_pos2 = y_pos + 0.22 + h_each * p + margin2 * (p)
+
+                        plan_name = resp.plan_list[5*p]
+                        color_1 = resp.plan_list[5*p + 1]
+                        color_2 = resp.plan_list[5*p + 2]
+                        border_w = resp.plan_list[5*p + 4]
+
+                        slide[slideIndex].addShape(shape, {x:margin_l - 1.05/2 +0.1, y:y_pos2, w: h_each, h: h_each, fill: { color: color_1 },line: { color: color_2, width: border_w},});
+                        slide[slideIndex].addText(plan_name, { x:margin_l - 1.05/2 +0.1 + h_each, y:y_pos2, w: 4, h: h_each,  align:'left', fontSize: 10.0, color: "000000", bold:true  });
+                    }
+                }
+
+                //slide[slideIndex].addShape(fig_form[0], {x:margin_l - 1.05/2 +0.1, y:2.09+delta_y, w: fig_form[1], h: s_mark, fill: { color: fig_form[2] },line: { color: fig_form[3], width: fig_form[4]},});
+                //slide[slideIndex].addText("SW:", {margin: 0, align:'center',valign:'top', fontSize: 10, color: "000000",bold:false, shape:pptx.ShapeType.roundRect, x: margin_l - 1.05/2 , y: 1.82+delta_y , w: 1.05, h: 1.3 , fill:"ffffff",line:{ pt:'0.75', color:'000000' } });
+                
 
 
                 //clean array marked
@@ -1510,8 +1570,23 @@ function sendDataECUlist(){
                             //slide[slideIndex].addText(resp.RelInList_n_version[j], {margin: 0, align:'center', fontSize: 8, color: "000000", shape: pptx.ShapeType.ellipse, x: pos_x, y: pos_y- (s_week_mark/2), w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" } });
                             //diamond
                             console.log(resp.RelInList_type_name[j])
-                            //Esto puede se rmodificable para que sea modificado por el usuario---
-                            fig_form = figure_format(pptx,resp.RelInList_type_name[j], resp.RelInList_plan[j],s_week_mark)
+                            //Esto puede ser modificable para que sea modificado por el usuario---
+
+                            //reutilizo array
+
+                            //fig_form = figure_format(pptx,resp.RelInList_type_name[j], resp.RelInList_plan[j],s_week_mark)
+                            //fig_form[0] = resp.RelInList_type_fig1_name[j]
+                            var fig_form = [5]
+                            fig_form[0] = resp.RelInList_type_fig1_name[j].split(".") //need only the last word. Ex: pptx.ShapeType.diamond -> diamond
+                            fig_form[0] = fig_form[0][fig_form[0].length - 1]
+
+                            fig_form[1] = resp.RelInList_type_fig1_s[j]
+
+                            fig_form[2] = resp.RelInList_plan_fig1_color_1[j] //fill color
+
+                            fig_form[3] = resp.RelInList_plan_fig1_color_2[j] //border color
+
+                            fig_form[4] = resp.RelInList_plan_fig1_border_w[j] //border w
 
                             //Posiciona entradas (centro-arriba-abajo) en función de si ya hay o no otra en la misma semana y linea ECU
                             var vers_name = "";

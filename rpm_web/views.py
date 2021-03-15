@@ -415,6 +415,14 @@ def generatePptData(request):
             RelInList_ecu_name = []#Extra
             RelInList_type_name = []#Extra
 
+            RelInList_type_fig1_name = []#Extra
+            RelInList_type_fig1_s = []#Extra
+
+            RelInList_plan_fig1_color_1 = []#extra
+            RelInList_plan_fig1_color_2 = []#extra
+            RelInList_plan_fig1_color_3 = []#extra
+            RelInList_plan_fig1_border_w = []#extra
+
             nECU = 0
             ecu_id = 0
             #Get ECU list
@@ -456,16 +464,53 @@ def generatePptData(request):
                     print("ecu_name:",ecu_name)
                     RelInList_ecu_name.append(ecu_name)
                     #print("elt.id_ecu:",elt.id_ecu_id)
-                    type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
+                    type_name = MType_input2.objects.get(id=elt.id_type_input_id).name 
                     RelInList_type_name.append(type_name)
 
-                    plan_name = MPlan.objects.get(id=elt.id_plan_id).name 
+                    type_fig1_name = MType_input2.objects.get(id=elt.id_type_input_id).fig1_name 
+                    RelInList_type_fig1_name.append(type_fig1_name)
+
+                    type_fig1_s = MType_input2.objects.get(id=elt.id_type_input_id).fig1_s 
+                    RelInList_type_fig1_s.append(type_fig1_s)
+
+                    plan_name = MPlan2.objects.get(id=elt.id_plan_id).name 
                     RelInList_plan.append(plan_name)
+
+                    plan_fig1_color_1 = MPlan2.objects.get(id=elt.id_plan_id).fig1_color_1 
+                    RelInList_plan_fig1_color_1.append(plan_fig1_color_1)
+
+                    plan_fig1_color_2 = MPlan2.objects.get(id=elt.id_plan_id).fig1_color_2 
+                    RelInList_plan_fig1_color_2.append(plan_fig1_color_2)
+
+                    plan_fig1_color_3 = MPlan2.objects.get(id=elt.id_plan_id).fig1_color_3 
+                    RelInList_plan_fig1_color_3.append(plan_fig1_color_3)
+
+                    plan_fig1_border_w = MPlan2.objects.get(id=elt.id_plan_id).fig1_border_w 
+                    RelInList_plan_fig1_border_w.append(plan_fig1_border_w)
 
                     ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 
                     RelInList_dx.append(ecu_obj.dx_ecu)
 
 
+
+
+        #type list
+        type_list = []
+        type_obj_list = MType_input2.objects.filter(id_user_id=request.user.id)
+        for elem in type_obj_list:
+            type_list.append(elem.name)
+            type_list.append(elem.fig1_name)
+            type_list.append(elem.fig1_s)
+
+        #plan list
+        plan_list = []
+        plan_obj_list = MPlan2.objects.filter(id_user_id=request.user.id)
+        for elem in plan_obj_list:
+            plan_list.append(elem.name)
+            plan_list.append(elem.fig1_color_1)
+            plan_list.append(elem.fig1_color_2)
+            plan_list.append(elem.fig1_color_3)
+            plan_list.append(elem.fig1_border_w)
 
 
         return JsonResponse({
@@ -475,8 +520,14 @@ def generatePptData(request):
                     'RelInList_n_version': RelInList_n_version,
                     'RelInList_date': RelInList_date,
                     'RelInList_plan': RelInList_plan,
+                    'RelInList_plan_fig1_color_1':RelInList_plan_fig1_color_1,
+                    'RelInList_plan_fig1_color_2':RelInList_plan_fig1_color_2,
+                    'RelInList_plan_fig1_color_3':RelInList_plan_fig1_color_3,
+                    'RelInList_plan_fig1_border_w':RelInList_plan_fig1_border_w,
                     'RelInList_id_plan': RelInList_id_plan,
                     'RelInList_type_name': RelInList_type_name,
+                    'RelInList_type_fig1_name':RelInList_type_fig1_name,
+                    'RelInList_type_fig1_s':RelInList_type_fig1_s,
                     'RelInList_visual': RelInList_visual,
                     'RelInList_dx': RelInList_dx,
                     'RelInList_comment': RelInList_comment,
@@ -491,6 +542,9 @@ def generatePptData(request):
                     'nECU': nECU,
 
                     'prj_name': prj_name,
+
+                    'plan_list': plan_list,
+                    'type_list': type_list,
         })
 
     else:
@@ -1117,6 +1171,7 @@ def updatedataproject(request):
 
 #------------Configurar ECU + Release Plan----------------------------------------
 #------------------------------------------------------------------------
+"""
 def rp_load(request,pk):
     print("rp_load()")
     print("project pk: ",pk)
@@ -1454,6 +1509,7 @@ def rp_load(request,pk):
     else:
         return HttpResponseRedirect(reverse('login') )
 
+"""
 
 def update_ECU_list(request):
     print("update_ECU_list()")
@@ -1517,15 +1573,6 @@ def update_ECU_list(request):
                             ecu_obj.comment = row['comment']
                             ecu_obj.dx_ecu = row['dx']
                             ecu_obj.save()
-                            """
-                            ecu_model = MECU(
-                                id = row['id'],
-                                name = row['name'],
-                                comment = row['comment'],
-                                id_version_id = json_id_v
-                            )
-                            ecu_model.save()
-                            """
                         else:
                             print("create new")
                             ecu_model = MECU(
@@ -1592,10 +1639,12 @@ def update_ECU_list(request):
                         ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                         RelInList_ecu_name.append(ecu_name)
                         #print("elt.id_ecu:",elt.id_ecu_id)
-                        type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
+                        #type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
+                        type_name = MType_input2.objects.get(id=elt.id_type_input_id).name
                         RelInList_type_name.append(type_name)
 
-                        plan_name = MPlan.objects.get(id=elt.id_plan_id).name 
+                        #plan_name = MPlan.objects.get(id=elt.id_plan_id).name
+                        plan_name = MPlan2.objects.get(id=elt.id_plan_id).name
                         RelInList_plan.append(plan_name)
                         print("RelInList_plan: ",RelInList_plan)
 
@@ -1607,7 +1656,9 @@ def update_ECU_list(request):
                 type_list_id = []#Extra
                 type_list_name = []#Extra
                 type_list_comment = []#Extra
-                type_list_obj = MType_input.objects.all()
+                #type_list_obj = MType_input.objects.all()
+                type_list_obj = MType_input2.objects.all()
+
                 
                 for elt in type_list_obj:
                     type_list_id.append(str(elt.id))
@@ -1618,7 +1669,8 @@ def update_ECU_list(request):
                 plan_list_id = []#Extra
                 plan_list_name = []#Extra
                 plan_list_comment = []#Extra
-                plan_list_obj = MPlan.objects.all()
+                #plan_list_obj = MPlan.objects.all()
+                plan_list_obj = MPlan2.objects.all()
                 
                 for elt in plan_list_obj:
                     plan_list_id.append(str(elt.id))
@@ -1661,22 +1713,12 @@ def update_ECU_list(request):
                     'planlist_comment': plan_list_comment,
                 })
 
-                """
-                return JsonResponse({
-                    'flag_ok' : True,
-                    'ecuList_name': ecuList_name,
-                    'ecuList_comment': ecuList_comment,
-                    'ecuList_dx': ecuList_dx,
-                    'ecuList_id': ecuList_id,
-                })
-                """
         else:
                 print("NO POST")
                 return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
 
     else:
         return HttpResponseRedirect(reverse('login') )
-
 
 
 def update_Release_list(request):
@@ -1740,14 +1782,14 @@ def update_Release_list(request):
                         print("ecu_id:",ecu_id)
 
                     #Find type, por si se cambió
-                    type_selected = MType_input.objects.filter(name=row['RelInList_type_name'])
+                    type_selected = MType_input2.objects.filter(name=row['RelInList_type_name'])
                     type_id = 0
                     for elt in type_selected:
                         type_id = elt.id
                         print("type_id:",type_id)
 
                     #Find plan, por si se cambió
-                    plan_selected = MPlan.objects.filter(name=row['RelInList_plan'])
+                    plan_selected = MPlan2.objects.filter(name=row['RelInList_plan'])
                     plan_id = 0
                     for elt in plan_selected:
                         plan_id = elt.id
@@ -1789,19 +1831,7 @@ def update_Release_list(request):
                         RI_selected.comment = row['RelInList_comment']
                         RI_selected.flag_marked1= flag_marked1
                         RI_selected.save()
-                        """
-                        #Otro método
-                        RI_model = Release_input_model(
-                            id = row['RelInList_id'],
-                            id_ecu_id = ecu_id,
-                            id_type_input_id = type_id,
-                            n_version = row['RelInList_n_version'],
-                            date_beantragt = row['RelInList_date'],
-                            plan = row['RelInList_plan'],
-                            flag_visual = flag_visual,
-                            comment = row['RelInList_comment'],
-                        )
-                        """
+
                         #RI_model.save()
                         
                     else:
@@ -1866,10 +1896,10 @@ def update_Release_list(request):
                     ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                     RelInList_ecu_name.append(ecu_name)
                     #print("elt.id_ecu:",elt.id_ecu_id)
-                    type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
+                    type_name = MType_input2.objects.get(id=elt.id_type_input_id).name 
                     RelInList_type_name.append(type_name)
 
-                    plan_name = MPlan.objects.get(id=elt.id_plan_id).name 
+                    plan_name = MPlan2.objects.get(id=elt.id_plan_id).name 
                     RelInList_plan.append(plan_name)
 
                     ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 
@@ -1879,7 +1909,7 @@ def update_Release_list(request):
             type_list_id = []#Extra
             type_list_name = []#Extra
             type_list_comment = []#Extra
-            type_list_obj = MType_input.objects.all()
+            type_list_obj = MType_input2.objects.all()
                 
             for elt in type_list_obj:
                 type_list_id.append(str(elt.id))
@@ -1890,7 +1920,7 @@ def update_Release_list(request):
             plan_list_id = []#Extra
             plan_list_name = []#Extra
             plan_list_comment = []#Extra
-            plan_list_obj = MPlan.objects.all()
+            plan_list_obj = MPlan2.objects.all()
             
             for elt in plan_list_obj:
                 plan_list_id.append(str(elt.id))

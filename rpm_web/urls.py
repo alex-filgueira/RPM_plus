@@ -19,7 +19,7 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r'^projects/prj_/(?P<pk>[-\w]+)/$', views.rp_load, name='rp_load'),
+    #url(r'^projects/prj_/(?P<pk>[-\w]+)/$', views.rp_load, name='rp_load'),
     url(r'^update_ECU_list/$', views.update_ECU_list, name='update_ECU_list'),
     url(r'^update_Release_list/$', views.update_Release_list, name='update_Release_list'),
     

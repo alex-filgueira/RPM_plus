@@ -69,6 +69,44 @@ class MPlan(models.Model):
     def __str__(self):
         return '%s, %s' % (self.id, self.name)
 
+class MType_input2(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length = 50,default='',blank=True)
+    comment = models.CharField(max_length = 200,default='',blank=True)
+    #graphic
+    fig1_name= models.CharField(max_length = 100,default='pptx.ShapeType.ellipse',blank=True)
+    fig1_s= models.FloatField(default=0.28)
+   
+    class Meta: # This class will let you force the name of the table to what you like.
+        db_table = "Type_input2"
+       
+    def get_name(self):
+        return self.name
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.name)
+
+class MPlan2(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length = 50,default='',blank=True)
+    comment = models.CharField(max_length = 200,default='',blank=True)
+    #graphic
+    fig1_color_1 = models.CharField(max_length = 10,default='#dc143c',blank=True) #fill color
+    fig1_color_2 = models.CharField(max_length = 10,default='#000000',blank=True) #border color
+    fig1_color_3 = models.CharField(max_length = 10,default='#dc143c',blank=True)
+    fig1_border_w = models.FloatField(default=1)
+   
+    class Meta: # This class will let you force the name of the table to what you like.
+        db_table = "Plan2"
+       
+    def get_name(self):
+        return self.name
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.name)
+
 class MConfig_prj(models.Model):
     id = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -94,12 +132,15 @@ class MConfig_prj(models.Model):
     created_by = models.CharField(max_length = 200,default='',blank=True)
     logo_url = models.CharField(max_length = 500,default='',blank=True)
 
-    fig1_color_1 = models.CharField(max_length = 10,default='',blank=True)
-    fig1_color_2 = models.CharField(max_length = 10,default='',blank=True)
-    fig1_color_3 = models.CharField(max_length = 10,default='',blank=True)
-    fig1_w= models.IntegerField(default=1)
-    fig1_border_w= models.IntegerField(default=1)
-    fig1_name= models.CharField(max_length = 50,default='',blank=True)
+    #fig1_color_1 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
+    #fig1_color_2 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
+    #fig1_color_3 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
+    #fig1_s= models.FloatField(default=0.28) # to MType_input2
+    #fig1_border_w= models.IntegerField(default=1) # to MPlan2
+    #fig1_name= models.CharField(max_length = 50,default='',blank=True) # to MType_input2
+
+    #type_name= models.CharField(max_length = 50,default='',blank=True)
+    #plan_name= models.CharField(max_length = 50,default='',blank=True)
 
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Config_prj"

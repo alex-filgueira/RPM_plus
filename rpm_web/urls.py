@@ -41,7 +41,17 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r'^config_prj/$', views.config_prj, name='config_prj'),                                                                                                                           
+    url(r'^config_prj/$', views.config_prj, name='config_prj'),   
+    url(r'^create_type/$', views.create_type, name='create_type'),       
+    url(r'^create_plan/$', views.create_plan, name='create_plan'),      
+    url(r'^remove_type/$', views.remove_type, name='remove_type'), 
+    url(r'^remove_plan/$', views.remove_plan, name='remove_plan'),     
+    url(r'^update_fig/$', views.update_fig, name='update_fig'),  
+    url(r'^create_basics/$', views.create_basics, name='create_basics'),
+    url(r'^get_type/$', views.get_type, name='get_type'),
+    url(r'^get_plan/$', views.get_plan, name='get_plan'),
+    
+
 ]
 
 

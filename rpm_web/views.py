@@ -25,6 +25,260 @@ from django.contrib.auth.forms import UserCreationForm
 
 #------------Config projects----------------------------------------
 #------------------------------------------------------------------------
+
+def get_plan(request):
+    print("get_plan()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            plan_ = ""
+            plan_fig1_color_1  = ""
+            plan_fig1_color_2  = ""
+            plan_fig1_color_3  = ""
+            plan_fig1_border_w = 0
+            if 'plan_id' in json_table:
+                plan_ = MPlan2.objects.get(id=json_table['plan_id'])
+                plan_fig1_color_1 = plan_.fig1_color_1
+                plan_fig1_color_2 = plan_.fig1_color_2
+                plan_fig1_color_3 = plan_.fig1_color_3
+                plan_fig1_border_w = plan_.fig1_border_w
+
+
+            
+        return JsonResponse({
+            'ok':True,
+            'plan_fig1_color_1':plan_fig1_color_1,
+            'plan_fig1_color_2':plan_fig1_color_2,
+            'plan_fig1_color_3':plan_fig1_color_3,
+            'plan_fig1_border_w':plan_fig1_border_w,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+def get_type(request):
+    print("get_type()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            type_ = ""
+            type_fig1_name = ""
+            type_fig1_s = ""
+            if 'type_id' in json_table:
+                type_ = MType_input2.objects.get(id=json_table['type_id'])
+                type_fig1_name = type_.fig1_name
+                type_fig1_s = type_.fig1_s
+
+            
+        return JsonResponse({
+            'ok':True,
+            'type_fig1_name':type_fig1_name,
+            'type_fig1_s':type_fig1_s,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+def create_basics(request):
+    print("create_basics()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+            print("type_list If is empty, create")
+            #create diamond -> SW
+            type_ = MType_input2()
+            type_.id_user_id = request.user.id
+            type_.name = "SW"
+            type_.fig1_name = "pptx.ShapeType.diamond"
+            type_.fig1_s = 0.28
+            type_.save()
+            #create diamond(triangle) -> HW
+            type_ = MType_input2()
+            type_.id_user_id = request.user.id
+            type_.name = "HW"
+            type_.fig1_name = "pptx.ShapeType.triangle"
+            type_.fig1_s = 0.28
+            type_.save()
+            #create hexagon -> ZDC
+            type_ = MType_input2()
+            type_.id_user_id = request.user.id
+            type_.name = "ZDC"
+            type_.fig1_name = "pptx.ShapeType.hexagon"
+            type_.fig1_s = 0.28
+            type_.save()
+        
+            print("plan_list If is empty, create")
+            #create vbv
+            plan_ = MPlan2()
+            plan_.id_user_id = request.user.id
+            plan_.name = "vbv"
+            plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+            plan_.fig1_color_2 = "#000000" #border color //negro
+            plan_.fig1_border_w = 1.75 #border w
+            plan_.save()
+            #create te.vbv
+            plan_ = MPlan2()
+            plan_.id_user_id = request.user.id
+            plan_.name = "te.vbv"
+            plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+            plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
+            plan_.fig1_border_w = 0.75 #border w
+            plan_.save()
+            #create planned
+            plan_ = MPlan2()
+            plan_.id_user_id = request.user.id
+            plan_.name = "planned"
+            plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+            plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
+            plan_.fig1_border_w = 0.75 #border w
+            plan_.save()
+            #create additional
+            plan_ = MPlan2()
+            plan_.id_user_id = request.user.id
+            plan_.name = "additional"
+            plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+            plan_.fig1_color_2 = "#ff0000" #border color //rojo
+            plan_.fig1_border_w = 1.75 #border w
+            plan_.save()
+
+            
+        return JsonResponse({
+            'ok':True,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+
+
+def update_fig(request):
+    print("update_fig()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            if 'type_id' in json_table and  'plan_id' in json_table:
+                type_ = MType_input2.objects.get(id=json_table['type_id'])
+                plan_ = MPlan2.objects.get(id=json_table['plan_id'])
+                if 'shape_name' in json_table:
+                    type_.fig1_name = json_table['shape_name']
+                if 'shape_s' in json_table:
+                    type_.fig1_s = json_table['shape_s']
+                if 'fill_color' in json_table:
+                    plan_.fig1_color_1 = json_table['fill_color']
+                if 'border_color' in json_table:
+                    plan_.fig1_color_2 = json_table['border_color']
+                if 'border_w' in json_table:
+                    plan_.fig1_border_w = json_table['border_w']
+                
+                type_.save()
+                plan_.save()
+
+            
+        return JsonResponse({
+            'ok':True,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+def remove_type(request):
+    print("remove_type()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            if 'type_id' in json_table:
+                type_ = MType_input2.objects.get(id=json_table['type_id'])
+                type_.delete()
+
+            
+        return JsonResponse({
+            'ok':True,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+def remove_plan(request):
+    print("remove_plan()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            if 'plan_id' in json_table:
+                plan_ = MPlan2.objects.get(id=json_table['plan_id'])
+                plan_.delete()
+
+            
+        return JsonResponse({
+            'ok':True,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+def create_type(request):
+    print("create_type()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            type_id = 0
+            if 'type_name' in json_table:
+                #save Type data
+                type_ = MType_input2()
+                type_.id_user_id = request.user.id
+                type_.name = json_table['type_name']
+                if 'fig1_name' in json_table:
+                    type_.fig1_name = json_table['fig1_name']
+                if 'fig1_s' in json_table:
+                    type_.fig1_s = json_table['fig1_s']
+                type_.save()
+                type_id = type_.id
+            
+        return JsonResponse({
+            'ok':True,
+            'type_id':type_id,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+def create_plan(request):
+    print("create_plan()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            plan_id = 0
+            if 'plan_name' in json_table:
+                #save Plan data
+                plan_ = MPlan2()
+                plan_.id_user_id = request.user.id
+                plan_.name = json_table['plan_name']
+                if 'fig1_color_1' in json_table:
+                    plan_.fig1_color_1 = json_table['fig1_color_1']
+                if 'fig1_color_2' in json_table:    
+                    plan_.fig1_color_2 = json_table['fig1_color_2']
+                if 'fig1_color_3' in json_table:
+                    plan_.fig1_color_3 = json_table['fig1_color_3']
+                if 'fig1_border_w' in json_table:
+                    plan_.fig1_border_w = json_table['fig1_border_w']
+                plan_.save()
+                plan_id = plan_.id
+            
+        return JsonResponse({
+            'ok':True,
+            'plan_id':plan_id,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+
 def config_prj(request):
     print("config_prj()")
     if request.user.is_authenticated:
@@ -32,45 +286,22 @@ def config_prj(request):
             json_table = json.loads(request.body)
             print("json_table:",json_table)
 
+            #save Config project data
             config_prj = MConfig_prj.objects.get(id_user=request.user.id)
-
-            config_prj.marked1_color = json_table['marked1_color']
-            config_prj.marked1_w = json_table['marked1_w']
-            config_prj.marked2_color = json_table['marked2_color']
-            config_prj.marked2_w = json_table['marked2_w']
-            config_prj.marked3_color = json_table['marked3_color']
-            config_prj.marked3_w = json_table['marked3_w']
-
+            if 'marked1_color' in json_table:
+                config_prj.marked1_color = json_table['marked1_color']
+            if 'marked1_w' in json_table:
+                config_prj.marked1_w = json_table['marked1_w']
+            if 'marked2_color' in json_table:
+                config_prj.marked2_color = json_table['marked2_color']
+            if 'marked2_w' in json_table:
+                config_prj.marked2_w = json_table['marked2_w']
+            if 'marked3_color' in json_table:
+                config_prj.marked3_color = json_table['marked3_color']
+            if 'marked3_w' in json_table:
+                config_prj.marked3_w = json_table['marked3_w']
             config_prj.save()
-        """
-        marked1_color
-        marked1_w
-        marked2_color
-        marked2_w
-        marked3_color
-        marked3_w
 
-        week_color
-        week_w
-
-        flag_head
-        flag_footer
-        flag_title
-        flag_legend
-        flag_logo
-        flag_status_date
-
-        title
-        created_by
-        logo_url
-
-        fig1_color_1
-        fig1_color_2
-        fig1_color_3
-        fig1_w
-        fig1_border_w 
-        fig1_name
-        """
         print("request.user.id:",request.user.id)
         config_prj_list = MConfig_prj.objects.filter(id_user=request.user.id)
         if(len(config_prj_list) == 0):
@@ -81,11 +312,18 @@ def config_prj(request):
 
         #Check
         config_prj_list = MConfig_prj.objects.get(id_user=request.user.id)
-        print("config_prj_list.id",config_prj_list.id)
+        print("config_prj_list.id:",config_prj_list.id)
+
+        #type_list = []
+        type_list = MType_input2.objects.filter(id_user=request.user.id)
+        #plan_list = []
+        plan_list = MPlan2.objects.filter(id_user=request.user.id)
 
         context = {
             'ok':True,
             'config_prj':config_prj_list,
+            'type_list':type_list,
+            'plan_list':plan_list,
         } 
 
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto
@@ -317,6 +555,83 @@ def register_old(request):
 
             # Si el usuario se crea correctamente 
             if user is not None:
+
+                #Populate the first project config
+                config_prj_list = MConfig_prj.objects.filter(id_user=user.id)
+                if(len(config_prj_list) == 0):
+                    print("config_prj If is empty, create")
+                    config_prj = MConfig_prj()
+                    config_prj.id_user_id = user.id
+                    config_prj.save()
+                
+
+                type_list = MType_input2.objects.filter(id_user=user.id)
+                if(len(type_list) == 0):
+                    print("type_list If is empty, create")
+                    #create diamond -> SW
+                    type_ = MType_input2()
+                    type_.id_user_id = user.id
+                    type_.name = "SW"
+                    type_.fig1_name = "pptx.ShapeType.diamond"
+                    type_.fig1_s = 0.28
+                    type_.save()
+
+                    #create diamond(triangle) -> HW
+                    type_ = MType_input2()
+                    type_.id_user_id = user.id
+                    type_.name = "HW"
+                    type_.fig1_name = "pptx.ShapeType.triangle"
+                    type_.fig1_s = 0.28
+                    type_.save()
+
+                    #create hexagon -> ZDC
+                    type_ = MType_input2()
+                    type_.id_user_id = user.id
+                    type_.name = "ZDC"
+                    type_.fig1_name = "pptx.ShapeType.hexagon"
+                    type_.fig1_s = 0.28
+                    type_.save()
+
+                
+                plan_list = MPlan2.objects.filter(id_user=user.id)
+                if(len(plan_list) == 0):
+                    print("plan_list If is empty, create")
+                    #create vbv
+                    plan_ = MPlan2()
+                    plan_.id_user_id = user.id
+                    plan_.name = "vbv"
+                    plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                    plan_.fig1_color_2 = "000000" #border color //negro
+                    plan_.fig1_border_w = 1.75 #border w
+                    plan_.save()
+
+                    #create te.vbv
+                    plan_ = MPlan2()
+                    plan_.id_user_id = user.id
+                    plan_.name = "te.vbv"
+                    plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                    plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                    plan_.fig1_border_w = 0.75 #border w
+                    plan_.save()
+
+                    #create planned
+                    plan_ = MPlan2()
+                    plan_.id_user_id = user.id
+                    plan_.name = "planned"
+                    plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                    plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                    plan_.fig1_border_w = 0.75 #border w
+                    plan_.save()
+
+                    #create additional
+                    plan_ = MPlan2()
+                    plan_.id_user_id = user.id
+                    plan_.name = "additional"
+                    plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                    plan_.fig1_color_2 = "ff0000" #border color //rojo
+                    plan_.fig1_border_w = 1.75 #border w
+                    plan_.save()
+                  
                 # Hacemos el login manualmente
                 #do_login(request, user)
                 # Y le redireccionamos a la portada

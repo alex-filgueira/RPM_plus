@@ -218,6 +218,13 @@
             <!-- <div style=" height:487px; overflow:hidden; width: 805px;    margin-bottom:5px" id = "ResultadoTabla" ></div> -->
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-8" >
+            <p  id="id_info_log">Log</p>
+        </div>
+    </div>
+
 </div>
 </div>
 
@@ -1036,19 +1043,7 @@ function sendDataECUlist(){
         }
 
 
-
-
-        //Validate and send (save) the table
-        function sendDataReleaselist(){
-            console.log("sendDataReleaselist()");
-
-            //remove the last empty row
-            //remove_empty_last_row_Releaselist();
-
-            //Validate all cells and only pass if all are valids
-            tblExcel.validateCells((valid) => {
-            if (valid) {
-                //is valid
+        function validate_table_propia(){
                 //var all_data = tblExcel.getData()//all data table. Formato Array
                 var all_data = tblExcel.getSourceData()//all data table. Formato JSON
                 console.log("all_data: ",all_data);
@@ -1069,35 +1064,49 @@ function sendDataECUlist(){
                     if((el["RelInList_ecu_name"] ==="") || (el["RelInList_ecu_name"] ===null)) {
                         flag_empty = true;
                         info_log = info_log + "Fila:" + v_1 + " columna: ecu_name <p></p>"
-                        var cell = tblExcel.getCell(v,2)
+                        var cell = tblExcel.getCell(v,3)
                         cell.style.background = '#ff3300';
                     }
                     if((el["RelInList_n_version"] ==="") || (el["RelInList_n_version"] ===null)) {
                         flag_empty = true;
                         info_log = info_log + "Fila:" + v_1 + " columna: n_version <p></p>"
-                        var cell = tblExcel.getCell(v,3)
+                        var cell = tblExcel.getCell(v,4)
                         cell.style.background = '#ff3300';
                     }
                     if((el["RelInList_type_name"] ==="") || (el["RelInList_type_name"] ===null)) {
                         flag_empty = true;
                         info_log = info_log + "Fila:" + v_1 + " columna: type <p></p>"
-                        var cell = tblExcel.getCell(v,5)
+                        var cell = tblExcel.getCell(v,6)
                         cell.style.background = '#ff3300';
                     }
                     if((el["RelInList_plan"] ==="") || (el["RelInList_plan"] ===null)) {
                         flag_empty = true;
                         info_log = info_log + "Fila:" + v_1 + " columna: type <p></p>"
-                        var cell = tblExcel.getCell(v,5)
+                        var cell = tblExcel.getCell(v,7)
                         cell.style.background = '#ff3300';
                     }
-                    
-                    
                 }
-                console.log("flag_empty: ",flag_empty)
                 if(flag_empty == true){
                     document.getElementById("id_info_log").innerHTML = info_log
                 }
-                else{
+                return flag_empty
+        }
+
+        //Validate and send (save) the table
+        function sendDataReleaselist(){
+            console.log("sendDataReleaselist()");
+
+            //remove the last empty row
+            //remove_empty_last_row_Releaselist();
+
+            //Validate all cells and only pass if all are valids
+            tblExcel.validateCells((valid) => {
+            if (valid) {
+                //is valid
+                flag_empty = validate_table_propia()
+                console.log("flag_empty: ",flag_empty)
+
+                if(flag_empty == false){
                     var all_data = tblExcel.getSourceData()
                     //implementar sistema que almacene orden de usuario (id_ecu visual) y reinserte las filas en el mismo al actualizar
                     id_v = version_id
@@ -1134,25 +1143,38 @@ function sendDataECUlist(){
     //--------------------------------------------------------------------------------------
     function pptGenerator(){
         console.log("pptGenerator()")
-        prj_id = "{{prj_id}}"; //this is the ID project
-        $.ajax({
-                type: "POST",
-                url: "{% url 'generatePptData' %}",
-                name: "testname",
-                data: JSON.stringify( {
-                    prj_id,
-                    version_id
-                } ),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function(resp){
-                    console.log("Informacion actualizada:" + resp);
-                    console.log("ecuList_name:" + resp.ecuList_name);
-                    console.log("RelInList_ecu_name:" + resp.RelInList_ecu_name);
-                    pptGenerator_admin(resp)
-                },
-                failure: function(resp){console.log("Hay un error:" + resp.d);},
-        });
+
+            //Validate all cells and only pass if all are valids
+            tblExcel.validateCells((valid) => {
+            if (valid) {
+                //is valid
+                flag_empty = validate_table_propia()
+                console.log("flag_empty: ",flag_empty)
+
+                if(flag_empty == false){
+
+                    prj_id = "{{prj_id}}"; //this is the ID project
+                    $.ajax({
+                            type: "POST",
+                            url: "{% url 'generatePptData' %}",
+                            name: "testname",
+                            data: JSON.stringify( {
+                                prj_id,
+                                version_id
+                            } ),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function(resp){
+                                console.log("Informacion actualizada:" + resp);
+                                console.log("ecuList_name:" + resp.ecuList_name);
+                                console.log("RelInList_ecu_name:" + resp.RelInList_ecu_name);
+                                pptGenerator_admin(resp)
+                            },
+                            failure: function(resp){console.log("Hay un error:" + resp.d);},
+                    });
+                }
+            }
+        })
     }
 
     //var slide = []; //global

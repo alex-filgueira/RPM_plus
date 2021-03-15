@@ -84,7 +84,6 @@
             <div class="input-group">
                 <span class="input-group-text">Version list</span>
                 
-
                 <select class="form-control" id= "id_vers_list" name="versSelect"  onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
                     {% for vers in version_list %}
                       <option value="{{ vers.id }}" id="{{ vers.name }}" >{{ vers.name }} -- {{ vers.date }}</option>
@@ -413,15 +412,14 @@
         v_selected = document.getElementById("id_vers_list")
         vers_name = ""
         for (var i = 0, element; element = v_selected[i++];) {
-            console.log(".e:",element)
-            console.log(".value:",element.value)
-            console.log(".name:",element.id)
-            console.log(".s:",element.selected)
+            //console.log(".e:",element)
+            //console.log(".value:",element.value)
+            //console.log(".name:",element.id)
+            //console.log(".s:",element.selected)
             if(element.selected == true){
                 version_id = element.value
                 vers_name = element.id
             }
-
         }
         console.log("vers_name->",vers_name)
         document.getElementById("id_vers_name_input").setAttribute('value',vers_name);
@@ -797,7 +795,7 @@ function sendDataECUlist(){
         config_resultados = {
             data: data_table,
             //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
-            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null},
+            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: null, RelInList_comment: null, RelInList_marked1:null},
             //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
             colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment', 'marked1',],
             columns:[

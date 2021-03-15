@@ -32,6 +32,119 @@
 
 {% block content %}
 
+<!-- Canvas-->
+<div class="card card-body"> <!-- card item-->
+    <div class="container-fluid " >
+
+        <div class="row">
+            <div class="col-4 text-center " >
+                <div class="row">
+                    <div class="input-group">
+                        <span class="input-group-text">Type list</span>             
+                        <select class="form-control" id= "id_type_list"  onchange="changesSelectType()"> 
+                            {% for types in type_list %}
+                            <option value="{{ types.id }}" id="{{ types.name }}" >{{ types.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeType()">X</button>
+
+                        <span class="input-group-text">Plan list</span>             
+                        <select class="form-control" id= "id_plan_list"  onchange="changesSelectPlan()"> 
+                            {% for plans in plan_list %}
+                            <option value="{{ plans.id }}" id="{{ plans.name }}" >{{ plans.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removePlan()">X</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <button type="button" class="btn btn-success " onclick="createType()">Add</button>
+                        <input type="text" class="form-control" placeholder="Type name..." value="" id="id_type_name" > 
+
+                        <button type="button" class="btn btn-success " onclick="createPlan()">Add</button>
+                        <input type="text" class="form-control" placeholder="Plan name..." value="" id="id_plan_name" > 
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="input-group">
+                        <span class="input-group-text">ShapeType list</span>
+                        <select class="form-control" id= "id_ShapeType_list"  onchange="changesSelectShape()">
+                            {% if type_list.0.fig1_name == "pptx.ShapeType.ellipse" %}
+                            <option value="pptx.ShapeType.ellipse" id="id_ellipse" selected>ellipse</option>
+                            {% else %}
+                            <option value="pptx.ShapeType.ellipse" id="id_ellipse" >ellipse</option>
+                            {% endif %}
+                            {% if type_list.0.fig1_name == 'pptx.ShapeType.diamond' %}
+                            <option value="pptx.ShapeType.diamond" id="id_diamon" selected>diamond</option>
+                            {% else %}
+                            <option value="pptx.ShapeType.diamond" id="id_diamon"  >diamond</option>
+                            {% endif %}
+                            {% if type_list.0.fig1_name == 'pptx.ShapeType.hexagon' %}
+                            <option value="pptx.ShapeType.hexagon" id="id_hexagon" selected>hexagon</option>
+                            {% else %}
+                            <option value="pptx.ShapeType.hexagon" id="id_hexagon"  >hexagon</option>
+                            {% endif %}
+                            {% if type_list.0.fig1_name == 'pptx.ShapeType.triangle' %}
+                            <option value="pptx.ShapeType.triangle" id="id_triangle" selected>triangle</option>
+                            {% else %}
+                            <option value="pptx.ShapeType.triangle" id="id_triangle"  >triangle</option>
+                            {% endif %}
+                            {% if type_list.0.fig1_name == 'pptx.ShapeType.rect' %}
+                            <option value="pptx.ShapeType.rect" id="id_rect" selected>rect</option>
+                            {% else %}
+                            <option value="pptx.ShapeType.rect" id="id_rect"  >rect</option>
+                            {% endif %}
+
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <span class="input-group-text">Shape color</span>
+                        <input type="text" readOnly class="form-control"  name = "shape_color" placeholder="Shape color..."  value="{{plan_list.0.fig1_color_1}}" id="id_shape_color" onClick="changeColorShape(this)" > 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <span class="input-group-text">Border color</span>
+                        <input type="text" readOnly class="form-control"  name = "border_color" placeholder="Border color..."  value="{{plan_list.0.fig1_color_2}}" id="id_border_color" onClick="changeBorderColorShape(this)" > 
+                        <span class="input-group-text">Border w</span>
+                        <input class="form-control" type="number" min="0" id="id_border_w"  value="{{plan_list.0.fig1_border_w}}" onchange="changeBorder_w()" >
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <span class="input-group-text">Shape s</span>
+                        <input class="form-control" type="number" min="0.01" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" >
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-success " onclick="updateFig()">Save</button>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-warning " onclick="createBasics()">  (Add predef shapes) </button>
+                </div>
+            </div>
+
+
+            <div class="col-1 text-center " >
+                <canvas id="id_canvas" width="100" height="100" style="border:1px solid #000000;">
+                    Your browser does not support the HTML canvas tag.
+                </canvas>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+  
+  
+
 <!-- Colors-->
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid " >
@@ -48,25 +161,25 @@
 
                 <div class="input-group">
                     <span class="input-group-text">Marked1 color</span>
-                    <input type="text" class="form-control"  name = "marked1_color" placeholder="Marked1 color..." s value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"  > 
+                    <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"    > 
                     <span class="input-group-text">Marked1 w</span>
                     <input class="form-control" type="number" min="1" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)" >
                 </div>
                 <div class="input-group">
                     <span class="input-group-text">Marked2 color</span>
-                    <input type="text" class="form-control"  name = "marked2_color" placeholder="Marked2 color..." s value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"  > 
+                    <input type="text" readOnly class="form-control"  name = "marked2_color" placeholder="Marked2 color..." value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"  > 
                     <span class="input-group-text">Marked2 w</span>
                     <input class="form-control" type="number" min="1" id="id_marked2_w"  value="{{config_prj.marked2_w}}" onchange="update_w(this)" >
                 </div>
                 <div class="input-group">
                     <span class="input-group-text">Marked3 color</span>
-                    <input type="text" class="form-control"  name = "marked3_color" placeholder="Marked3 color..." s value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"  > 
+                    <input type="text" readOnly class="form-control"  name = "marked3_color" placeholder="Marked3 color..." value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"  > 
                     <span class="input-group-text">Marked3 w</span>
                     <input class="form-control" type="number" min="1" id="id_marked3_w"  value="{{config_prj.marked3_w}}" onchange="update_w(this)" >
                 </div>
                 <div class="input-group">
                     <span class="input-group-text">Week color</span>
-                    <input type="text" class="form-control"  name = "week_color" placeholder="Week color..." s value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"  > 
+                    <input type="text" readOnly class="form-control"  name = "week_color" placeholder="Week color..." value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"  > 
                     <span class="input-group-text">Week s</span>
                     <input class="form-control" type="number" min="0.01" step="0.01" id="id_week_s"  value="{{config_prj.week_s}}" onchange="update_w(this)" >
                 </div>
@@ -118,6 +231,9 @@
     //colorpicker
     $(document).ready(function() {
         console.log("{{config_prj.id_user}}")
+        console.log("{{type_list.0.fig1_name}}")
+        //console.log("{{type_list}}")
+        
 
         //$('#colorpicker').farbtastic('#id_marked1_color');
         $.farbtastic('#colorpicker').setColor('{{config_prj.marked1_color}}')//"#{{config_prj.marked1_color}}"
@@ -127,7 +243,36 @@
         document.getElementById("id_marked2_color").style.backgroundColor = "{{config_prj.marked2_color}}";
         document.getElementById("id_marked3_color").style.backgroundColor = "{{config_prj.marked3_color}}";
         document.getElementById("id_week_color").style.backgroundColor = "{{config_prj.week_color}}";
+
+        //init fig
+        //check if exist
+        document.getElementById("id_shape_color").value = "{{plan_list.0.fig1_color_1}}"
+        if("{{plan_list.0.fig1_color_1}}" == ""){
+            document.getElementById("id_shape_color").value = '#dc143c'
+        }
+        document.getElementById("id_border_color").value = "{{plan_list.0.fig1_color_2}}"
+        if("{{plan_list.0.fig1_color_2}}" == ""){
+            document.getElementById("id_border_color").value = '#dc143c'
+        }
+        document.getElementById("id_shape_color").style.backgroundColor = document.getElementById("id_shape_color").value ;
+        document.getElementById("id_border_color").style.backgroundColor =  document.getElementById("id_border_color").value ;
+
+        document.getElementById("id_shape_s").value = "{{type_list.0.fig1_s}}"
+        if("{{type_list.0.fig1_s}}" == ""){
+            document.getElementById("id_shape_s").value = def_shape_s
+        }
+
+        document.getElementById("id_border_w").value = "{{plan_list.0.fig1_border_w}}"
+        if("{{plan_list.0.fig1_border_w}}" == ""){
+            document.getElementById("id_border_w").value = def_border_w
+        }
+
+        //update values in the canvas
+        changeBorder_w();
+        changeShape_s();
         
+        //launch the first time
+        changesSelectShape()
     });
 
     function select_color(param) {
@@ -139,6 +284,8 @@
         picker.value = color
         picker.style.backgroundColor = color
     };
+
+
 
     function update_w(param) {
         console.log("update_w():",param.id)
@@ -175,6 +322,9 @@
             });
     }
 
+
+    var def_shape_s = 0.28
+    var def_border_w = 1
     function defaultConfig(){
         console.log("defaultConfig()")
         document.getElementById("id_marked1_color").value = '#dc143c'
@@ -186,6 +336,475 @@
         document.getElementById("id_marked3_color").value = '#eb4cc2'
         document.getElementById("id_marked3_w").value = '1'
         document.getElementById("id_marked3_color").style.backgroundColor ='#eb4cc2'
+
+        document.getElementById("id_week_color").value = '#bbe0e3'
+        document.getElementById("id_week_color").style.backgroundColor ='#bbe0e3'
+        document.getElementById("id_week_s").value = def_shape_s
+
+        document.getElementById("id_shape_color").value = '#dc143c'
+        document.getElementById("id_shape_color").style.backgroundColor ='#dc143c'
+        document.getElementById("id_shape_s").value = def_shape_s
+
+        document.getElementById("id_border_color").value = '#000000'
+        document.getElementById("id_border_color").style.backgroundColor ='#000000'
+        document.getElementById("id_border_w").value = def_border_w
+
+        //update values in the canvas
+        changeBorder_w();
+        changeShape_s();
+    }
+
+    //funciones canvas-------------------------------
+    var margin_w = 5
+    function diamond(ctx, x, y, width, height, b_w, b_color){
+
+        ctx.beginPath();
+        ctx.strokeStyle = b_color;
+        ctx.lineWidth = b_w;
+        ctx.moveTo(0+margin_w, height/2);
+        ctx.lineTo(width/2, 0+margin_w);
+        ctx.lineTo(width -margin_w, height/2);
+        ctx.lineTo(width/2, height-margin_w);
+        ctx.lineTo(0+margin_w, height/2);
+        ctx.stroke();
+        ctx.closePath();  
+    }
+
+    function ellipse(ctx, x, y, width, height, b_w, b_color){
+        ctx.beginPath();
+        ctx.strokeStyle = b_color;
+        ctx.lineWidth = b_w;
+        ctx.arc(x,y,x-margin_w,0, 2*Math.PI);
+        ctx.stroke();
+        ctx.closePath(); 
+    }
+
+    function hexagon(ctx, x, y, width, height, b_w, b_color){
+        width = width - margin_w
+        height = height - margin_w
+        ctx.beginPath();
+        ctx.strokeStyle = b_color;
+        ctx.lineWidth = b_w;
+        size = width/2
+        ctx.moveTo(x + size * Math.cos(0), y + size * Math.sin(0));
+        for (var side = 0; side < 7; side++) {
+            ctx.lineTo(x + size * Math.cos(side * 2 * Math.PI / 6), y + size * Math.sin(side * 2 * Math.PI / 6));
+        }
+        ctx.stroke();
+        ctx.closePath();  
+    }
+
+    function triangle(ctx, x, y, width, height, b_w, b_color){
+        width = width - margin_w
+        height = height - margin_w
+        ctx.beginPath();
+        ctx.strokeStyle = b_color;
+        ctx.lineWidth = b_w;
+        ctx.moveTo(0+margin_w, height); 
+        ctx.lineTo(width/2, 0+margin_w);
+        ctx.lineTo(width, height);
+        ctx.lineTo(0+margin_w, height);
+        ctx.stroke();
+        ctx.closePath();  
+    }
+
+    function rect(ctx, x, y, width, height, b_w, b_color){
+        width = width - margin_w
+        height = height - margin_w
+        ctx.beginPath();
+        ctx.strokeStyle = b_color;
+        ctx.lineWidth = b_w;
+        ctx.moveTo(0+margin_w, height );  
+        ctx.lineTo(0+margin_w, 0+margin_w);
+        ctx.lineTo(width, 0+margin_w);
+        ctx.lineTo(width, height);
+        ctx.lineTo(0+margin_w, height);
+        ctx.stroke();
+        ctx.closePath();  
+    }
+
+
+    function paint_canvas(canvas,shape,fill_color, b_w, b_color){
+        console.log("paint_canvas():", shape)
+        //var canvas = document.getElementById("id_canvas");
+       
+        var ctx = canvas.getContext("2d");
+        //clear
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        var X=canvas.width/2;
+        var Y=canvas.height/2;
+
+        //ctx.fillStyle  = document.getElementById("id_shape_color").value;//relleno
+        ctx.fillStyle  = fill_color;//relleno
+
+        switch(shape){
+            //ellipse diamond hexagon triangle rect
+            case "ellipse":
+            ellipse(ctx, X,Y, canvas.width, canvas.height,b_w,b_color);
+            break;
+            case "diamond":
+            diamond(ctx, X,Y, canvas.width, canvas.height,b_w,b_color);
+            break;
+            case "hexagon":
+            hexagon(ctx, X,Y, canvas.width, canvas.height,b_w,b_color);
+            break;
+            case "triangle":
+            triangle(ctx, X,Y, canvas.width, canvas.height,b_w,b_color);
+            break;
+            case "rect":
+            rect(ctx, X,Y, canvas.width, canvas.height,b_w,b_color);
+            break;
+
+            default:
+            ellipse(ctx, X,Y, canvas.width, canvas.height,b_w,b_color);
+            break;
+        }
+        ctx.fill(); //cualquier forma abierta es cerrada automaticament
+
+    }
+
+    function changesSelectShape(){
+        console.log("changesSelectShape()")
+        shape_selected = document.getElementById("id_ShapeType_list")
+        shape_name = ""
+        var fill_color = ""
+        for (var i = 0, element; element = shape_selected[i++];) {
+            if(element.selected == true){
+                shape_name = element.value
+            }
+        }
+        console.log("shape_name->",shape_name)
+        shepe_name_list = shape_name.split(".")
+        var canvas = document.getElementById("id_canvas");
+        fill_color = document.getElementById("id_shape_color").value;//relleno
+        paint_canvas(canvas,shepe_name_list[2],fill_color, 0, 0)
+    }
+
+
+    function changeColorShape(param){
+        console.log("changesColorShape()")
+        select_color(param)//update color
+
+        var canvas = document.getElementById("id_canvas");
+        var ctx = canvas.getContext("2d");
+        color = document.getElementById(param.id).value;
+        ctx.fillStyle = color;//relleno
+        ctx.fill();
+    }
+
+    function changeBorderColorShape(param){
+        console.log("changesBorderColorShape()")
+        select_color(param)//update color
+
+        color = document.getElementById(param.id).value;
+
+        shape_selected = document.getElementById("id_ShapeType_list")
+        shape_name = ""
+        for (var i = 0, element; element = shape_selected[i++];) {
+            if(element.selected == true){
+                shape_name = element.value
+            }
+        }
+        shepe_name_list = shape_name.split(".")
+        border_w = document.getElementById("id_border_w").value
+        var canvas = document.getElementById("id_canvas");
+        var fill_color = document.getElementById("id_shape_color").value;//relleno
+        paint_canvas(canvas,shepe_name_list[2],fill_color, border_w, color)
+    }
+
+    function changeBorder_w(){
+        color = document.getElementById("id_border_color").value;
+        shape_selected = document.getElementById("id_ShapeType_list")
+        shape_name = ""
+        for (var i = 0, element; element = shape_selected[i++];) {
+            if(element.selected == true){
+                shape_name = element.value
+            }
+        }
+        shepe_name_list = shape_name.split(".")
+        border_w = document.getElementById("id_border_w").value
+        var canvas = document.getElementById("id_canvas");
+        var fill_color = document.getElementById("id_shape_color").value;//relleno
+        paint_canvas(canvas,shepe_name_list[2],fill_color, border_w, color)
+    }
+
+    function changeShape_s(){
+        shape_s = document.getElementById("id_shape_s").value
+
+        canvas = document.getElementById("id_canvas")
+        canvas.height = 100 *shape_s / def_shape_s
+        canvas.width = 100 *shape_s / def_shape_s 
+        changeBorder_w() //update
+    }
+
+    function changesSelectType(){
+        type_selected = document.getElementById("id_type_list")
+        type_name = ""
+        type_id = 0
+        for (var i = 0, element; element = type_selected[i++];) {
+            if(element.selected == true){
+                type_name = element.id
+                type_id = element.value
+            }
+        }
+        console.log("type_name->",type_name)
+
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_type' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        type_id,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                        //console.log(resp.type_fig1_name)
+                        //update
+                        document.getElementById("id_ShapeType_list").value = resp.type_fig1_name
+                        document.getElementById("id_shape_s").value = resp.type_fig1_s
+
+                        changesSelectShape()
+                        changeShape_s()
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+    }
+
+    function changesSelectPlan(){
+        plan_selected = document.getElementById("id_plan_list")
+        plan_name = ""
+        plan_id = 0
+        for (var i = 0, element; element = plan_selected[i++];) {
+            if(element.selected == true){
+                plan_name = element.id
+                plan_id = element.value
+            }
+        }
+        console.log("plan_name->",plan_name)
+
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_plan' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        plan_id,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                        //console.log(resp.type_fig1_name)
+                        //update
+                        document.getElementById("id_shape_color").value = resp.plan_fig1_color_1
+                        document.getElementById("id_shape_color").style.backgroundColor = resp.plan_fig1_color_1
+                        document.getElementById("id_border_color").value = resp.plan_fig1_color_2
+                        document.getElementById("id_border_color").style.backgroundColor = resp.plan_fig1_color_2
+                        document.getElementById("id_border_w").value = resp.plan_fig1_border_w
+
+                        changesSelectShape()
+                        changeShape_s()
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+    }
+
+
+    function createType(){
+        type_name = document.getElementById("id_type_name").value
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'create_type' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        type_name,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                        //add element
+                        var list = document.getElementById("id_type_list")
+                        var option = document.createElement('option');
+                        option.text = type_name;
+                        option.value = resp.type_id
+                        list.add(option); 
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+    }
+
+    function createPlan(){
+        plan_name = document.getElementById("id_plan_name").value
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'create_plan' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        plan_name,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                        //add element
+                        var list = document.getElementById("id_plan_list")
+                        var option = document.createElement('option');
+                        option.text = plan_name;
+                        option.value = resp.plan_id
+                        list.add(option); 
+
+                        
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+    }
+
+
+    function removeType(){
+        type_list = document.getElementById("id_type_list")
+        type_name = ""
+        type_id = 0
+        for (var i = 0, element; element = type_list[i++];) {
+            if(element.selected == true){
+                type_id = element.value
+                type_name = element.id
+                element.remove();
+            }
+        }
+        console.log("remove:", type_name)
+        if(type_id != 0){
+            $.ajax({
+                        type: "POST",
+                        url: "{% url 'remove_type' %}",
+                        name: "testname",
+                        data: JSON.stringify( {
+                            type_id,
+                        } ),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function(resp){
+                            console.log("Informacion actualizada:" + resp.ok);
+                            //remove element
+
+                        },
+                        failure: function(resp){console.log("Hay un error:" + resp.d);},
+                });
+        }
+    }
+
+    function removePlan(){
+        plan_list = document.getElementById("id_plan_list")
+        plan_name = ""
+        plan_id = 0
+        for (var i = 0, element; element = plan_list[i++];) {
+            if(element.selected == true){
+                plan_id = element.value
+                plan_name = element.id
+                element.remove();
+            }
+        }
+        console.log("remove:", plan_name)
+        if(plan_id != 0){
+            $.ajax({
+                        type: "POST",
+                        url: "{% url 'remove_plan' %}",
+                        name: "testname",
+                        data: JSON.stringify( {
+                            plan_id,
+                        } ),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function(resp){
+                            console.log("Informacion actualizada:" + resp.ok);
+                            //remove element
+
+                        },
+                        failure: function(resp){console.log("Hay un error:" + resp.d);},
+                });
+        }
+    }
+
+    function updateFig(){
+        //check if plan exist
+        plan_list = document.getElementById("id_plan_list")
+        plan_id = 0
+        for (var i = 0, element; element = plan_list[i++];) {
+            if(element.selected == true){
+                plan_id = element.value
+            }
+        }
+        //check if type exist
+        type_list = document.getElementById("id_type_list")
+        type_id = 0
+        for (var i = 0, element; element = type_list[i++];) {
+            if(element.selected == true){
+                type_id = element.value
+            }
+        }
+        if((type_id != 0) && (plan_id != 0)){
+            //get shape name
+            shape_selected = document.getElementById("id_ShapeType_list")
+            shape_name = ""
+            for (var i = 0, element; element = shape_selected[i++];) {
+                if(element.selected == true){
+                    shape_name = element.value
+                }
+            }
+            //get shape fill color
+            fill_color = document.getElementById("id_shape_color").value;
+            //get shape border color
+            border_color = document.getElementById("id_border_color").value;
+            //get border w
+            border_w = document.getElementById("id_border_w").value
+            //get shape s
+            shape_s = document.getElementById("id_shape_s").value
+
+            //send data
+            $.ajax({
+                        type: "POST",
+                        url: "{% url 'update_fig' %}",
+                        name: "testname",
+                        data: JSON.stringify( {
+                            type_id,
+                            plan_id,
+                            shape_name,
+                            shape_s,
+                            fill_color,
+                            border_color,
+                            border_w,
+
+                        } ),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function(resp){
+                            console.log("Informacion actualizada:" + resp.ok);
+                        },
+                        failure: function(resp){console.log("Hay un error:" + resp.d);},
+                });
+        }
+    }
+
+
+    function createBasics(){
+        $.ajax({
+                        type: "POST",
+                        url: "{% url 'create_basics' %}",
+                        name: "testname",
+                        data: JSON.stringify( {
+
+                        } ),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function(resp){
+                            console.log("Informacion actualizada:" + resp.ok);
+                            //reload
+                            self.location=self.location //Reload the page
+                        },
+                        failure: function(resp){console.log("Hay un error:" + resp.d);},
+                });
     }
 
 

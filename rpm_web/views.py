@@ -1640,12 +1640,18 @@ def update_ECU_list(request):
                         RelInList_ecu_name.append(ecu_name)
                         #print("elt.id_ecu:",elt.id_ecu_id)
                         #type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
-                        type_name = MType_input2.objects.get(id=elt.id_type_input_id).name
-                        RelInList_type_name.append(type_name)
+                        if MType_input2.objects.filter(id = elt.id_type_input_id).count() > 0:
+                            type_name = MType_input2.objects.get(id=elt.id_type_input_id).name
+                            RelInList_type_name.append(type_name)
+                        else:
+                            RelInList_type_name.append("null")
 
                         #plan_name = MPlan.objects.get(id=elt.id_plan_id).name
-                        plan_name = MPlan2.objects.get(id=elt.id_plan_id).name
-                        RelInList_plan.append(plan_name)
+                        if MPlan2.objects.filter(id = elt.id_plan_id).count() > 0:
+                            plan_name = MPlan2.objects.get(id=elt.id_plan_id).name
+                            RelInList_plan.append(plan_name)
+                        else:
+                            RelInList_plan.append("null")
                         print("RelInList_plan: ",RelInList_plan)
 
                         ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 

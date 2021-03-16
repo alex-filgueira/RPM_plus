@@ -300,6 +300,12 @@ def config_prj(request):
                 config_prj.marked3_color = json_table['marked3_color']
             if 'marked3_w' in json_table:
                 config_prj.marked3_w = json_table['marked3_w']
+
+            if 'week_color' in json_table:
+                config_prj.week_color = json_table['week_color']
+            if 'week_s' in json_table:
+                config_prj.week_s = json_table['week_s']
+
             config_prj.save()
 
         print("request.user.id:",request.user.id)
@@ -1671,6 +1677,7 @@ def update_ECU_list(request):
                     type_list_name.append(elt.name)
                     type_list_comment.append(elt.comment)
 
+                print("type_list_name: ",type_list_name)
                 #Get the all list of plans
                 plan_list_id = []#Extra
                 plan_list_name = []#Extra

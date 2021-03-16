@@ -32,178 +32,247 @@
 
 {% block content %}
 
-<!-- Canvas-->
-<div class="card card-body"> <!-- card item-->
-    <div class="container-fluid " >
 
-        <div class="row">
-            <div class="col-4 text-center " >
-                <div class="row">
-                    <div class="input-group">
-                        <span class="input-group-text">Type list</span>             
-                        <select class="form-control" id= "id_type_list"  onchange="changesSelectType()"> 
-                            {% for types in type_list %}
+<div class="card card-body"> <!-- card item-->
+<div class="container-fluid">
+    <div class="row mt-3"> <!-- canvas fig -->
+        <div class="col-lg-6" style="border: 1px solid;">
+            <div class="row">
+                <!-- <div class="col-lg-5 p-0" style="border: 1px solid;"></div>--> <!-- offset space  -->
+                <div class="col-lg-12 p-0 text-center" style="border: 1px solid;"> 
+                    <canvas id="id_canvas" style="width:100px; height:100px;" >
+                        Your browser does not support the HTML canvas tag.
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row"> <!-- Type line 1  -->
+        <div class="col-lg-6" style="border: 1px solid;">
+            <div class="row">
+                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Type</div>
+                <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <select class="form-select" id= "id_type_list"  onchange="changesSelectType()" style="max-width:100%;" > 
+                        {% for types in type_list %}
                             <option value="{{ types.id }}" id="{{ types.name }}" >{{ types.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeType()">X</button>
-
-                        <span class="input-group-text">Plan list</span>             
-                        <select class="form-control" id= "id_plan_list"  onchange="changesSelectPlan()"> 
-                            {% for plans in plan_list %}
-                            <option value="{{ plans.id }}" id="{{ plans.name }}" >{{ plans.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removePlan()">X</button>
-                    </div>
+                        {% endfor %}
+                    </select>
                 </div>
-
-                <div class="row">
-                    <div class="input-group">
-                        <button type="button" class="btn btn-success " onclick="createType()">Add</button>
-                        <input type="text" class="form-control" placeholder="Type name..." value="" id="id_type_name" > 
-
-                        <button type="button" class="btn btn-success " onclick="createPlan()">Add</button>
-                        <input type="text" class="form-control" placeholder="Plan name..." value="" id="id_plan_name" > 
-                    </div>
+                <div class="col-lg-1 p-0" style="border: 1px solid;">
+                    <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeType()"  style="width:100%;">X</button>
                 </div>
-
-
-                <div class="row">
-                    <div class="input-group">
-                        <span class="input-group-text">ShapeType list</span>
-                        <select class="form-control" id= "id_ShapeType_list"  onchange="changesSelectShape()">
-                            {% if type_list.0.fig1_name == "pptx.ShapeType.ellipse" %}
-                            <option value="pptx.ShapeType.ellipse" id="id_ellipse" selected>ellipse</option>
-                            {% else %}
-                            <option value="pptx.ShapeType.ellipse" id="id_ellipse" >ellipse</option>
-                            {% endif %}
-                            {% if type_list.0.fig1_name == 'pptx.ShapeType.diamond' %}
-                            <option value="pptx.ShapeType.diamond" id="id_diamon" selected>diamond</option>
-                            {% else %}
-                            <option value="pptx.ShapeType.diamond" id="id_diamon"  >diamond</option>
-                            {% endif %}
-                            {% if type_list.0.fig1_name == 'pptx.ShapeType.hexagon' %}
-                            <option value="pptx.ShapeType.hexagon" id="id_hexagon" selected>hexagon</option>
-                            {% else %}
-                            <option value="pptx.ShapeType.hexagon" id="id_hexagon"  >hexagon</option>
-                            {% endif %}
-                            {% if type_list.0.fig1_name == 'pptx.ShapeType.triangle' %}
-                            <option value="pptx.ShapeType.triangle" id="id_triangle" selected>triangle</option>
-                            {% else %}
-                            <option value="pptx.ShapeType.triangle" id="id_triangle"  >triangle</option>
-                            {% endif %}
-                            {% if type_list.0.fig1_name == 'pptx.ShapeType.rect' %}
-                            <option value="pptx.ShapeType.rect" id="id_rect" selected>rect</option>
-                            {% else %}
-                            <option value="pptx.ShapeType.rect" id="id_rect"  >rect</option>
-                            {% endif %}
-
-                        </select>
-                    </div>
+                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <button type="button" class="btn btn-success " onclick="createType()" style="width:100%;">Add</button>
                 </div>
-                <div class="row">
-                    <div class="input-group">
-                        <span class="input-group-text">Shape color</span>
-                        <input type="text" readOnly class="form-control"  name = "shape_color" placeholder="Shape color..."  value="{{plan_list.0.fig1_color_1}}" id="id_shape_color" onClick="changeColorShape(this)" > 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-group">
-                        <span class="input-group-text">Border color</span>
-                        <input type="text" readOnly class="form-control"  name = "border_color" placeholder="Border color..."  value="{{plan_list.0.fig1_color_2}}" id="id_border_color" onClick="changeBorderColorShape(this)" > 
-                        <span class="input-group-text">Border w</span>
-                        <input class="form-control" type="number" min="0" step="0.25" id="id_border_w"  value="{{plan_list.0.fig1_border_w}}" onchange="changeBorder_w()" >
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-group">
-                        <span class="input-group-text">Shape s</span>
-                        <input class="form-control" type="number" min="0.01" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" >
-                    </div>
-                </div>
-                <div class="row">
-                    <button type="button" class="btn btn-success " onclick="updateFig()">Save</button>
-                </div>
-                <div class="row">
-                    <button type="button" class="btn btn-warning " onclick="createBasics()">  (Add predef shapes) </button>
+                <div class="col-lg-3 p-0" style="border: 1px solid;">
+                    <input type="text" class="form-control" placeholder="Type name..." value="" id="id_type_name" style="width:100%;">
                 </div>
             </div>
-
-
-            <div class="col-1 text-center " >
-                <canvas id="id_canvas" width="100" height="100" style="border:1px solid #000000;">
-                    Your browser does not support the HTML canvas tag.
-                </canvas>
-            </div>
-
         </div>
     </div>
+
+    <div class="row"> <!-- Type line 2  -->
+        <div class="col-lg-6" style="border: 1px solid;">
+            <div class="row">
+                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Shape</div>
+                <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <select class="form-select" id= "id_ShapeType_list"  onchange="changesSelectShape()" style="max-width:100%;">
+                        {% if type_list.0.fig1_name == "pptx.ShapeType.ellipse" %}
+                        <option value="pptx.ShapeType.ellipse" id="id_ellipse" selected>ellipse</option>
+                        {% else %}
+                        <option value="pptx.ShapeType.ellipse" id="id_ellipse" >ellipse</option>
+                        {% endif %}
+                        {% if type_list.0.fig1_name == 'pptx.ShapeType.diamond' %}
+                        <option value="pptx.ShapeType.diamond" id="id_diamon" selected>diamond</option>
+                        {% else %}
+                        <option value="pptx.ShapeType.diamond" id="id_diamon"  >diamond</option>
+                        {% endif %}
+                        {% if type_list.0.fig1_name == 'pptx.ShapeType.hexagon' %}
+                        <option value="pptx.ShapeType.hexagon" id="id_hexagon" selected>hexagon</option>
+                        {% else %}
+                        <option value="pptx.ShapeType.hexagon" id="id_hexagon"  >hexagon</option>
+                        {% endif %}
+                        {% if type_list.0.fig1_name == 'pptx.ShapeType.triangle' %}
+                        <option value="pptx.ShapeType.triangle" id="id_triangle" selected>triangle</option>
+                        {% else %}
+                        <option value="pptx.ShapeType.triangle" id="id_triangle"  >triangle</option>
+                        {% endif %}
+                        {% if type_list.0.fig1_name == 'pptx.ShapeType.rect' %}
+                        <option value="pptx.ShapeType.rect" id="id_rect" selected>rect</option>
+                        {% else %}
+                        <option value="pptx.ShapeType.rect" id="id_rect"  >rect</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-lg-2 input-group-text" style="border: 1px solid;">Size</div>
+                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <input class="form-control" type="number" min="0.01" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" style="max-width:100%;" >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3"> <!-- Plan line 1  -->
+        <div class="col-lg-6" style="border: 1px solid;">
+            <div class="row">
+                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Plan</div>
+                <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <select class="form-select" id= "id_plan_list"  onchange="changesSelectPlan()" style="max-width:100%;"> 
+                        {% for plans in plan_list %}
+                        <option value="{{ plans.id }}" id="{{ plans.name }}" >{{ plans.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-1 p-0" style="border: 1px solid;">
+                    <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removePlan()" style="width:100%;">X</button>
+                </div>
+                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <button type="button" class="btn btn-success " onclick="createPlan()" style="width:100%;">Add</button>
+                </div>
+                <div class="col-lg-3 p-0" style="border: 1px solid;">
+                    <input type="text" class="form-control" placeholder="Plan name..." value="" id="id_plan_name" style="width:100%;"> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row"> <!-- Plan line 2  -->
+        <div class="col-lg-6" style="border: 1px solid;">
+            <div class="row">
+                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Fill</div>
+                <div class="col-lg-2 p-0" style="border: 1px solid; ">
+                    <input type="text" readOnly class="form-control"  name = "shape_color" placeholder="Shape color..."  value="{{plan_list.0.fig1_color_1}}" id="id_shape_color" onClick="changeColorShape(this)" style="width:100%;"> 
+                </div>
+                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Border</div>
+                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <input type="text" readOnly class="form-control"  name = "border_color" placeholder="Border color..."  value="{{plan_list.0.fig1_color_2}}" id="id_border_color" onClick="changeBorderColorShape(this)" style="width:100%;"> 
+                </div>
+                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Width</div>
+                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <input class="form-control" type="number" min="0" step="0.25" id="id_border_w"  value="{{plan_list.0.fig1_border_w}}" onchange="changeBorder_w()"style="width:100%;" >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3"> <!-- Save & add predef line   -->
+        <div class="col-lg-6" style="border: 1px solid;">
+            <div class="row">
+                <button type="button" class="btn btn-success " onclick="updateFig()">Save</button>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-warning " onclick="createBasics()">  (Add predef shapes) </button>
+            </div>
+        </div>
+    </div>
+  </div>
 </div>
 
 
-  
-  
-
-<!-- Colors-->
 <div class="card card-body"> <!-- card item-->
-    <div class="container-fluid " >
-        <div class="row">
-            <div class="col-5 text-center " ></div>
-            <div class="col-1 text-center " >
-                <div id="colorpicker"></div>
+    <div class="container-fluid">
+        <div class="row mt-3"> <!-- Color picker -->
+            <div class="col-lg-6" style="border: 1px solid;">
+                <div class="row">
+                    <div id="colorpicker"  style="border: 1px solid; width:100%;" class="d-flex justify-content-center"></div> <!-- center --> <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-2 text-center " ></div>
-            <div class="col-8 text-center " >
-                <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
-
-                <div class="input-group">
-                    <span class="input-group-text">Marked1 color</span>
-                    <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"    > 
-                    <span class="input-group-text">Marked1 w</span>
-                    <input class="form-control" type="number" min="1" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)" >
-                </div>
-                <div class="input-group">
-                    <span class="input-group-text">Marked2 color</span>
-                    <input type="text" readOnly class="form-control"  name = "marked2_color" placeholder="Marked2 color..." value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"  > 
-                    <span class="input-group-text">Marked2 w</span>
-                    <input class="form-control" type="number" min="1" id="id_marked2_w"  value="{{config_prj.marked2_w}}" onchange="update_w(this)" >
-                </div>
-                <div class="input-group">
-                    <span class="input-group-text">Marked3 color</span>
-                    <input type="text" readOnly class="form-control"  name = "marked3_color" placeholder="Marked3 color..." value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"  > 
-                    <span class="input-group-text">Marked3 w</span>
-                    <input class="form-control" type="number" min="1" id="id_marked3_w"  value="{{config_prj.marked3_w}}" onchange="update_w(this)" >
-                </div>
-                <div class="input-group">
-                    <span class="input-group-text">Week color</span>
-                    <input type="text" readOnly class="form-control"  name = "week_color" placeholder="Week color..." value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"  > 
-                    <span class="input-group-text">Week s</span>
-                    <input class="form-control" type="number" min="0.01" step="0.01" id="id_week_s"  value="{{config_prj.week_s}}" onchange="update_w(this)" >
-                </div>
-                <button type="button" name="update"  class="btn btn-success " onclick="updateConfig()">Update</button>
-                <button type="button" name="default"  class="btn btn-primary " onclick="defaultConfig()">Default</button>
-                
-
-            </div>
-        </div>
-
     </div>
 </div>
 
-<!-- Image ppt-->
+
 <div class="card card-body"> <!-- card item-->
-    <div class="container-fluid " >
-        <div class="row">
-            <div class="col-2 text-center " ></div>
-            <div class="col-8 text-center " >
-                <img src="/static/brand/ppt_example.PNG" class="img-fluid" alt="Responsive image">
+    <div class="container-fluid " style="border: 1px solid;">
+        <div class="row"> <!-- Title line  -->
+            <div class="col-lg-5 " style="border: 1px solid;">
+                <div class="row ">
+                    <div class="col-lg-3 offset-lg-2  text-center"  style="border: 1px solid;">Colors</div>
+                    <div class="col-lg-2 text-center"  style="border: 1px solid;">Widths</div>
+                </div>
+            </div>
+        </div>
+        <div class="row"> <!-- Marked1 line 1  -->
+            <div class="col-lg-5 " style="border: 1px solid;">
+                <div class="row">
+                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Marked1</div>
+                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                        <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"> 
+                    </div>
+                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                        <input class="form-control" type="number" min="1" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row"> <!-- Marked2 line 1  -->
+            <div class="col-lg-5" style="border: 1px solid;">
+                <div class="row">
+                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Marked2</div>
+                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                        <input type="text" readOnly  class="form-control"  name = "marked2_color" placeholder="Marked2 color..." value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"> 
+                    </div>
+                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                        <input class="form-control" type="number" min="1" id="id_marked2_w"  value="{{config_prj.marked2_w}}" onchange="update_w(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row"> <!-- Marked3 line 1  -->
+            <div class="col-lg-5 " style="border: 1px solid;">
+                <div class="row">
+                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Marked3</div>
+                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                        <input type="text" readOnly  class="form-control"  name = "marked3_color" placeholder="Marked3 color..." value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"> 
+                    </div>
+                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                        <input class="form-control" type="number" min="1" id="id_marked3_w"  value="{{config_prj.marked3_w}}" onchange="update_w(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-1"> <!-- Week line 1  -->
+            <div class="col-lg-5 " style="border: 1px solid;">
+                <div class="row">
+                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Week</div>
+                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                        <input type="text" readOnly  class="form-control"  name = "week_color" placeholder="Marked2 color..." value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"> 
+                    </div>
+                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                        <input class="form-control" type="number" min="0.02" step="0.02" id="id_week_s"  value="{{config_prj.week_s}}" onchange="update_w(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3"> <!-- Default & add Update   -->
+            <div class="col-lg-5 " style="border: 1px solid;">
+                <div class="row">
+                    <button type="button" name="default"  class="btn btn-primary " onclick="defaultConfig()">Default</button>
+                </div>
+                <div class="row">
+                    <button type="button" name="update"  class="btn btn-success " onclick="updateConfig()">Update</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="card card-body"> <!-- card item-->
+    <div class="container-fluid">
+        <div class="row mt-3"> <!-- Image ppt-->
+            <div class="col-lg-6" style="border: 1px solid;">
+                <div class="row">
+                    <img src="/static/brand/ppt_example.PNG" class="img-fluid" alt="Responsive image">
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
 
 <form id = id_form name = "form" action = "{% url 'update_prj_form' %}" method = "POST" >{% csrf_token %}</form>
 
@@ -240,9 +309,13 @@
 
         //init backgrounds
         document.getElementById("id_marked1_color").style.backgroundColor = "{{config_prj.marked1_color}}";
+        document.getElementById("id_marked1_color").style.color = setContrast(hexToRgb("{{config_prj.marked1_color}}"))
         document.getElementById("id_marked2_color").style.backgroundColor = "{{config_prj.marked2_color}}";
+        document.getElementById("id_marked2_color").style.color = setContrast(hexToRgb("{{config_prj.marked2_color}}"))
         document.getElementById("id_marked3_color").style.backgroundColor = "{{config_prj.marked3_color}}";
+        document.getElementById("id_marked3_color").style.color = setContrast(hexToRgb("{{config_prj.marked3_color}}"))
         document.getElementById("id_week_color").style.backgroundColor = "{{config_prj.week_color}}";
+        document.getElementById("id_week_color").style.color = setContrast(hexToRgb("{{config_prj.week_color}}"))
 
         //init fig
         //check if exist
@@ -255,7 +328,9 @@
             document.getElementById("id_border_color").value = '#dc143c'
         }
         document.getElementById("id_shape_color").style.backgroundColor = document.getElementById("id_shape_color").value ;
+        document.getElementById("id_shape_color").style.color = setContrast(hexToRgb(document.getElementById("id_shape_color").value))
         document.getElementById("id_border_color").style.backgroundColor =  document.getElementById("id_border_color").value ;
+        document.getElementById("id_border_color").style.color = setContrast(hexToRgb(document.getElementById("id_border_color").value))
 
         document.getElementById("id_shape_s").value = "{{type_list.0.fig1_s}}"
         if("{{type_list.0.fig1_s}}" == ""){
@@ -283,6 +358,7 @@
 
         picker.value = color
         picker.style.backgroundColor = color
+        picker.style.color = setContrast(hexToRgb(color))
     };
 
 
@@ -301,6 +377,9 @@
         marked3_color = document.getElementById("id_marked3_color").value
         marked3_w= document.getElementById("id_marked3_w").value
 
+        week_color = document.getElementById("id_week_color").value
+        week_s= document.getElementById("id_week_s").value
+
         $.ajax({
                     type: "POST",
                     url: "{% url 'config_prj' %}",
@@ -312,6 +391,8 @@
                         marked2_w,
                         marked3_color,
                         marked3_w,
+                        week_color,
+                        week_s,
                     } ),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -330,23 +411,30 @@
         document.getElementById("id_marked1_color").value = '#dc143c'
         document.getElementById("id_marked1_w").value = '1'
         document.getElementById("id_marked1_color").style.backgroundColor ='#dc143c'
+        document.getElementById("id_marked1_color").style.color = setContrast(hexToRgb('#dc143c'))
         document.getElementById("id_marked2_color").value = '#5feb4c'
+        document.getElementById("id_marked2_color").style.color = setContrast(hexToRgb('#dc143c'))
         document.getElementById("id_marked2_w").value = '1'
         document.getElementById("id_marked2_color").style.backgroundColor ='#5feb4c'
+        document.getElementById("id_marked2_color").style.color = setContrast(hexToRgb('#5feb4c'))
         document.getElementById("id_marked3_color").value = '#eb4cc2'
         document.getElementById("id_marked3_w").value = '1'
         document.getElementById("id_marked3_color").style.backgroundColor ='#eb4cc2'
+        document.getElementById("id_marked3_color").style.color = setContrast(hexToRgb('#eb4cc2'))
 
         document.getElementById("id_week_color").value = '#bbe0e3'
         document.getElementById("id_week_color").style.backgroundColor ='#bbe0e3'
+        document.getElementById("id_week_color").style.color = setContrast(hexToRgb('#bbe0e3'))
         document.getElementById("id_week_s").value = def_shape_s
 
         document.getElementById("id_shape_color").value = '#dc143c'
         document.getElementById("id_shape_color").style.backgroundColor ='#dc143c'
+        document.getElementById("id_shape_color").style.color = setContrast(hexToRgb('#dc143c'))
         document.getElementById("id_shape_s").value = def_shape_s
 
         document.getElementById("id_border_color").value = '#000000'
         document.getElementById("id_border_color").style.backgroundColor ='#000000'
+        document.getElementById("id_border_color").style.color = setContrast(hexToRgb('#000000'))
         document.getElementById("id_border_w").value = def_border_w
 
         //update values in the canvas
@@ -601,8 +689,10 @@
                         //update
                         document.getElementById("id_shape_color").value = resp.plan_fig1_color_1
                         document.getElementById("id_shape_color").style.backgroundColor = resp.plan_fig1_color_1
+                        document.getElementById("id_shape_color").style.color = setContrast(hexToRgb(resp.plan_fig1_color_1))
                         document.getElementById("id_border_color").value = resp.plan_fig1_color_2
                         document.getElementById("id_border_color").style.backgroundColor = resp.plan_fig1_color_2
+                        document.getElementById("id_border_color").style.color = setContrast(hexToRgb(resp.plan_fig1_color_2))
                         document.getElementById("id_border_w").value = resp.plan_fig1_border_w
 
                         changesSelectShape()
@@ -807,6 +897,34 @@
                         failure: function(resp){console.log("Hay un error:" + resp.d);},
                 });
     }
+
+
+//Contrastes
+const hexToRgb = hex => {
+    // turn hex val to RGB
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return result
+        ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16)
+          }
+        : null
+}
+
+// calc to work out if it will match on black or white better
+function setContrast (rgb){
+    if (rgb != null){
+    return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000 > 125 ? '#000000' : '#ffffff'
+    }
+    else{
+        return '#000000'
+    }
+
+}
+
+    
+//console.log("color:", setContrast(hexToRgb("#ffffff")))
 
 
 </script>

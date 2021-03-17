@@ -201,7 +201,7 @@
                         <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"> 
                     </div>
                     <div class="col-lg-2 p-0" style="border: 1px solid;">
-                        <input class="form-control" type="number" min="0.01" step="0.01" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
+                        <input class="form-control" type="number"  min="0.01" step="0.01" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
                     </div>
                 </div>
             </div>
@@ -452,13 +452,17 @@
 
         marked1_color = document.getElementById("id_marked1_color").value
         marked1_w= document.getElementById("id_marked1_w").value
+        if(marked1_w == ""){marked1_w = "0.01"}
         marked2_color = document.getElementById("id_marked2_color").value
         marked2_w= document.getElementById("id_marked2_w").value
+        if(marked2_w == ""){marked2_w = "1"}
         marked3_color = document.getElementById("id_marked3_color").value
         marked3_w= document.getElementById("id_marked3_w").value
+        if(marked3_w == ""){marked3_w = "1"}
 
         week_color = document.getElementById("id_week_color").value
         week_s= document.getElementById("id_week_s").value
+        if(week_s == ""){week_s = "0.02"}
 
         $.ajax({
                     type: "POST",
@@ -991,8 +995,10 @@ function validURL(str) {
             border_color = document.getElementById("id_border_color").value;
             //get border w
             border_w = document.getElementById("id_border_w").value
+            if(border_w == ""){border_w = "0"}
             //get shape s
             shape_s = document.getElementById("id_shape_s").value
+            if(shape_s == ""){shape_s = "0.01"}
 
             //send data
             $.ajax({

@@ -156,8 +156,9 @@
             <div class="col-md-1  " ></div> <!-- Centra.-->
             <div class="col-md-4  " >
                 <div class="input-group">
-                    <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
-                    <button type="button" id="id_enviareculist" class="btn btn-warning" onclick="sendDataECUlist()" >Enviar</button>
+                    <button type="button" name="add" id="add" class="btn btn-primary">Add More</button>
+                    <button type="button" id="id_enviareculist" class="btn btn-success" onclick="sendDataECUlist()" >Send</button>
+                    <button type="button" id="id_enviareculist" class="btn btn-warning" onclick="ImportECUlist()" >Import</button>
                 </div>
             </div>
         </div>
@@ -227,6 +228,8 @@
 
 </div>
 </div>
+
+
 
 
 
@@ -685,6 +688,63 @@ function sendDataECUlist(){
             alert("NO puede haber 2 o más nombres repetidos: "+name_rep);
         }
     }
+
+function ImportECUlist(){
+    console.log("ImportECUlist()")
+    //solicita lista proyectos del usuario
+    $.ajax({  
+                    url: "{% url 'get_prj_list_user' %}", 
+                    method:"POST",  
+                    data: JSON.stringify( {
+                    } ),
+                    success: function(resp)
+                    {  
+                        console.log("resp:",resp)
+
+                        prj_list = []
+                        for(i=0;i<resp.prj_name_list.length;i++){
+                            //console.log("name:",resp.prj_name_list[i])
+                            prj_list.push({text: resp.prj_name_list[i], value: i,},)
+
+                        }
+                        console.log("prj_list:",prj_list)
+                        //open dialog box for select project
+                        bootbox.prompt({
+                            closeButton: false,
+                            title: "Select a project to import the ECU list",
+                            message: ' <p>We will copy the last version project</p> <p>Please select an option below:</p>',
+                            inputType: 'radio',
+                            inputOptions: prj_list,
+                            callback: function (result) {
+                                console.log(result);
+                                if(result != null){
+                                    console.log("select prj:",result," name:",resp.prj_name_list[result]," id:",resp.prj_id_list[result])
+                                    prj_id = resp.prj_id_list[result]
+                                    $.ajax({  
+                                        url: "{% url 'copy_ecu_list' %}", 
+                                        method:"POST",  
+                                        data: JSON.stringify( {
+                                            prj_id,
+                                            version_id,
+                                        } ),
+                                        success: function(resp)
+                                        { 
+                                            console.log("resp:",resp)
+                                            if(resp.ok == true){
+                                                //reload
+                                                self.location="../"+ "{{prj_id}}";
+                                            }
+                                        }  
+                                    });
+
+                                }
+                            }
+                        });
+
+
+                    }  
+            });
+}
 
 //Table RP manager functions---------------------------------------------------
    //Release_inputs--------------------------------------------------------

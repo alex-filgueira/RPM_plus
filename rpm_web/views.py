@@ -2047,15 +2047,86 @@ def update_Release_list(request):
 
         else:
             print("NO_POST")
-            json_id_v = 3
-            return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
+            #json_id_v = 3
+            #return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
 
    else:
        return HttpResponseRedirect(reverse('login') )
 
 
+def get_prj_list_user(request):
+   print("get_prj_list_user()")
+   if request.user.is_authenticated:
+        if request.method == "POST":
+            print("POST")
+            #print(request.POST)
+            #print("body:",request.body)
+
+            #get the proyects for the user
+            prj_list = MProject.objects.filter(id_user=request.user.id)
+            prj_name_list = []
+            prj_id_list = []
+            for obj in prj_list:
+                prj_name_list.append(obj.name)
+                prj_id_list.append(obj.id)
+
+            return JsonResponse({
+                    'ok': True,
+                    'prj_name_list': prj_name_list,
+                    'prj_id_list': prj_id_list
+            })
+        else:
+            print("NO_POST")
+            #json_id_v = 3
+            #return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
+   else:
+       return HttpResponseRedirect(reverse('login') )
+
+def copy_ecu_list(request):
+   print("copy_ecu_list()")
+   if request.user.is_authenticated:
+        if request.method == "POST":
+            print("POST")
+            #print(request.POST)
+            #print("body:",request.body)
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+            prj_id = json_table['prj_id']
+            
+            #get the MVersion by prj id
+            ver_list = MVersion.objects.filter(id_project=prj_id)
+
+            #Take the last version
+            print(ver_list[ver_list.count()-1].name)
+
+            #get the ecu_list for the id version selected
+            ecu_list = MECU.objects.filter(id_version=ver_list[ver_list.count()-1].id)
+
+            #get the actual version in the actual project
+            version_id = json_table['version_id']
+
+            #Iterate the ecu_list
+            for obj in ecu_list:
+                #Create new ecu objt
+                new_ecu = MECU()
+                new_ecu.id_version_id = version_id
+                #copy values
+                new_ecu.name = obj.name
+                new_ecu.dx_ecu = obj.dx_ecu
+                new_ecu.comment = obj.comment
+                #save
+                new_ecu.save()
 
 
+            return JsonResponse({
+                    'ok': True,
+            })
+        else:
+            print("NO_POST")
+            #json_id_v = 3
+            #return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
+   else:
+       return HttpResponseRedirect(reverse('login') )
 
 
 

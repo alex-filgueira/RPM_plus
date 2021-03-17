@@ -22,6 +22,11 @@ urlpatterns += [
     #url(r'^projects/prj_/(?P<pk>[-\w]+)/$', views.rp_load, name='rp_load'),
     url(r'^update_ECU_list/$', views.update_ECU_list, name='update_ECU_list'),
     url(r'^update_Release_list/$', views.update_Release_list, name='update_Release_list'),
+
+    url(r'^get_prj_list_user/$', views.get_prj_list_user, name='get_prj_list_user'),
+    url(r'^copy_ecu_list/$', views.copy_ecu_list, name='copy_ecu_list'),
+    
+    
     
 ]
 

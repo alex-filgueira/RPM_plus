@@ -128,8 +128,8 @@ class MConfig_prj(models.Model):
     flag_logo = models.BooleanField(default=True,blank=True)
     flag_status_date= models.BooleanField(default=True,blank=True)
 
-    title = models.CharField(max_length = 200,default='',blank=True)
-    created_by = models.CharField(max_length = 200,default='',blank=True)
+    title = models.CharField(max_length = 200,default='STATUS REPORT E/E',blank=True)
+    created_by = models.CharField(max_length = 200,default='[EE-32]',blank=True)
     logo_url = models.CharField(max_length = 500,default="/static/brand/logos_seat_cupra.png",blank=True) #¿?
 
     #fig1_color_1 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2

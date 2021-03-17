@@ -208,6 +208,7 @@
                     </label>
                 </div>
                 <button type="button" class="btn btn-warning"  onclick="sendDataReleaselist()">Save</button>
+                <button type="button" class="btn btn-primary"  onclick="exportDataReleaselist()">Export</button>
             </div>
 
         </div>
@@ -1204,6 +1205,27 @@ function ImportECUlist(){
             }
             })
         }
+
+function exportDataReleaselist(){
+    console.log("exportDataReleaselist()")
+
+    var exportPlugin1 = tblExcel.getPlugin('exportFile');
+
+    exportPlugin1.downloadFile('csv', {
+      bom: false,
+      columnDelimiter: ';',
+      columnHeaders: true,
+      exportHiddenColumns: false,
+      exportHiddenRows: false,
+      fileExtension: 'csv',
+      filename: 'rpm-CSV-file_[YYYY]-[MM]-[DD]',
+      //range: [startRow, startColumn, endRow, endColumn]
+      mimeType: 'text/csv',
+      rowDelimiter: '\r\n',
+      rowHeaders: false
+    });
+
+}
 
     //--------------------------------------------------------------------------------------
     //funciones generador PPTx--------------------------------------------------------------

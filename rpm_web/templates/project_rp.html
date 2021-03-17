@@ -685,7 +685,11 @@ function sendDataECUlist(){
             }
         }
         else{
-            alert("NO puede haber 2 o más nombres repetidos: "+name_rep);
+            //alert("We don´t accept 2 or more ecu names repeated: "+name_rep);
+            bootbox.alert({
+                closeButton: false,
+                message: "We don´t accept 2 or more ecu names! Repeated: "+name_rep,
+            });
         }
     }
 
@@ -702,9 +706,12 @@ function ImportECUlist(){
                         console.log("resp:",resp)
 
                         prj_list = []
+                        //Generate prokject list for radio inputs
                         for(i=0;i<resp.prj_name_list.length;i++){
                             //console.log("name:",resp.prj_name_list[i])
+                            if(resp.prj_id_list[i] != "{{prj_id}}"){ //no añade el project actual
                             prj_list.push({text: resp.prj_name_list[i], value: i,},)
+                            }
 
                         }
                         console.log("prj_list:",prj_list)

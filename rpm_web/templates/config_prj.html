@@ -35,7 +35,7 @@
 
 <div class="card card-body"> <!-- card item-->
 <div class="container-fluid">
-    <div class="row mt-3"> <!-- canvas fig -->
+    <div class="row mb-3"> <!-- canvas fig -->
         <div class="col-lg-6" style="border: 1px solid;">
             <div class="row">
                 <!-- <div class="col-lg-5 p-0" style="border: 1px solid;"></div>--> <!-- offset space  -->
@@ -201,7 +201,7 @@
                         <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"> 
                     </div>
                     <div class="col-lg-2 p-0" style="border: 1px solid;">
-                        <input class="form-control" type="number" min="1" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
+                        <input class="form-control" type="number" min="0.01" step="0.01" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
                     </div>
                 </div>
             </div>
@@ -245,12 +245,12 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-3"> <!-- Default & add Update   -->
+        <div class="row mt-1"> <!-- Default & add Update   -->
             <div class="col-lg-5 " style="border: 1px solid;">
                 <div class="row">
                     <button type="button" name="default"  class="btn btn-primary " onclick="defaultConfig()">Default</button>
                 </div>
-                <div class="row">
+                <div class="row mt-1">
                     <button type="button" name="update"  class="btn btn-success " onclick="updateConfig()">Update</button>
                 </div>
             </div>
@@ -258,6 +258,77 @@
 
     </div>
 </div>
+
+<div class="card card-body"> <!-- card item-->
+    <div class="container-fluid">
+        <div class="row mt-3"> <!-- title -->
+            <div class="col-lg-6" style="border: 1px solid;">
+                <div class="row">
+                    <div class="col-lg-1 input-group-text" style="border: 1px solid;">Title</div>
+                    <div class="col-lg-3 p-0" style="border: 1px solid;">
+                        <input type="text" class="form-control" placeholder="Title..." value="{{config_prj.title}}" id="id_title" style="width:100%;">
+                    </div>
+                    <div class="col-lg-2 input-group-text" style="border: 1px solid;">Created by</div>
+                    <div class="col-lg-3 p-0" style="border: 1px solid;">
+                        <input type="text" class="form-control" placeholder="Created by..." value="{{config_prj.created_by}}" id="id_created_by" style="width:100%;">
+                    </div>
+                </div>
+                <!--
+                <div class="row">
+                    <div class="col-lg-2 input-group-text" style="border: 1px solid;">Logo URL</div>
+                    <div class="col-lg-8 p-0" style="border: 1px solid;">
+                        <input type="text" class="form-control" placeholder="Paste URL image..." value="{{config_prj.logo_url}}" id="id_logo_url" style="width:100%;">
+                    </div>
+                </div>
+                -->
+                <div class="row ">
+                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
+                        <div class="col-lg-6 " style="border: 1px solid;">Head</div>
+                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                            <input type="checkbox"  style="width:100%;" id="id_chk_head">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
+                        <div class="col-lg-6 " style="border: 1px solid;">Footer</div>
+                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                            <input type="checkbox"  style="width:100%;" id="id_chk_footer">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
+                        <div class="col-lg-6 " style="border: 1px solid;">Title</div>
+                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                            <input type="checkbox"  style="width:100%;" id="id_chk_title">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
+                        <div class="col-lg-6 " style="border: 1px solid;">Legend</div>
+                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                            <input type="checkbox"  style="width:100%;" id="id_chk_legend">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
+                        <div class="col-lg-6 " style="border: 1px solid;">Logo</div>
+                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                            <input type="checkbox"  style="width:100%;" id="id_chk_logo">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
+                        <div class="col-lg-6 " style="border: 1px solid;">Date</div>
+                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                            <input type="checkbox"  style="width:100%;" id="id_chk_date">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-lg-12 p-0" style="border: 1px solid;">
+                        <button type="button" name="update"  class="btn btn-success " onclick="updateConfig2()" style="width:100%;">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid">
@@ -342,6 +413,15 @@
             document.getElementById("id_border_w").value = def_border_w
         }
 
+        //checkboxes
+        //console.log("head:","{{config_prj.flag_head}}" )
+        if("{{config_prj.flag_head}}" == "True"){document.getElementById("id_chk_head").checked = true;}
+        if("{{config_prj.flag_footer}}" == "True"){document.getElementById("id_chk_footer").checked = true;}
+        if("{{config_prj.flag_title}}" == "True"){document.getElementById("id_chk_title").checked = true;}
+        if("{{config_prj.flag_legend}}" == "True"){document.getElementById("id_chk_legend").checked = true;}
+        if("{{config_prj.flag_logo}}" == "True"){document.getElementById("id_chk_logo").checked = true;}
+        if("{{config_prj.flag_status_date}}" == "True"){document.getElementById("id_chk_date").checked = true;}
+
         //update values in the canvas
         changeBorder_w();
         changeShape_s();
@@ -393,6 +473,7 @@
                         marked3_w,
                         week_color,
                         week_s,
+
                     } ),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -403,13 +484,73 @@
             });
     }
 
+    function updateConfig2(){
+        console.log("updateConfig2()")
+        flag_head= document.getElementById("id_chk_head").checked
+        flag_footer= document.getElementById("id_chk_footer").checked
+        flag_title= document.getElementById("id_chk_title").checked
+        flag_legend= document.getElementById("id_chk_legend").checked
+        flag_logo= document.getElementById("id_chk_logo").checked
+        flag_status_date= document.getElementById("id_chk_date").checked
+
+        title= document.getElementById("id_title").value
+        created_by= document.getElementById("id_created_by").value
+        //logo_url= document.getElementById("id_logo_url").value
+
+        //console.log("validURL:",validURL(logo_url))
+
+        //console.log("checkURL_img:",checkURL_img(logo_url))
+        
+
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'config_prj' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+
+                        flag_head,
+                        flag_footer,
+                        flag_title,
+                        flag_legend,
+                        flag_logo,
+                        flag_status_date,
+
+                        title,
+                        created_by,
+                        //logo_url,
+
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+                        console.log("Informacion actualizada:" + resp.ok);
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp.d);},
+            });
+    }
+
+function checkURL_img(url) {
+    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
+
+function validURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(str);
+}
+
+
 
     var def_shape_s = 0.28
     var def_border_w = 1
     function defaultConfig(){
         console.log("defaultConfig()")
         document.getElementById("id_marked1_color").value = '#dc143c'
-        document.getElementById("id_marked1_w").value = '1'
+        document.getElementById("id_marked1_w").value = '0.05'
         document.getElementById("id_marked1_color").style.backgroundColor ='#dc143c'
         document.getElementById("id_marked1_color").style.color = setContrast(hexToRgb('#dc143c'))
         document.getElementById("id_marked2_color").value = '#5feb4c'

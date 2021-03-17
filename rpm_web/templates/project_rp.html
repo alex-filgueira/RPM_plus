@@ -221,7 +221,7 @@
 
     <div class="row">
         <div class="col-md-8" >
-            <p  id="id_info_log">Log</p>
+            <p  id="id_info_log">Log:</p>
         </div>
     </div>
 
@@ -1271,7 +1271,13 @@ function sendDataECUlist(){
 
         //let image = new Image();
         //image.src = "/static/brand/logos_seat_cupra.png";
-        var logo_path = "/static/brand/logos_seat_cupra.png"
+        //var logo_path = "/static/brand/logos_seat_cupra.png"
+        var logo_path = resp.prj_logo_url
+        if(logo_path == ""){
+            logo_path = "/static/brand/logos_seat_cupra.png"
+        }
+        logo_path = "/static/brand/logos_seat_cupra.png" //force
+        //var logo_path = "https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg"
 
         //Generate slide master--------------------------
         pptx.defineSlideMaster({
@@ -1363,7 +1369,9 @@ function sendDataECUlist(){
                     cont_factor_weeks = cont_factor_weeks + 1
                     //console.log("cont_factor_weeks: ",cont_factor_weeks)
                     if(cont_factor_weeks == factor_weeks){
-                        slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" }, line: { color: "7f7f7f", width: 0.50  } });
+                        //resp.RelInList_plan_fig1_color_1[j]
+                        //slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" }, line: { color: "7f7f7f", width: 0.50  } });
+                        slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w:  resp.prj_week_s, h:  resp.prj_week_s, fill: { color: resp.prj_week_color }, line: { color: "7f7f7f", width: 0.50  } });
                     }
                     if(cont_factor_weeks == factor_weeks){
                         cont_factor_weeks = 0
@@ -1383,7 +1391,8 @@ function sendDataECUlist(){
                 //line actual week
                 diff_actual_weeks = myDiffWeeks(date_ini,date_status)
                 console.log("myDiffWeeks: ",diff_actual_weeks)
-                slide[slideIndex].addShape(pptx.ShapeType.rect, {x: margin_l + margin_l2 + w_weeks * diff_actual_weeks + s_week_mark/2 - 0.05/2, y: 1.01 + s_week_mark, w: 0.05, h: h_printZone  - s_week_mark*1.5, fill:"d9d9d9" });
+                //slide[slideIndex].addShape(pptx.ShapeType.rect, {x: margin_l + margin_l2 + w_weeks * diff_actual_weeks + s_week_mark/2 - 0.05/2, y: 1.01 + s_week_mark, w: 0.05, h: h_printZone  - s_week_mark*1.5, fill:"d9d9d9" });
+                slide[slideIndex].addShape(pptx.ShapeType.rect, {x: margin_l + margin_l2 + w_weeks * diff_actual_weeks + s_week_mark/2 - 0.05/2, y: 1.01 + s_week_mark, w: resp.prj_marked1_w, h: h_printZone  - s_week_mark*1.5, fill:resp.prj_marked1_color });
 
                 //Leyenda
                 /*

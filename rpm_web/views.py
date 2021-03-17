@@ -306,6 +306,26 @@ def config_prj(request):
             if 'week_s' in json_table:
                 config_prj.week_s = json_table['week_s']
 
+            if 'flag_head' in json_table:
+                config_prj.flag_head = json_table['flag_head']
+            if 'flag_footer' in json_table:
+                config_prj.flag_footer = json_table['flag_footer']
+            if 'flag_title' in json_table:
+                config_prj.flag_title = json_table['flag_title']
+            if 'flag_legend' in json_table:
+                config_prj.flag_legend = json_table['flag_legend']
+            if 'flag_logo' in json_table:
+                config_prj.flag_logo = json_table['flag_logo']
+            if 'flag_status_date' in json_table:
+                config_prj.flag_status_date = json_table['flag_status_date']
+
+            if 'title' in json_table:
+                config_prj.title = json_table['title']
+            if 'created_by' in json_table:
+                config_prj.created_by = json_table['created_by']
+            if 'logo_url' in json_table:
+                config_prj.logo_url = json_table['logo_url']
+
             config_prj.save()
 
         print("request.user.id:",request.user.id)
@@ -429,6 +449,7 @@ def generatePptData(request):
             RelInList_plan_fig1_color_3 = []#extra
             RelInList_plan_fig1_border_w = []#extra
 
+
             nECU = 0
             ecu_id = 0
             #Get ECU list
@@ -498,6 +519,35 @@ def generatePptData(request):
                     RelInList_dx.append(ecu_obj.dx_ecu)
 
 
+        #Config project model
+        if MConfig_prj.objects.filter(id_user_id=request.user.id).count() == 0:                    
+            #If not exist, create it
+            new_MConfig = MConfig_prj()
+            new_MConfig.id_user = request.user.id
+            new_MConfig.save()
+
+
+        prj_marked1_color = MConfig_prj.objects.get(id_user_id=request.user.id).marked1_color
+        prj_marked1_w = MConfig_prj.objects.get(id_user_id=request.user.id).marked1_w
+        prj_marked2_color = MConfig_prj.objects.get(id_user_id=request.user.id).marked2_color
+        prj_marked2_w = MConfig_prj.objects.get(id_user_id=request.user.id).marked2_w
+        prj_marked3_color = MConfig_prj.objects.get(id_user_id=request.user.id).marked3_color
+        prj_marked3_w = MConfig_prj.objects.get(id_user_id=request.user.id).marked3_w
+
+        prj_week_color = MConfig_prj.objects.get(id_user_id=request.user.id).week_color
+        prj_week_s = MConfig_prj.objects.get(id_user_id=request.user.id).week_s
+
+        prj_flag_head= MConfig_prj.objects.get(id_user_id=request.user.id).flag_head
+        prj_flag_footer= MConfig_prj.objects.get(id_user_id=request.user.id).flag_footer 
+        prj_flag_title= MConfig_prj.objects.get(id_user_id=request.user.id).flag_title 
+        prj_flag_legend= MConfig_prj.objects.get(id_user_id=request.user.id).flag_legend 
+        prj_flag_logo= MConfig_prj.objects.get(id_user_id=request.user.id).flag_logo 
+        prj_flag_status_date= MConfig_prj.objects.get(id_user_id=request.user.id).flag_status_date
+        
+        prj_title= MConfig_prj.objects.get(id_user_id=request.user.id).title 
+        prj_created_by= MConfig_prj.objects.get(id_user_id=request.user.id).created_by 
+        prj_logo_url= MConfig_prj.objects.get(id_user_id=request.user.id).logo_url 
+
 
 
         #type list
@@ -551,6 +601,28 @@ def generatePptData(request):
 
                     'plan_list': plan_list,
                     'type_list': type_list,
+
+                    'prj_marked1_color': prj_marked1_color,
+                    'prj_marked1_w': prj_marked1_w,
+                    'prj_marked2_color': prj_marked2_color,
+                    'prj_marked2_w': prj_marked2_w,
+                    'prj_marked3_color': prj_marked3_color,
+                    'prj_marked3_w': prj_marked3_w,
+
+                    'prj_week_color': prj_week_color,
+                    'prj_week_s': prj_week_s,
+
+                    'prj_flag_head': prj_flag_head,
+                    'prj_flag_footer': prj_flag_footer,
+                    'prj_flag_title': prj_flag_title,
+                    'prj_flag_legend': prj_flag_legend,
+                    'prj_flag_logo': prj_flag_logo,
+                    'prj_flag_status_date': prj_flag_status_date,
+
+                    'prj_title': prj_title,
+                    'prj_created_by': prj_created_by,
+                    'prj_logo_url': prj_logo_url,
+
         })
 
     else:

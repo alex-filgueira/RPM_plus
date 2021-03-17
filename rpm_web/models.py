@@ -112,7 +112,7 @@ class MConfig_prj(models.Model):
     id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
 
     marked1_color = models.CharField(max_length = 10,default='#dc143c',blank=True)
-    marked1_w= models.IntegerField(default=1)
+    marked1_w= models.FloatField(default=0.05)
     marked2_color = models.CharField(max_length = 10,default='#5feb4c',blank=True)
     marked2_w= models.IntegerField(default=1)
     marked3_color = models.CharField(max_length = 10,default='#eb4cc2',blank=True)
@@ -130,7 +130,7 @@ class MConfig_prj(models.Model):
 
     title = models.CharField(max_length = 200,default='',blank=True)
     created_by = models.CharField(max_length = 200,default='',blank=True)
-    logo_url = models.CharField(max_length = 500,default='',blank=True)
+    logo_url = models.CharField(max_length = 500,default="/static/brand/logos_seat_cupra.png",blank=True) #¿?
 
     #fig1_color_1 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
     #fig1_color_2 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2

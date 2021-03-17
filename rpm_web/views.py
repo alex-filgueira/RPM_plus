@@ -1860,7 +1860,7 @@ def update_Release_list(request):
                     name_clean = list_filter[0].rstrip() #rstrip() elimina los ultimos espacios si los hay
                     print("name_clean:->",name_clean,"<-")
 
-                    ECU_selected = MECU.objects.filter(name=name_clean)
+                    ECU_selected = MECU.objects.filter(name=name_clean, id_version=json_id_v)
                     ecu_id = 0
                     for elt in ECU_selected:
                         ecu_id = elt.id
@@ -1920,7 +1920,8 @@ def update_Release_list(request):
                         #RI_model.save()
                         
                     else:
-                        print("create new")
+                        print("create new:")
+                        print("ecu_id:",ecu_id)
                         RI_model = MRelease_input(
                             #id = row['RelInList_id'],
                             id_ecu_id = ecu_id,

@@ -209,6 +209,7 @@
                 </div>
                 <button type="button" class="btn btn-warning"  onclick="sendDataReleaselist()">Save</button>
                 <button type="button" class="btn btn-primary"  onclick="exportDataReleaselist()">Export</button>
+                <button type="button" class="btn btn-primary"  onclick="importDataReleaselist()">Import</button>
             </div>
 
         </div>
@@ -1213,7 +1214,7 @@ function exportDataReleaselist(){
 
     exportPlugin1.downloadFile('csv', {
       bom: false,
-      columnDelimiter: ';',
+      columnDelimiter: ',',
       columnHeaders: true,
       exportHiddenColumns: false,
       exportHiddenRows: false,
@@ -1224,7 +1225,52 @@ function exportDataReleaselist(){
       rowDelimiter: '\r\n',
       rowHeaders: false
     });
+}
 
+function importDataReleaselist(){
+    console.log("importDataReleaselist()")
+
+    //Generate a input element
+    var input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = e => { 
+        var file = e.target.files[0];
+        console.log(file)
+        //console.log(file.name)
+        // setting up the reader
+        var reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+            var content_file = readerEvent.target.result; // this is the content!
+            console.log( content_file );
+            var data_csv = $.csv.toObjects(content_file); //need csv separet it by (,) -> https://github.com/typeiii/jquery-csv
+            console.log( data_csv );
+
+            //load in the table
+            for(i=0;i<data_csv.length;i++){
+                //create new row
+                tblExcel.alter('insert_row');
+
+                console.log("row:",tblExcel.countRows())
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 3, data_csv[i].ecu_name) //setDataAtCell(row, column, value, source)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 4, data_csv[i].n_version)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 5, data_csv[i].date)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 6, data_csv[i].type)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 7, data_csv[i].plan)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 8, data_csv[i].visual)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 9, data_csv[i].comment)
+                tblExcel.setDataAtCell(tblExcel.countRows()-1, 10, data_csv[i].marked1)
+
+            }
+            
+
+        }
+    }
+
+    input.click();
 }
 
     //--------------------------------------------------------------------------------------

@@ -26,13 +26,11 @@ urlpatterns += [
     url(r'^get_prj_list_user/$', views.get_prj_list_user, name='get_prj_list_user'),
     url(r'^copy_ecu_list/$', views.copy_ecu_list, name='copy_ecu_list'),
     
-    
-    
 ]
 
 
 urlpatterns += [
-    url(r'^projects_rp/$', views.projects_rp, name='projects_rp'),
+    #url(r'^projects_rp/$', views.projects_rp, name='projects_rp'),
     url(r'^projects/rp/(?P<pk>[-\w]+)/$', views.projects_rp_load, name='projects_rp_load'),
     url(r'^update_version_form/$', views.update_version_form, name='update_version_form'),
     url(r'^remove_version/$', views.remove_version, name='remove_version'),

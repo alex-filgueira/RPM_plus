@@ -1023,6 +1023,7 @@ def prj_selected(request):
 
 
 #--- news project master
+"""
 def projects_rp(request):
     print("projects_rp()")
     if request.user.is_authenticated:
@@ -1035,7 +1036,7 @@ def projects_rp(request):
 
     else:
         return HttpResponseRedirect(reverse('login') )
-
+"""
 
 def projects_rp_load(request,pk):
     print("projects_rp_load()")
@@ -1083,9 +1084,13 @@ def projects_rp_load(request,pk):
         
         v_objt_selected = MVersion.objects.filter(id_project=pk)
 
+        #select the last version
+        version_name = v_objt_selected[v_objt_selected.count()-1].name
+
         context = {
             'mproject_list':project_list,
             'prj_id': pk,
+            'prj_name': prj_objt_selected.name,
             'prj_comment': prj_objt_selected.comment,
             'date_ini': prj_objt_selected.date_ini, #new
             'date_status': prj_objt_selected.date_status, #new
@@ -1095,6 +1100,7 @@ def projects_rp_load(request,pk):
             'max_ecu_slide': prj_objt_selected.max_ecu_slide, #new
 
             'version_list': v_objt_selected,
+            'version_name': version_name,
         } 
         return render(request,'project_rp.html',context=context)
     else:
@@ -1172,7 +1178,6 @@ def update_version_form(request):
                 version_objt_selected.save()
                 reload = True
             
-            #return HttpResponseRedirect(reverse('projects_rp_load', kwargs={'pk':project_id}))
             return JsonResponse({
                     'reload':reload,
                     'vers_id':vers_id,

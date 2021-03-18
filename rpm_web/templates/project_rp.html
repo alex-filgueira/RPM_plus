@@ -61,7 +61,7 @@
                     <div class="col-lg-2 input-group-text" >Project data</div>
                     <div class="col-lg-3 p-0">
                         <!-- <input type="hidden" class="form-control" name = "prjid" placeholder="Project Id" value="" id="id_prj_id_input">-->
-                        <input type="text" class="form-control"  name = "prjname" placeholder="Project name..." value="" id="id_prj_name_input">
+                        <input type="text" class="form-control"  name = "prjname" placeholder="Project name..." value="{{prj_name}}" id="id_prj_name_input">
                     </div>
                     <div class="col-lg-3 p-0">
                         <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="" id="id_prj_comment_input">
@@ -95,14 +95,14 @@
             <div class="row" >
                 <div class="col-lg-2 input-group-text" >Version list</div>
                 <div class="col-lg-3 p-0">
-                    <select class="form-control" id= "id_vers_list" name="versSelect"  onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
+                    <select class="form-control" id= "id_vers_list" name="versSelect" onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
                         {% for vers in version_list %}
                           <option value="{{ vers.id }}" id="{{ vers.name }}" >{{ vers.name }} -- {{ vers.date }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-lg-3 p-0">
-                    <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="" id="id_vers_name_input" size=2>
+                    <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="{{version_name}}" id="id_vers_name_input" size=2>
                 </div>
                 <div class="col-lg-2 p-0">
                     <button type="button" name="update"  class="btn btn-success " onclick="updateVersion()" style="width:100%;">Update</button>
@@ -932,6 +932,7 @@ function ImportECUlist(){
             //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
             colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment', 'marked1',],
             columns:[
+                /* Comented for evit the first load in false
                 {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
                 //{data: "ecu_name",allowEmpty:true },
                 //{data: "ecu_name",type:'dropdown',source: ecu_name_list_array, allowEmptyboolean:true},
@@ -970,6 +971,7 @@ function ImportECUlist(){
                 },
                 },
                 {data: "RelInList_marked1",type: 'checkbox',allowEmpty:true},
+                */
             ],
             fillHandle: {
                 direction: 'vertical',

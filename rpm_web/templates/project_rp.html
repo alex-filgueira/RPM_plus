@@ -49,7 +49,7 @@
 </ul>
 
 
-
+<div id="id_total_body" style="visibility: hidden">
 
 <!-- Datos del proyecto-->
 <div class="card card-body"> <!-- card item-->
@@ -276,8 +276,10 @@
 
 </div>
 </div>
+</div>
+<style>
 
-
+</style>
 
 
 
@@ -730,7 +732,9 @@ function sendDataECUlist(){
                         {  
                             
                             if(resp.flag_ok == true){
-                                console.log("Envio correcto!");  
+                                console.log("Envio correcto!");
+
+                                document.getElementById("id_total_body").style.visibility = "visible" //make appear the document when have load all data
                             }
                             //console.log("{{ecuList_name}}")//no actualizado
                             //console.log(resp.ecuList_name);//actualizado
@@ -2313,6 +2317,10 @@ function check_row_import_csv(csv_line){
         }
 
     }
+
+    //scrollbar test----
+
+
 
 </script>
 

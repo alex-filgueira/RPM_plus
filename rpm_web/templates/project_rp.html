@@ -701,55 +701,59 @@ function sendDataECUlist(){
             console.log(ecu_list)
             //check unique name
             flag_name_rep = false;
-            var name_rep
+            flag_name_blank = false;
+            var name_rep = []
             for (var i = 0; i < list_name.length; i++) {
                 for (var j = i+1; j < list_name.length; j++) {
+                    if(list_name[i] == ""){
+                        flag_name_blank = true
+                    }
                     if(list_name[i] == list_name[j]){
                         flag_name_rep = true;
-                        name_rep = list_name[i]
+                        name_rep.push(list_name[i])
                     }
                 }
             } 
             console.log("flag_name_rep: ",flag_name_rep)
             
-            if(flag_name_rep != true){
-            if(flag_name_empty != true){
-                console.log("SEND!")
-                $.ajax({  
-                    url: "{% url 'update_ECU_list' %}", 
-                    method:"POST",  
-                    data: JSON.stringify( {
-                        ecu_list,
-                        version_id, //global
-                    } ),
-                    success: function(resp)
-                    {  
+            if((flag_name_rep != true) && (flag_name_blank != true)){
+                if(flag_name_empty != true){
+                    console.log("SEND!")
+                    $.ajax({  
+                        url: "{% url 'update_ECU_list' %}", 
+                        method:"POST",  
+                        data: JSON.stringify( {
+                            ecu_list,
+                            version_id, //global
+                        } ),
+                        success: function(resp)
+                        {  
+                            
+                            if(resp.flag_ok == true){
+                                console.log("Envio correcto!");  
+                            }
+                            //console.log("{{ecuList_name}}")//no actualizado
+                            //console.log(resp.ecuList_name);//actualizado
+
+                            //clean table
+                            $("#id_ecu_table tr").remove();  //remove all rows
+
+                            //populate table
+                            load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx);
                         
-                        if(resp.flag_ok == true){
-                            console.log("Envio correcto!");  
-                        }
-                        //console.log("{{ecuList_name}}")//no actualizado
-                        //console.log(resp.ecuList_name);//actualizado
-
-                        //clean table
-                        $("#id_ecu_table tr").remove();  //remove all rows
-
-                        //populate table
-                        load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx);
-                    
-                        //update ReleaseInput table
-                        updateRinputs(resp);
-                    }  
-            });
+                            //update ReleaseInput table
+                            updateRinputs(resp);
+                        }  
+                    });
+                }
             }
-        }
-        else{
-            //alert("We don´t accept 2 or more ecu names repeated: "+name_rep);
-            bootbox.alert({
-                closeButton: false,
-                message: "We don´t accept 2 or more ecu names! Repeated: "+name_rep,
-            });
-        }
+            else{
+                //alert("We don´t accept 2 or more ecu names repeated: "+name_rep);
+                bootbox.alert({
+                    closeButton: false,
+                    message: "We don´t accept 2 or more ecu names repeated or empty: "+name_rep,
+                });
+            }
     }
 
 function ImportECUlist(){

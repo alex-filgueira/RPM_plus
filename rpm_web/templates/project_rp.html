@@ -49,26 +49,37 @@
 </ul>
 
 
+
+
 <!-- Datos del proyecto-->
 <div class="card card-body"> <!-- card item-->
 <div class="container-fluid " >
     <form id = id_form name = "form" action = "{% url 'update_prj_form' %}" method = "POST" >{% csrf_token %}
     <div class="row">
-        <div class="col-8 text-center " >
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Project data</span>
+        <div class="col-lg-10 p-0">
+                <div class="row" >
+                    <div class="col-lg-2 input-group-text" >Project data</div>
+                    <div class="col-lg-3 p-0">
+                        <!-- <input type="hidden" class="form-control" name = "prjid" placeholder="Project Id" value="" id="id_prj_id_input">-->
+                        <input type="text" class="form-control"  name = "prjname" placeholder="Project name..." value="" id="id_prj_name_input">
+                    </div>
+                    <div class="col-lg-3 p-0">
+                        <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="" id="id_prj_comment_input">
+                    </div>
+                    <div class="col-lg-2 p-0">
+                        <button type="submit" name="update"  class="btn btn-success "  style="width:100%;">Update</button> <!-- Submit! form.-->
+                    </div>
+                    <div class="col-lg-1 p-0">
+                        <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeProject()" style="width:100%;">X</button>
+                    </div>
                 </div>
-                <input type="hidden" class="form-control" name = "prjid" placeholder="Project Id" value="" id="id_prj_id_input">
-                <input type="text" class="form-control"  name = "prjname" placeholder="Project name..." value="" id="id_prj_name_input">
-                <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="" id="id_prj_comment_input">
-                <button type="submit" name="update"  class="btn btn-success " >Update</button> <!-- Submit! form.-->
-
-                <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeProject()">X</button>
-            </div>
         </div>
-        <div class="col-4 text-center " >
-            <button type="button" name="pptGen"  class="btn btn-success " onclick="pptGenerator()">Create PPTx</button>
+        <div class="col-lg-2 p-0">
+            <div class="row">
+                <div class="col-lg-5 offset-lg-5 p-0">
+                    <button type="button" name="pptGen"  class="btn btn-success" onclick="pptGenerator()" style="width:100%;">PPTx</button>
+                </div>
+            </div>
         </div>
     </div>
     </form> <!-- Cierra form.-->
@@ -80,22 +91,28 @@
 <div class="card card-body"> <!-- card item-->
 <div class="container-fluid " >
     <div class="row">
-        <div class="col-8 text-center " >
-            <div class="input-group">
-                <span class="input-group-text">Version list</span>
-                
-                <select class="form-control" id= "id_vers_list" name="versSelect"  onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
-                    {% for vers in version_list %}
-                      <option value="{{ vers.id }}" id="{{ vers.name }}" >{{ vers.name }} -- {{ vers.date }}</option>
-                    {% endfor %}
-                </select>
-
-                <!-- <button type="button" name="update"  class="btn btn-success " onclick="selectVersion()">Select</button>-->
-                <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="" id="id_vers_name_input" size=2>
-                <button type="button" name="update"  class="btn btn-success " onclick="updateVersion()">Update</button>
-                <button type="button" name="new"  class="btn btn-primary " onclick="newVersion()">New version</button> 
-                <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeVersion()">X</button>
-
+        <div class="col-lg-10 p-0" >
+            <div class="row" >
+                <div class="col-lg-2 input-group-text" >Version list</div>
+                <div class="col-lg-3 p-0">
+                    <select class="form-control" id= "id_vers_list" name="versSelect"  onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
+                        {% for vers in version_list %}
+                          <option value="{{ vers.id }}" id="{{ vers.name }}" >{{ vers.name }} -- {{ vers.date }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-3 p-0">
+                    <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="" id="id_vers_name_input" size=2>
+                </div>
+                <div class="col-lg-2 p-0">
+                    <button type="button" name="update"  class="btn btn-success " onclick="updateVersion()" style="width:100%;">Update</button>
+                </div>
+                <div class="col-lg-1 p-0">
+                    <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;">X</button>
+                </div>
+                <div class="col-lg-1 p-0">
+                    <button type="button" name="new"  class="btn btn-primary " onclick="newVersion()" style="width:100%;">New</button>
+                </div>
             </div>
         </div>
     </div>
@@ -107,65 +124,76 @@
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid " >
         <div class="row">
-            <div class="col-2 text-center " >
-                <div class="input-group"> <!-- Date input -->
-                    <span class="input-group-text">Date ini</span>
-                    <input type="date" class="form-control" id="id_date_ini" name="date" placeholder="DD/MM/YYY"  value={{date_ini}} onchange="updateDatesPrint()"/>
+            <div class="col-lg-12 p-0" >
+                <div class="row" >
+                    <div class="col-lg-1 input-group-text" >Start</div>
+                    <div class="col-lg-2 p-0">
+                        <input type="date" class="form-control" id="id_date_ini" name="date" placeholder="DD/MM/YYY"  value={{date_ini}} onchange="updateDatesPrint()"/>
+                    </div>
+                    <div class="col-lg-1 input-group-text" >Status</div>
+                    <div class="col-lg-2 p-0">
+                        <input type="date" class="form-control" id="id_date_status" name="date" placeholder="DD/MM/YYY"  value={{date_status}} onchange="updateDatesPrint()"/>
+                    </div>
+                    <div class="col-lg-1 input-group-text" >End</div>
+                    <div class="col-lg-2 p-0">
+                        <input type="date" class="form-control" id="id_date_end" name="date" placeholder="DD/MM/YYY"  value={{date_end}} onchange="updateDatesPrint()"/>
+                    </div>
                 </div>
-            </div>
-            <div class="col-2 text-center " >
-                <div class="input-group"> <!-- Date input -->
-                    <span class="input-group-text">Date status</span>
-                    <input type="date" class="form-control" id="id_date_status" name="date" placeholder="DD/MM/YYY"  value={{date_status}} onchange="updateDatesPrint()"/>
+
+                <div class="row" >
+                    <div class="col-lg-2 input-group-text" >Factor weeks</div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="1"  id="id_factor_weeks" value={{factor_weeks}} onchange="updateDatesPrint()"  >
+                    </div>
+                    <div class="col-lg-2 input-group-text" >Max ECUs in Slide</div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="1" id="id_max_ecu_slide"  value={{max_ecu_slide}} onchange="updateDatesPrint()" >
+                    </div>
+                    <div class="col-lg-3 p-0">
+                        <button type="button" name="update"  class="btn btn-success " onclick="updateDatesPrint()"  style="width:100%;">Update</button>
+                    </div>
                 </div>
-            </div>
-            <div class="col-2 text-center " >
-                <div class="input-group"> <!-- Date input -->
-                    <span class="input-group-text">Date end</span>
-                    <input type="date" class="form-control" id="id_date_end" name="date" placeholder="DD/MM/YYY"  value={{date_end}} onchange="updateDatesPrint()"/>
-                </div>
-            </div>
-            <div class="col-4 text-center " >
-                <div class="input-group"> <!-- factor weeks && max_ecu_slide --> 
-                    <span class="input-group-text">Factor weeks</span>
-                    <input class="form-control" type="number" min="1"  id="id_factor_weeks" value={{factor_weeks}} onchange="updateDatesPrint()"  >
-                    <span class="input-group-text">Max ECUs in Slide</span>
-                    <input class="form-control" type="number" min="1" id="id_max_ecu_slide"  value={{max_ecu_slide}} onchange="updateDatesPrint()" >
-                </div>
-            </div>
-            <div class="col-1 " >
-                <button type="button" name="update"  class="btn btn-success " onclick="updateDatesPrint()">Update</button>
-            </div>
         </div>
     </div>
+</div>
 </div>
 
 
 <!-- Lista de ECUs-->
 <div class="card card-body"> <!-- card item-->
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseECUs" role="button" aria-expanded="false" aria-controls="collapseECUs"> <!-- collapse control-->
-        <i class="bi bi-arrows-angle-expand"></i>
-    </a>
-</div>
-
-<div class="collapse" id="collapseECUs"> <!-- collapse item-->
-    <div class="card card-body"> <!-- card item-->
-    <div class="container-fluid text-center " >
-        <form name="ecu_list" id="id_ecu_list"> {% csrf_token %} <!-- Abre form.-->
+    <div class="container-fluid " >
         <div class="row">
-            <div class="col-md-1  " ></div> <!-- Centra.-->
-            <div class="col-md-4  " >
-                <div class="input-group">
-                    <button type="button" name="add" id="add" class="btn btn-primary">Add More</button>
-                    <button type="button" id="id_enviareculist" class="btn btn-success" onclick="sendDataECUlist()" >Send</button>
-                    <button type="button" id="id_enviareculist" class="btn btn-warning" onclick="ImportECUlist()" >Import</button>
+            <div class="col-lg-12 p-0" >
+                <div class="row" >
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseECUs" role="button" aria-expanded="false" aria-controls="collapseECUs"  style="width:100%;"> <!-- collapse control-->
+                            <i class="bi bi-arrows-angle-expand"></i>
+                        </a>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1  " ></div> <!-- Centra.-->
-            <div class="col-md-8 text-center " >
-                <table style="margin-bottom:5px; border:1px" class="table table-responsive table-striped "  id="dynamic_field_old">
+
+
+    <div class="collapse" id="collapseECUs"> <!-- collapse item-->
+        <form name="ecu_list" id="id_ecu_list"> {% csrf_token %} <!-- Abre form.-->
+        <div class="row mt-3">
+            <div class="col-lg-4 p-0" >
+                <div class="row" >
+                    <div class="col-lg-3 offset-lg-1  p-0" >
+                        <button type="button" name="add" id="add" class="btn btn-primary" style="width:100%;">Add</button>
+                    </div>
+                    <div class="col-lg-3 p-0" >
+                        <button type="button" id="id_enviareculist" class="btn btn-success" onclick="sendDataECUlist()" style="width:100%;" >Send</button>
+                    </div>
+                    <div class="col-lg-3 p-0">
+                        <button type="button" id="id_enviareculist" class="btn btn-warning" onclick="ImportECUlist()" style="width:100%;" >Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="col-lg-12 p-0 text-center" >
+                <table style="margin-bottom:5px; width:100%;" class="table table-responsive table-striped" id="dynamic_field_old">
                     <thead>
                         <tr >
                         <th >ID</th>
@@ -181,52 +209,62 @@
                 </table> <!-- Cierra table.-->
             </div>
         </div>
-    </form> <!-- Cierra form.-->
+        </form> <!-- Cierra form.-->
     </div>
+
 </div>
 </div>
 
 
 <!-- Tabla entradas RP-->
 <div class="card card-body"> <!-- card item-->
-<div class="container  style="width:100%; height:100%; >
+<div class="container-fluid " >
     <div class="row">
-        <div class="col-md-4 text-center " >
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1  " ></div> <!-- Centra.-->
-        <div class="col-md-6 text-center " >
-            <div class="input-group-text">
-                <input type="text" class="form-control" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1" id="search_field"  maxlength="4" size="4">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon1" onclick="addRow_RI()">+ row</button>
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="removeRow_RI()">- row</button>
-                <div class="form-check">
-                    <input class="form-check-input " type="checkbox" value="" aria-label="Checkbox for following text input" id="id_autosave" >
-                    <label class="form-check-label" for="flexCheckDefault">
+        <div class="col-lg-12 p-0" >
+            <div class="row" >
+                <div class="col-lg-2 p-0" >
+                    <input type="text" class="form-control" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1" id="search_field"  maxlength="4" size="4">
+                </div>
+                <div class="col-lg-1 p-0" >
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon1" onclick="addRow_RI()" style="width:100%;">+ row</button>
+                </div>
+                <div class="col-lg-1 p-0" >
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="removeRow_RI()" style="width:100%;">- row</button>
+                </div>
+                <div class="col-lg-2  p-1 "style="border: 1px solid; ">
+                <div class="form-check"  >
+                    <input class="form-check-input" type="checkbox" value="" id="id_autosave" >
+                    <label class="form-check-label" for="id_autosave" style="width:100%;">
                       Autosave
                     </label>
+                  </div>
+                </div>              
+                <div class="col-lg-2 p-0" >
+                    <button type="button" class="btn btn-warning"  onclick="sendDataReleaselist()" style="width:100%;">Save</button>
                 </div>
-                <button type="button" class="btn btn-warning"  onclick="sendDataReleaselist()">Save</button>
-                <button type="button" class="btn btn-primary"  onclick="exportDataReleaselist()">Export</button>
-                <button type="button" class="btn btn-primary"  onclick="importDataReleaselist()">Import</button>
+                <div class="col-lg-2 p-0" >
+                    <button type="button" class="btn btn-primary"  onclick="exportDataReleaselist()" style="width:100%;">Export</button>
+                </div>
+                <div class="col-lg-2 p-0" >
+                    <button type="button" class="btn btn-primary"  onclick="importDataReleaselist()" style="width:100%;">Import</button>
+                </div>
+            </div>
+            
+            <div class="row" >
+                <div class="col-lg-10 offset-lg-1 p-0  mt-2 text-center" >
+                    <div style=" height:487px; overflow: hidden; " id = "ResultadoTabla" ></div> <!-- Tabla !!!. width: 805px-->
+                    <!-- <div style=" overflow: hidden; width: 100%;" id = "ResultadoTabla" ></div> --><!-- Tabla !!!. width: 805px-->
+                </div>
+
             </div>
 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1  " ></div> <!-- Centra.-->
-        <div class="col-md-10  text-center" >
-            <div style=" height:487px; overflow: hidden; width: 100%;" id = "ResultadoTabla" ></div> <!-- Tabla !!!. width: 805px-->
-            <!-- <div style=" height:487px; overflow:hidden; width: 805px;    margin-bottom:5px" id = "ResultadoTabla" ></div> -->
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-8" >
-            <p  id="id_info_log">Log:</p>
-        </div>
-    </div>
+            <div class="row" >
+                <div class="col-lg-12 p-0" >
+                    <p id="id_info_log">Log:</p>
+                </div>
+            </div>
+    
 
 </div>
 </div>
@@ -308,7 +346,7 @@
             console.log(".name:",element.name)
             document.getElementById('id_prj_name_input').value = element.name
         }
-        document.getElementById('id_prj_id_input').value = "{{prj_id}}"
+        //document.getElementById('id_prj_id_input').value = "{{prj_id}}"
 
         console.log(".comment:","{{prj_comment}}")
         if("{{prj_comment}}" != ""){
@@ -337,7 +375,7 @@
             i++;
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%"><input type="text" name="id"  required="required" size="2" value = '+0+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-            $('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+            $('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" id="id_'+i+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
 
             //document.getElementById("id_enviareculist").disabled = false
         });  
@@ -345,6 +383,13 @@
 
         $(document).on('click', '*[name="remove_ecu"]', function(){
             var button_id = $(this).attr("id");
+
+            console.log("button_id:",button_id)
+            //check if line is empty or not
+            obj = document.getElementById("id_"+button_id)
+            console.log("obj:",obj)
+            console.log("obj.value:",obj.value)
+            if(obj.value != 0){
 
             bootbox.confirm({
                 closeButton: false,
@@ -367,6 +412,10 @@
                     }
                 }
             }).css({'background-color': '#f99', 'font-weight' : 'bold', color: '#F00', 'font-size': '2em', 'font-weight' : 'bold'} );
+            }
+            else{
+                $('#row'+button_id+'').remove()
+            }
         });  
 
 
@@ -593,7 +642,7 @@ function load_ecu_list(id_list,name_list,comment_list, dx_list){
         if(id == ""){id=0;}
         //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%" ><input type="text" name="id"  required="required" size="2" value = '+id+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
         //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
-        $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+        $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required" size="6" style= '+'width:3em'+' value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:17em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
     }
 
     if(flag_first_time == true){
@@ -923,7 +972,7 @@ function ImportECUlist(){
             height: 487,
             //height: '100%',
             width: '100%',//805, //ver: https://handsontable.com/docs/8.3.1/tutorial-grid-sizing.html
-            //width: '100%',
+            //width: 2000,
             //height: 500,
             //overflow: 'hidden',
             preventOverflow: 'horizontal',
@@ -1267,30 +1316,103 @@ function importDataReleaselist(){
                 });
             }
             else{ //correct separator , or ;        
-            console.log( data_csv );
+                console.log( data_csv );
 
-            //load in the table
-            for(i=0;i<data_csv.length;i++){
-                //create new row
-                tblExcel.alter('insert_row');
+                //check heads
+                flag_heads = true
+                heads_needed = []
+                if ("ecu_name" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("ecu_name")
+                }
+                if ("n_version" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("n_version")
+                }
+                if ("date" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("date")
+                }
+                if ("type" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("type")
+                }
+                if ("plan" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("plan")
+                }
+                if ("visual" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("visual")
+                }
+                if ("comment" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("comment")
+                }
+                if ("marked1" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("marked1")
+                }
+                if(flag_heads == false){
+                    console.log("need heads:",heads_needed)
+                    bootbox.alert({
+                        closeButton: false,
+                        message: ".CSV file need the rows: "+heads_needed,
+                    });
+                }
+                else{
 
-                //console.log("row:",tblExcel.countRows())
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 3, data_csv[i].ecu_name) //setDataAtCell(row, column, value, source)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 4, data_csv[i].n_version)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 5, data_csv[i].date)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 6, data_csv[i].type)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 7, data_csv[i].plan)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 8, data_csv[i].visual)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 9, data_csv[i].comment)
-                tblExcel.setDataAtCell(tblExcel.countRows()-1, 10, data_csv[i].marked1)
+                    //load in the table
+                    error_list_import = []
+                    for(i=0;i<data_csv.length;i++){
+                        if(check_row_import_csv(data_csv[i])){
+                        //create new row
+                        tblExcel.alter('insert_row');
+
+                        //console.log("row:",tblExcel.countRows())
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 3, data_csv[i].ecu_name) //setDataAtCell(row, column, value, source)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 4, data_csv[i].n_version)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 5, data_csv[i].date)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 6, data_csv[i].type)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 7, data_csv[i].plan)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 8, data_csv[i].visual)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 9, data_csv[i].comment)
+                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 10, data_csv[i].marked1)
+                        }
+                        else{
+                            error_list_import.push(i)
+                        }
+                    }
+                    if(error_list_import.length>0){
+                        bootbox.alert({
+                            closeButton: false,
+                            message: "Errors located in .CSV rows: "+error_list_import +" rows not imported",
+                        });
+                    }
+                }
             }
-            }
-            
-
         }
     }
 
     input.click();
+}
+
+
+function check_row_import_csv(csv_line){
+    var flag_ok = true
+
+    if((csv_line.visual != 'True') && (csv_line.visual != 'False')){flag_ok = false}
+    if((csv_line.marked1 != 'True') && (csv_line.marked1 != 'False')){flag_ok = false}
+
+    return(flag_ok)
 }
 
     //--------------------------------------------------------------------------------------

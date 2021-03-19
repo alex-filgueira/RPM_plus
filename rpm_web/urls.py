@@ -53,8 +53,10 @@ urlpatterns += [
     url(r'^create_basics/$', views.create_basics, name='create_basics'),
     url(r'^get_type/$', views.get_type, name='get_type'),
     url(r'^get_plan/$', views.get_plan, name='get_plan'),
-    
+]
 
+urlpatterns += [
+    url(r'^user_profile/$', views.user_profile, name='user_profile'),                                                                                                                       
 ]
 
 

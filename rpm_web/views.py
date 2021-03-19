@@ -23,6 +23,69 @@ from datetime import datetime
 
 from django.contrib.auth.forms import UserCreationForm
 
+
+
+
+#------------User perfil----------------------------------------
+#------------------------------------------------------------------------
+def user_profile(request):
+    print("user_profile()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+        
+        print("user:",request.user)
+        user_obj = User.objects.filter(username = request.user) # https://docs.djangoproject.com/en/3.1/ref/contrib/auth/
+        print("obj:",user_obj)
+        username = ""
+        email = ""
+        first_name = ""
+        last_name = ""
+        groups = ""
+        date_joined = ""
+
+        for obj in user_obj:
+            username = obj.username
+            email = obj.email
+            first_name = obj.first_name
+            last_name = obj.last_name
+            groups = obj.groups
+
+            date_joined = obj.date_joined
+            print("email:",obj.email)
+            print("first_name:",obj.first_name)
+            print("last_name:",obj.last_name)
+            print("password:",obj.password)
+            print("groups:",obj.groups)
+            print("user_permissions:",obj.user_permissions)
+            print("is_staff:",obj.is_staff)
+            print("is_active:",obj.is_active)
+            print("is_superuser:",obj.is_superuser)
+            print("last_login:",obj.last_login)
+            print("date_joined:",obj.date_joined)
+
+        l = request.user.groups.values_list('name',flat = True) # QuerySet Object
+        l_as_list = list(l)
+        print("l_as_list:",l_as_list) 
+
+        context = {
+            'ok':True,
+            'username':username,
+            'email':email,
+            'first_name':first_name,
+            'last_name':last_name,
+            'groups':groups,
+            'date_joined':date_joined,
+        } 
+
+        # Renderiza la plantilla HTML index.html con los datos en la variable contexto
+        return render(request,'user_profile.html',context=context)
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+
 #------------Config projects----------------------------------------
 #------------------------------------------------------------------------
 
@@ -666,6 +729,77 @@ def register(request):
         if f.is_valid():
             f.save()
             messages.success(request, 'Account created successfully')
+
+            #Create first inputs in BBDD
+            #Populate the first project config
+            config_prj_list = MConfig_prj.objects.filter(id_user=user.id)
+            if(len(config_prj_list) == 0):
+                print("config_prj If is empty, create")
+                config_prj = MConfig_prj()
+                config_prj.id_user_id = user.id
+                config_prj.save()
+            
+            type_list = MType_input2.objects.filter(id_user=user.id)
+            if(len(type_list) == 0):
+                print("type_list If is empty, create")
+                #create diamond -> SW
+                type_ = MType_input2()
+                type_.id_user_id = user.id
+                type_.name = "SW"
+                type_.fig1_name = "pptx.ShapeType.diamond"
+                type_.fig1_s = 0.28
+                type_.save()
+                #create diamond(triangle) -> HW
+                type_ = MType_input2()
+                type_.id_user_id = user.id
+                type_.name = "HW"
+                type_.fig1_name = "pptx.ShapeType.triangle"
+                type_.fig1_s = 0.28
+                type_.save()
+                #create hexagon -> ZDC
+                type_ = MType_input2()
+                type_.id_user_id = user.id
+                type_.name = "ZDC"
+                type_.fig1_name = "pptx.ShapeType.hexagon"
+                type_.fig1_s = 0.28
+                type_.save()
+            
+            plan_list = MPlan2.objects.filter(id_user=user.id)
+            if(len(plan_list) == 0):
+                print("plan_list If is empty, create")
+                #create vbv
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "vbv"
+                plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "000000" #border color //negro
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+                #create te.vbv
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "te.vbv"
+                plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_border_w = 0.75 #border w
+                plan_.save()
+                #create planned
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "planned"
+                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_border_w = 0.75 #border w
+                plan_.save()
+                #create additional
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "additional"
+                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "ff0000" #border color //rojo
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+
             return HttpResponseRedirect(reverse('login') )
 
     else:

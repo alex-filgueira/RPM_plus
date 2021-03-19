@@ -252,10 +252,10 @@
                 <div class="col-lg-3 ms-2" >
                     <div class="row" >
                         <div class="col-lg-6 p-0" >
-                            <button type="button" class="btn btn-outline-warning"  onclick="importDataReleaselist()" style="width:100%;">Export (csv)</button>
+                            <button type="button" class="btn btn-outline-warning"  onclick="exportDataReleaselist()" style="width:100%;">Export (csv)</button>
                         </div>
                         <div class="col-lg-6 p-0" >
-                            <button type="button" class="btn btn-outline-warning"  onclick="exportDataReleaselist()" style="width:100%;">Import (csv)</button>
+                            <button type="button" class="btn btn-outline-warning"  onclick="importDataReleaselist()" style="width:100%;">Import (csv)</button>
                         </div>
                     </div>
                 </div>
@@ -384,11 +384,12 @@
 
         
         //add ecu list control
+        var id_i_ecu
         $('#add').click(function(){  
-            i++;
+            id_i_ecu++;
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%"><input type="text" name="id"  required="required" size="2" value = '+0+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-            $('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" id="id_'+i+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+            $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
 
             //document.getElementById("id_enviareculist").disabled = false
         });  
@@ -655,6 +656,7 @@ function load_ecu_list(id_list,name_list,comment_list, dx_list){
         if(id == ""){id=0;}
         //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%" ><input type="text" name="id"  required="required" size="2" value = '+id+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
         //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+        id_i_ecu = i
         $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required" size="6" style= '+'width:3em'+' value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:17em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
     }
 
@@ -1300,34 +1302,14 @@ function exportDataReleaselist(){
     });
 }
 
-function importDataReleaselist(){
-    console.log("importDataReleaselist()")
-
-    //Generate a input element
-    var input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.csv'
-    //input.setAttribute('accept', '.csv');
-
-    input.onchange = e => {
-        console.log("onchange")
-        var file = e.target.files[0];
-        console.log(file)
-        //console.log(file.name)
-        // setting up the reader
-        var reader = new FileReader();
-        reader.readAsText(file,'UTF-8');
-
-        // here we tell the reader what to do when it's done reading...
-        reader.onload = readerEvent => {
-            var content_file = readerEvent.target.result; // this is the content!
-            console.log( content_file );
-
+function import_csv(content_file){
             //console.log(content_file.split(",").length)
             //console.log(content_file.split(";").length)
+
             var data_csv = ""
             //if is posible that the user save the csv with ; or ,
             if(content_file.split(",").length > 4){
+                console.log("separator (,)")
                 data_csv = $.csv.toObjects(content_file,{'separator':','}); //need csv separet it by (,) -> https://github.com/typeiii/jquery-csv
             }
             if(content_file.split(";").length > 4){
@@ -1340,7 +1322,7 @@ function importDataReleaselist(){
                 });
             }
             else{ //correct separator , or ;        
-                console.log( data_csv );
+                console.log( "data_csv:",data_csv );
 
                 //check heads
                 flag_heads = true
@@ -1395,26 +1377,106 @@ function importDataReleaselist(){
                 else{
 
                     //load in the table
+                    //data_csv_cop = data_csv
                     error_list_import = []
+                    var flag_REimport = false
+                    var ecu_list_csv = []
                     for(i=0;i<data_csv.length;i++){
-                        if(check_row_import_csv(data_csv[i])){
-                        //create new row
-                        tblExcel.alter('insert_row');
+                        //Find ECUs
+                        ecu_list  = document.getElementById('id_ecu_list');
+                            //check if need insert ECU
+                            ecu_name_csv = data_csv[i].ecu_name
+                            Dx_ecu_csv = ""
+                            if ("Dx_ecu" in data_csv[0]) {Dx_ecu_csv = data_csv[i].Dx_ecu}
+                                                        
+                            var flag_ecu_in = false
+                            for (var j = 0; j< ecu_list.length ; j++) {
+                                //console.log(element.name)
+                                element = ecu_list[j]
+                                if (element.name == "name"){
+                                    if(element.value == ecu_name_csv){
+                                        flag_ecu_in = true
+                                    }
+                                }
+                            }
+                            if(flag_ecu_in == false){
+                                console.log("Need ad ecu:",ecu_name_csv)
+                                ecu_list_csv.push(ecu_name_csv)
 
-                        //console.log("row:",tblExcel.countRows())
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 3, data_csv[i].ecu_name) //setDataAtCell(row, column, value, source)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 4, data_csv[i].n_version)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 5, data_csv[i].date)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 6, data_csv[i].type)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 7, data_csv[i].plan)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 8, data_csv[i].visual)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 9, data_csv[i].comment)
-                        tblExcel.setDataAtCell(tblExcel.countRows()-1, 10, data_csv[i].marked1)
-                        }
-                        else{
-                            error_list_import.push(i)
+                                //add line in ecu_list
+                                id_i_ecu++
+                                if(Dx_ecu_csv == ""){
+                                    $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" value='+ecu_name_csv+' style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+                                }
+                                else{
+                                    $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" value='+ecu_name_csv+' style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx" value='+Dx_ecu_csv+'  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"   placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+                                }
+                                //save ecu_list
+                                //sendDataECUlist() //guarda antes en la tabla de que recargue post guardar la ecu_list asincronismo..
+                                flag_REimport = true
+                            }
+                    }
+
+
+                    if(flag_REimport == false){
+                        for(i=0;i<data_csv.length;i++){
+
+                            //adapt some posibles option for flags
+                            if(data_csv[i].visual == ''){data_csv[i].visual  = 'False'}
+                            if(data_csv[i].visual == '0'){data_csv[i].visual  = 'False'}
+                            if(data_csv[i].visual == 'false'){data_csv[i].visual  = 'False'}
+                            if(data_csv[i].visual == '1'){data_csv[i].visual  = 'True'}
+                            if(data_csv[i].visual == 'true'){data_csv[i].visual  = 'True'}
+
+                            if(data_csv[i].marked1 == ''){data_csv[i].marked1  = 'False'}
+                            if(data_csv[i].marked1 == '0'){data_csv[i].marked1  = 'False'}
+                            if(data_csv[i].marked1 == 'false'){data_csv[i].marked1  = 'False'}
+                            if(data_csv[i].marked1 == '1'){data_csv[i].marked1  = 'True'}
+                            if(data_csv[i].marked1 == 'true'){data_csv[i].marked1  = 'True'}
+                            
+                            if(check_row_import_csv(data_csv[i])){
+                                //create new row
+                                tblExcel.alter('insert_row');
+
+                                //console.log("row:",tblExcel.countRows())
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 3, data_csv[i].ecu_name) //setDataAtCell(row, column, value, source)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 4, data_csv[i].n_version)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 5, data_csv[i].date)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 6, data_csv[i].type)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 7, data_csv[i].plan)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 8, data_csv[i].visual)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 9, data_csv[i].comment)
+                                tblExcel.setDataAtCell(tblExcel.countRows()-1, 10, data_csv[i].marked1)
+
+                            }
+                            else{
+                                error_list_import.push(i)
+                            }
                         }
                     }
+                    else
+                    {
+                        sendDataECUlist()
+
+                        console.log("re import csv")
+                        /*
+                        bootbox.alert({
+                            closeButton: false,
+                            message: "Founded new ECUs that will be imported: "+ecu_list_csv ,
+                        });
+                        */
+
+                        bootbox.alert({
+                            closeButton: false,
+                            title: "Remove Project?",
+                            message: "Founded new ECUs that will be imported: "+ecu_list_csv,
+                            callback: function (result) {
+                                //console.log('callback: ' + result);
+                                import_csv(content_file) //lo pongo aquí para retrasarlo y darle tiempo a recargar despues de hacer sendDataECUlist()
+                            }
+                        })
+                    }
+
                     if(error_list_import.length>0){
                         bootbox.alert({
                             closeButton: false,
@@ -1423,6 +1485,34 @@ function importDataReleaselist(){
                     }
                 }
             }
+}
+
+function importDataReleaselist(){
+    console.log("importDataReleaselist()")
+
+    //Generate a input element
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv'
+    //input.setAttribute('accept', '.csv');
+
+    input.onchange = e => {
+        console.log("onchange")
+        var file = e.target.files[0];
+        console.log(file)
+        //console.log(file.name)
+        // setting up the reader
+        var reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+            var content_file = readerEvent.target.result; // this is the content!
+            console.log( "content_file:",content_file);
+
+            import_csv(content_file)
+
+
         }
     }
 
@@ -1432,19 +1522,6 @@ function importDataReleaselist(){
 
 function check_row_import_csv(csv_line){
     var flag_ok = true
-
-    //adapt some posibles option for flags
-    if(csv_line.visual != ''){csv_line.visual  = 'False'}
-    if(csv_line.visual != '0'){csv_line.visual  = 'False'}
-    if(csv_line.visual != 'false'){csv_line.visual  = 'False'}
-    if(csv_line.visual != '1'){csv_line.visual  = 'True'}
-    if(csv_line.visual != 'true'){csv_line.visual  = 'True'}
-
-    if(csv_line.marked1 != ''){csv_line.marked1  = 'False'}
-    if(csv_line.marked1 != '0'){csv_line.marked1  = 'False'}
-    if(csv_line.marked1 != 'false'){csv_line.marked1  = 'False'}
-    if(csv_line.marked1 != '1'){csv_line.marked1  = 'True'}
-    if(csv_line.marked1 != 'true'){csv_line.marked1  = 'True'}
 
     if((csv_line.visual != 'True') && (csv_line.visual != 'False')){flag_ok = false}
     if((csv_line.marked1 != 'True') && (csv_line.marked1 != 'False')){flag_ok = false}

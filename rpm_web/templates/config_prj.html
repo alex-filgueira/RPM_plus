@@ -110,7 +110,7 @@
                 </div>
                 <div class="col-lg-3 input-group-text" >Size</div>
                 <div class="col-lg-3 p-0" >
-                    <input class="form-control" type="number" min="0.01" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" style="max-width:100%;" >
+                    <input class="form-control" type="number" min="0.18" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" style="max-width:100%;" >
                 </div>
             </div>
         </div>
@@ -597,7 +597,6 @@ function validURL(str) {
     //funciones canvas-------------------------------
     var margin_w = 5
     function diamond(ctx, x, y, width, height, b_w, b_color){
-
         ctx.beginPath();
         ctx.strokeStyle = b_color;
         ctx.lineWidth = b_w;

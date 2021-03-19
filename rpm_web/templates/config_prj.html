@@ -54,7 +54,7 @@
     <div class="row"> <!-- Type line 1  -->
         <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <div class="col-lg-2 input-group-text"  >Type</div>
+                <div class="col-lg-3 input-group-text"  >Type</div>
                 <div class="col-lg-3 p-0" >
                     <select class="form-select" id= "id_type_list"  onchange="changesSelectType()" style="max-width:100%;" > 
                         {% for types in type_list %}
@@ -78,7 +78,7 @@
     <div class="row"> <!-- Type line 2  -->
         <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <div class="col-lg-2 input-group-text"  >Shape</div>
+                <div class="col-lg-3 input-group-text"  >Shape</div>
                 <div class="col-lg-3 p-0" >
                     <select class="form-select" id= "id_ShapeType_list"  onchange="changesSelectShape()" style="max-width:100%;">
                         {% if type_list.0.fig1_name == "pptx.ShapeType.ellipse" %}
@@ -120,7 +120,7 @@
         <div class="col-lg-6 offset-lg-3" >
             <div class="row">
                 <div class="col-lg-2 input-group-text"  >Plan</div>
-                <div class="col-lg-3 p-0" >
+                <div class="col-lg-4 p-0" >
                     <select class="form-select" id= "id_plan_list"  onchange="changesSelectPlan()" style="max-width:100%;"> 
                         {% for plans in plan_list %}
                         <option value="{{ plans.id }}" id="{{ plans.name }}" >{{ plans.name }}</option>

@@ -2465,24 +2465,36 @@ function updateWeeksPrint(){
         //checkea fechas
         if((date_ini > date_status) || (date_ini > date_end)){
             document.getElementById("id_date_ini").style.backgroundColor = "red";
+            document.getElementById("id_cw_ini").style.backgroundColor = "red";
+            document.getElementById("id_y_ini").style.backgroundColor = "red";
             flag_date_ok = false
         }
         else{
-            document.getElementById("id_date_ini").style.backgroundColor = "white"; 
+            document.getElementById("id_date_ini").style.backgroundColor = "white";
+            document.getElementById("id_cw_ini").style.backgroundColor = "white";
+            document.getElementById("id_y_ini").style.backgroundColor = "white";
         }
         if((date_end < date_status) || (date_end < date_ini)){
             document.getElementById("id_date_end").style.backgroundColor = "red";
+            document.getElementById("id_cw_end").style.backgroundColor = "red";
+            document.getElementById("id_y_end").style.backgroundColor = "red";
             flag_date_ok = false
         }
         else{
-            document.getElementById("id_date_end").style.backgroundColor = "white"; 
+            document.getElementById("id_date_end").style.backgroundColor = "white";
+            document.getElementById("id_cw_end").style.backgroundColor = "white"; 
+            document.getElementById("id_y_end").style.backgroundColor = "white"; 
         }
         if((date_ini > date_status) || (date_status > date_end)){
-            document.getElementById("id_date_status").style.backgroundColor = "red"; 
+            document.getElementById("id_date_status").style.backgroundColor = "red";
+            document.getElementById("id_cw_status").style.backgroundColor = "red";
+            document.getElementById("id_y_status").style.backgroundColor = "red";
             flag_date_ok = false
         }
         else{
-            document.getElementById("id_date_status").style.backgroundColor = "white"; 
+            document.getElementById("id_date_status").style.backgroundColor = "white";
+            document.getElementById("id_cw_status").style.backgroundColor = "white";
+            document.getElementById("id_y_status").style.backgroundColor = "white";  
         }
 
         factor_weeks = document.getElementById("id_factor_weeks").value

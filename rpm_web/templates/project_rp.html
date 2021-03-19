@@ -423,6 +423,7 @@
                     console.log('This was logged in the callback: ' + result);
                     if (result == true) {
                         $('#row'+button_id+'').remove()
+                        sendDataECUlist() //update ecu_list
                     }
                 }
             }).css({'background-color': '#f99', 'font-weight' : 'bold', color: '#F00', 'font-size': '2em', 'font-weight' : 'bold'} );
@@ -1480,7 +1481,7 @@ function import_csv(content_file){
                     if(error_list_import.length>0){
                         bootbox.alert({
                             closeButton: false,
-                            message: "Errors located in .CSV rows: "+error_list_import +" rows not imported",
+                            message: "Errors located in .CSV rows: "+error_list_import +" -> rows not imported!",
                         });
                     }
                 }

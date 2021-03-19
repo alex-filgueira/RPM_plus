@@ -1433,6 +1433,19 @@ function importDataReleaselist(){
 function check_row_import_csv(csv_line){
     var flag_ok = true
 
+    //adapt some posibles option for flags
+    if(csv_line.visual != ''){csv_line.visual  = 'False'}
+    if(csv_line.visual != '0'){csv_line.visual  = 'False'}
+    if(csv_line.visual != 'false'){csv_line.visual  = 'False'}
+    if(csv_line.visual != '1'){csv_line.visual  = 'True'}
+    if(csv_line.visual != 'true'){csv_line.visual  = 'True'}
+
+    if(csv_line.marked1 != ''){csv_line.marked1  = 'False'}
+    if(csv_line.marked1 != '0'){csv_line.marked1  = 'False'}
+    if(csv_line.marked1 != 'false'){csv_line.marked1  = 'False'}
+    if(csv_line.marked1 != '1'){csv_line.marked1  = 'True'}
+    if(csv_line.marked1 != 'true'){csv_line.marked1  = 'True'}
+
     if((csv_line.visual != 'True') && (csv_line.visual != 'False')){flag_ok = false}
     if((csv_line.marked1 != 'True') && (csv_line.marked1 != 'False')){flag_ok = false}
 

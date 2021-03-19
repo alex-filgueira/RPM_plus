@@ -128,7 +128,7 @@
     <div class="container-fluid " >
         <div class="row">
             <div class="col-lg-12 p-0" >
-                <div class="row" >
+                <div class="row" > <!--Date -->
                     <div class="col-lg-1 input-group-text" >Start</div>
                     <div class="col-lg-2 p-0">
                         <input type="date" class="form-control" id="id_date_ini" name="date" placeholder="DD/MM/YYY"  value={{date_ini}} onchange="updateDatesPrint()"/>
@@ -143,7 +143,31 @@
                     </div>
                 </div>
 
-                <div class="row mt-2" >
+                <div class="row mt-1" > <!--CW -->
+                    <div class="col-lg-1 input-group-text" >Start CW-Y</div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="0" step="1" id="id_cw_ini"  value={{cw_ini}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
+                    </div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="0" step="1" id="id_y_ini"  value={{y_ini}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
+                    </div>
+                    <div class="col-lg-1 input-group-text" >Status CW-Y</div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="0" step="1" id="id_cw_status"  value={{cw_status}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
+                    </div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="0" step="1" id="id_y_status"  value={{y_status}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
+                    </div>
+                    <div class="col-lg-1 input-group-text" >End CW-Y</div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="0" step="1" id="id_cw_end"  value={{cw_end}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
+                    </div>
+                    <div class="col-lg-1 p-0">
+                        <input class="form-control" type="number" min="0" step="1" id="id_y_end"  value={{y_end}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
+                    </div>
+                </div>
+
+                <div class="row mt-3" >
                     <div class="col-lg-2 input-group-text" >Factor weeks</div>
                     <div class="col-lg-1 p-0">
                         <input class="form-control" type="number" min="1"  id="id_factor_weeks" value={{factor_weeks}} onchange="updateDatesPrint()"  >
@@ -2326,6 +2350,86 @@ function check_row_import_csv(csv_line){
     };
 
 
+function formatDate(date) { //format date yyyy-mm-dd
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+
+Date.prototype.getWeek = function (dowOffset) {
+/*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
+
+    dowOffset = typeof(dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
+    var newYear = new Date(this.getFullYear(),0,1);
+    var day = newYear.getDay() - dowOffset; //the day of week the year begins on
+    day = (day >= 0 ? day : day + 7);
+    var daynum = Math.floor((this.getTime() - newYear.getTime() - 
+    (this.getTimezoneOffset()-newYear.getTimezoneOffset())*60000)/86400000) + 1;
+    var weeknum;
+    //if the year starts before the middle of a week
+    if(day < 4) {
+        weeknum = Math.floor((daynum+day-1)/7) + 1;
+        if(weeknum > 52) {
+            nYear = new Date(this.getFullYear() + 1,0,1);
+            nday = nYear.getDay() - dowOffset;
+            nday = nday >= 0 ? nday : nday + 7;
+            /*if the next year starts before the middle of
+              the week, it is week #1 of that year*/
+            weeknum = nday < 4 ? 1 : 53;
+        }
+    }
+    else {
+        weeknum = Math.floor((daynum+day-1)/7);
+    }
+    if(weeknum == 0){weeknum = 53}//añadido por Alexandre
+    return weeknum;
+};
+
+function getDateOfISOWeek(w, y) { //get date from week (ISO)
+    var simple = new Date(y, 0, 1 + (w - 1) * 7);
+    var dow = simple.getDay();
+    var ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+    return ISOweekStart;
+}
+
+
+
+function updateWeeksPrint(){
+        cw_ini = document.getElementById("id_cw_ini").value
+        y_ini = document.getElementById("id_y_ini").value
+        date = getDateOfISOWeek(cw_ini,y_ini)
+        //console.log("date:",date)
+        date_format = formatDate(date)
+        //console.log("date_format:",date_format) //convert date to yyyy-mm-dd
+        document.getElementById("id_date_ini").value = date_format //update date calendar
+
+        cw_status = document.getElementById("id_cw_status").value
+        y_status = document.getElementById("id_y_status").value
+        date = getDateOfISOWeek(cw_status,y_status)
+        date_format = formatDate(date)
+        document.getElementById("id_date_status").value = date_format //update date calendar
+
+        cw_end = document.getElementById("id_cw_end").value
+        y_end= document.getElementById("id_y_end").value
+        date = getDateOfISOWeek(cw_end,y_end)
+        date_format = formatDate(date)
+        document.getElementById("id_date_end").value = date_format //update date calendar
+
+        updateDatesPrint()
+}
 
     function updateDatesPrint(){
         date_ini = document.getElementById("id_date_ini").value
@@ -2334,6 +2438,28 @@ function check_row_import_csv(csv_line){
         console.log("date_ini:",date_ini)
         console.log("date_status:",date_status)
         console.log("date_end:",date_end)
+
+        //update weeks
+        date_ini_date = new Date(date_ini);
+        //console.log("date_ini_date:",date_ini_date)
+        week = date_ini_date.getWeek();
+        //console.log("week:",week)
+        document.getElementById("id_cw_ini").value = week
+        year = date_ini.split("-")[0]
+        //console.log("year:",year)
+        document.getElementById("id_y_ini").value = year
+
+        date_status_date = new Date(date_status);
+        week = date_status_date.getWeek();
+        document.getElementById("id_cw_status").value = week
+        year = date_status.split("-")[0]
+        document.getElementById("id_y_status").value = year
+
+        date_end_date = new Date(date_end);
+        week = date_end_date.getWeek();
+        document.getElementById("id_cw_end").value = week
+        year = date_end.split("-")[0]
+        document.getElementById("id_y_end").value = year
 
         var flag_date_ok = true
         //checkea fechas

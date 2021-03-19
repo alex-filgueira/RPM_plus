@@ -453,12 +453,39 @@ def updatedatevalues(request):
             MProject_objt_selected.max_ecu_slide = max_ecu_slide
 
             MProject_objt_selected.save()
+
+            # Take date_ini (date) to CW
+            print("date_ini:",date_ini)
+            
+            date_ini_obj = datetime.strptime(date_ini,'%Y-%m-%d')
+            #print("date_ini_obj:",date_ini_obj)
+
+            cw_ini = datetime.date(date_ini_obj).strftime("%V")
+            print("cw_ini:",cw_ini)
+
+            y_ini = datetime.date(date_ini_obj).strftime("%Y")
+            print("y_ini:",y_ini)
+
+            date_status_obj = datetime.strptime(date_status,'%Y-%m-%d')
+            cw_status = datetime.date(date_status_obj).strftime("%V")
+            y_status = datetime.date(date_status_obj).strftime("%Y")
         
+            date_end_obj = datetime.strptime(date_end,'%Y-%m-%d')
+            cw_end = datetime.date(date_end_obj).strftime("%V")
+            y_end = datetime.date(date_end_obj).strftime("%Y")
+
         return JsonResponse({
             'ok':True,
             'date_ini': date_ini, #new
             'date_status': date_status, #new
             'date_end': date_end, #new
+
+            'cw_ini': cw_ini, #new
+            'y_ini': y_ini, #new
+            'cw_status': cw_status, #new
+            'y_status': y_status, #new
+            'cw_end': cw_end, #new
+            'y_end': y_end, #new
 
             'factor_weeks': factor_weeks, #new
             'max_ecu_slide': max_ecu_slide, #new
@@ -1221,6 +1248,29 @@ def projects_rp_load(request,pk):
         #select the last version
         version_name = v_objt_selected[v_objt_selected.count()-1].name
 
+        # Take date_ini (date) to CW
+        date_ini = prj_objt_selected.date_ini
+        print("date_ini:",date_ini)
+
+        date_ini_obj = datetime.strptime(date_ini,'%Y-%m-%d')
+        #print("date_ini_obj:",date_ini_obj)
+
+        cw_ini = datetime.date(date_ini_obj).strftime("%V")
+        print("cw_ini:",cw_ini)
+
+        y_ini = datetime.date(date_ini_obj).strftime("%Y")
+        print("y_ini:",y_ini)
+
+        date_status = prj_objt_selected.date_status
+        date_status_obj = datetime.strptime(date_status,'%Y-%m-%d')
+        cw_status = datetime.date(date_status_obj).strftime("%V")
+        y_status = datetime.date(date_status_obj).strftime("%Y")
+
+        date_end = prj_objt_selected.date_end
+        date_end_obj = datetime.strptime(date_end,'%Y-%m-%d')
+        cw_end = datetime.date(date_end_obj).strftime("%V")
+        y_end = datetime.date(date_end_obj).strftime("%Y")
+
         context = {
             'mproject_list':project_list,
             'prj_id': pk,
@@ -1229,6 +1279,12 @@ def projects_rp_load(request,pk):
             'date_ini': prj_objt_selected.date_ini, #new
             'date_status': prj_objt_selected.date_status, #new
             'date_end': prj_objt_selected.date_end, #new
+            'cw_ini': cw_ini, #new
+            'y_ini': y_ini, #new
+            'cw_status': cw_status, #new
+            'y_status': y_status, #new
+            'cw_end': cw_end, #new
+            'y_end': y_end, #new
 
             'factor_weeks': prj_objt_selected.factor_weeks, #new
             'max_ecu_slide': prj_objt_selected.max_ecu_slide, #new

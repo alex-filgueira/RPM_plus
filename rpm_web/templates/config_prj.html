@@ -17,7 +17,7 @@
             <a class="nav-link active" href="{% url 'config_prj'%}">Conf Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'user_profile'%}">Profile</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+            <a class="nav-link" href="{% url 'user_profile'%}">Profile</a>
           </li>
           <li class="nav-item">
             {% if user.is_authenticated %}

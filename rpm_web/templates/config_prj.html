@@ -39,10 +39,10 @@
 <div class="card card-body"> <!-- card item-->
 <div class="container-fluid">
     <div class="row mb-3"> <!-- canvas fig -->
-        <div class="col-lg-6" style="border: 1px solid;">
+        <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <!-- <div class="col-lg-5 p-0" style="border: 1px solid;"></div>--> <!-- offset space  -->
-                <div class="col-lg-12 p-0 text-center" style="border: 1px solid;"> 
+                <!-- <div class="col-lg-5 p-0" ""></div>--> <!-- offset space  -->
+                <div class="col-lg-12 p-0 text-center"> 
                     <canvas id="id_canvas" style="width:100px; height:100px;" >
                         Your browser does not support the HTML canvas tag.
                     </canvas>
@@ -52,23 +52,23 @@
     </div>
 
     <div class="row"> <!-- Type line 1  -->
-        <div class="col-lg-6" style="border: 1px solid;">
+        <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Type</div>
-                <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                <div class="col-lg-2 input-group-text"  >Type</div>
+                <div class="col-lg-3 p-0" >
                     <select class="form-select" id= "id_type_list"  onchange="changesSelectType()" style="max-width:100%;" > 
                         {% for types in type_list %}
                             <option value="{{ types.id }}" id="{{ types.name }}" >{{ types.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-lg-1 p-0" style="border: 1px solid;">
+                <div class="col-lg-1 p-0" >
                     <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeType()"  style="width:100%;">X</button>
                 </div>
-                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                <div class="col-lg-2 p-0" >
                     <button type="button" class="btn btn-success " onclick="createType()" style="width:100%;">Add</button>
                 </div>
-                <div class="col-lg-3 p-0" style="border: 1px solid;">
+                <div class="col-lg-3 p-0" >
                     <input type="text" class="form-control" placeholder="Type name..." value="" id="id_type_name" style="width:100%;">
                 </div>
             </div>
@@ -76,10 +76,10 @@
     </div>
 
     <div class="row"> <!-- Type line 2  -->
-        <div class="col-lg-6" style="border: 1px solid;">
+        <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Shape</div>
-                <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                <div class="col-lg-2 input-group-text"  >Shape</div>
+                <div class="col-lg-3 p-0" >
                     <select class="form-select" id= "id_ShapeType_list"  onchange="changesSelectShape()" style="max-width:100%;">
                         {% if type_list.0.fig1_name == "pptx.ShapeType.ellipse" %}
                         <option value="pptx.ShapeType.ellipse" id="id_ellipse" selected>ellipse</option>
@@ -108,8 +108,8 @@
                         {% endif %}
                     </select>
                 </div>
-                <div class="col-lg-2 input-group-text" style="border: 1px solid;">Size</div>
-                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                <div class="col-lg-3 input-group-text" >Size</div>
+                <div class="col-lg-3 p-0" >
                     <input class="form-control" type="number" min="0.01" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" style="max-width:100%;" >
                 </div>
             </div>
@@ -117,23 +117,23 @@
     </div>
 
     <div class="row mt-3"> <!-- Plan line 1  -->
-        <div class="col-lg-6" style="border: 1px solid;">
+        <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Plan</div>
-                <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                <div class="col-lg-2 input-group-text"  >Plan</div>
+                <div class="col-lg-3 p-0" >
                     <select class="form-select" id= "id_plan_list"  onchange="changesSelectPlan()" style="max-width:100%;"> 
                         {% for plans in plan_list %}
                         <option value="{{ plans.id }}" id="{{ plans.name }}" >{{ plans.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-lg-1 p-0" style="border: 1px solid;">
+                <div class="col-lg-1 p-0" >
                     <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removePlan()" style="width:100%;">X</button>
                 </div>
-                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                <div class="col-lg-2 p-0" >
                     <button type="button" class="btn btn-success " onclick="createPlan()" style="width:100%;">Add</button>
                 </div>
-                <div class="col-lg-3 p-0" style="border: 1px solid;">
+                <div class="col-lg-3 p-0" >
                     <input type="text" class="form-control" placeholder="Plan name..." value="" id="id_plan_name" style="width:100%;"> 
                 </div>
             </div>
@@ -141,18 +141,18 @@
     </div>
 
     <div class="row"> <!-- Plan line 2  -->
-        <div class="col-lg-6" style="border: 1px solid;">
+        <div class="col-lg-6 offset-lg-3" >
             <div class="row">
-                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Fill</div>
-                <div class="col-lg-2 p-0" style="border: 1px solid; ">
+                <div class="col-lg-2 input-group-text"  >Fill</div>
+                <div class="col-lg-2 p-0" >
                     <input type="text" readOnly class="form-control"  name = "shape_color" placeholder="Shape color..."  value="{{plan_list.0.fig1_color_1}}" id="id_shape_color" onClick="changeColorShape(this)" style="width:100%;"> 
                 </div>
-                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Border</div>
-                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                <div class="col-lg-2 input-group-text"  >Border</div>
+                <div class="col-lg-2 p-0" >
                     <input type="text" readOnly class="form-control"  name = "border_color" placeholder="Border color..."  value="{{plan_list.0.fig1_color_2}}" id="id_border_color" onClick="changeBorderColorShape(this)" style="width:100%;"> 
                 </div>
-                <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Width</div>
-                <div class="col-lg-2 p-0" style="border: 1px solid;">
+                <div class="col-lg-2 input-group-text"  >Width</div>
+                <div class="col-lg-2 p-0" >
                     <input class="form-control" type="number" min="0" step="0.25" id="id_border_w"  value="{{plan_list.0.fig1_border_w}}" onchange="changeBorder_w()"style="width:100%;" >
                 </div>
             </div>
@@ -160,7 +160,7 @@
     </div>
 
     <div class="row mt-3"> <!-- Save & add predef line   -->
-        <div class="col-lg-6" style="border: 1px solid;">
+        <div class="col-lg-6 offset-lg-3" >
             <div class="row">
                 <button type="button" class="btn btn-success " onclick="updateFig()">Save</button>
             </div>
@@ -176,9 +176,9 @@
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid">
         <div class="row mt-3"> <!-- Color picker -->
-            <div class="col-lg-6" style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
-                    <div id="colorpicker"  style="border: 1px solid; width:100%;" class="d-flex justify-content-center"></div> <!-- center --> <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
+                    <div id="colorpicker"  style=" width:100%;" class="d-flex justify-content-center"></div> <!-- center --> <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
                 </div>
             </div>
         </div>
@@ -187,74 +187,78 @@
 
 
 <div class="card card-body"> <!-- card item-->
-    <div class="container-fluid " style="border: 1px solid;">
+    <div class="container-fluid " >
         <div class="row"> <!-- Title line  -->
-            <div class="col-lg-5 " style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3" >
                 <div class="row ">
-                    <div class="col-lg-3 offset-lg-2  text-center"  style="border: 1px solid;">Colors</div>
-                    <div class="col-lg-2 text-center"  style="border: 1px solid;">Widths</div>
+                    <div class="col-lg-5 offset-lg-4  text-center"  >Colors</div>
+                    <div class="col-lg-3 text-center"  >Widths</div>
                 </div>
             </div>
         </div>
         <div class="row"> <!-- Marked1 line 1  -->
-            <div class="col-lg-5 " style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
-                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Marked1</div>
-                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <div class="col-lg-4  input-group-text"  >Marked1</div>
+                    <div class="col-lg-5 p-0" >
                         <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"> 
                     </div>
-                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number"  min="0.01" step="0.01" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
                     </div>
                 </div>
             </div>
         </div>
         <div class="row"> <!-- Marked2 line 1  -->
-            <div class="col-lg-5" style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
-                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Marked2</div>
-                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <div class="col-lg-4 input-group-text"  >Marked2</div>
+                    <div class="col-lg-5 p-0" >
                         <input type="text" readOnly  class="form-control"  name = "marked2_color" placeholder="Marked2 color..." value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"> 
                     </div>
-                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number" min="1" id="id_marked2_w"  value="{{config_prj.marked2_w}}" onchange="update_w(this)">
                     </div>
                 </div>
             </div>
         </div>
         <div class="row"> <!-- Marked3 line 1  -->
-            <div class="col-lg-5 " style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3 " >
                 <div class="row">
-                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Marked3</div>
-                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <div class="col-lg-4 input-group-text"  >Marked3</div>
+                    <div class="col-lg-5 p-0" >
                         <input type="text" readOnly  class="form-control"  name = "marked3_color" placeholder="Marked3 color..." value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"> 
                     </div>
-                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number" min="1" id="id_marked3_w"  value="{{config_prj.marked3_w}}" onchange="update_w(this)">
                     </div>
                 </div>
             </div>
         </div>
         <div class="row mt-1"> <!-- Week line 1  -->
-            <div class="col-lg-5 " style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3 " >
                 <div class="row">
-                    <div class="col-lg-2 input-group-text"  style="border: 1px solid;">Week</div>
-                    <div class="col-lg-3 p-0" style="border: 1px solid; ">
+                    <div class="col-lg-4 input-group-text"  >Week</div>
+                    <div class="col-lg-5 p-0" >
                         <input type="text" readOnly  class="form-control"  name = "week_color" placeholder="Marked2 color..." value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"> 
                     </div>
-                    <div class="col-lg-2 p-0" style="border: 1px solid;">
+                    <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number" min="0.02" step="0.02" id="id_week_s"  value="{{config_prj.week_s}}" onchange="update_w(this)">
                     </div>
                 </div>
             </div>
         </div>
         <div class="row mt-1"> <!-- Default & add Update   -->
-            <div class="col-lg-5 " style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3 " >
                 <div class="row">
-                    <button type="button" name="default"  class="btn btn-primary " onclick="defaultConfig()">Default</button>
+                    <div class="col-lg-12 p-0" >
+                        <button type="button" name="default"  class="btn btn-primary " onclick="defaultConfig()" style="width: 100%;" >Default</button>
+                    </div>
                 </div>
                 <div class="row mt-1">
-                    <button type="button" name="update"  class="btn btn-success " onclick="updateConfig()">Update</button>
+                    <div class="col-lg-12 p-0" >
+                        <button type="button" name="update"  class="btn btn-success " onclick="updateConfig()" style="width: 100%;" >Update</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -265,65 +269,65 @@
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid">
         <div class="row mt-3"> <!-- title -->
-            <div class="col-lg-6" style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
-                    <div class="col-lg-1 input-group-text" style="border: 1px solid;">Title</div>
-                    <div class="col-lg-3 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 input-group-text" >Title</div>
+                    <div class="col-lg-4 p-0" >
                         <input type="text" class="form-control" placeholder="Title..." value="{{config_prj.title}}" id="id_title" style="width:100%;">
                     </div>
-                    <div class="col-lg-2 input-group-text" style="border: 1px solid;">Created by</div>
-                    <div class="col-lg-3 p-0" style="border: 1px solid;">
+                    <div class="col-lg-3 input-group-text" >Created by</div>
+                    <div class="col-lg-3 p-0" >
                         <input type="text" class="form-control" placeholder="Created by..." value="{{config_prj.created_by}}" id="id_created_by" style="width:100%;">
                     </div>
                 </div>
                 <!--
                 <div class="row">
-                    <div class="col-lg-2 input-group-text" style="border: 1px solid;">Logo URL</div>
-                    <div class="col-lg-8 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 input-group-text" >Logo URL</div>
+                    <div class="col-lg-8 p-0" >
                         <input type="text" class="form-control" placeholder="Paste URL image..." value="{{config_prj.logo_url}}" id="id_logo_url" style="width:100%;">
                     </div>
                 </div>
                 -->
                 <div class="row ">
-                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
-                        <div class="col-lg-6 " style="border: 1px solid;">Head</div>
-                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 p-0 input-group-text" >
+                        <div class="col-lg-6 " >Head</div>
+                        <div class="col-lg-6 p-0" >
                             <input type="checkbox"  style="width:100%;" id="id_chk_head">
                         </div>
                     </div>
-                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
-                        <div class="col-lg-6 " style="border: 1px solid;">Footer</div>
-                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 p-0 input-group-text" >
+                        <div class="col-lg-6 " >Footer</div>
+                        <div class="col-lg-6 p-0" >
                             <input type="checkbox"  style="width:100%;" id="id_chk_footer">
                         </div>
                     </div>
-                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
-                        <div class="col-lg-6 " style="border: 1px solid;">Title</div>
-                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 p-0 input-group-text" >
+                        <div class="col-lg-6 " >Title</div>
+                        <div class="col-lg-6 p-0" >
                             <input type="checkbox"  style="width:100%;" id="id_chk_title">
                         </div>
                     </div>
-                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
-                        <div class="col-lg-6 " style="border: 1px solid;">Legend</div>
-                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 p-0 input-group-text" >
+                        <div class="col-lg-6 " >Legend</div>
+                        <div class="col-lg-6 p-0" >
                             <input type="checkbox"  style="width:100%;" id="id_chk_legend">
                         </div>
                     </div>
-                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
-                        <div class="col-lg-6 " style="border: 1px solid;">Logo</div>
-                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 p-0 input-group-text" >
+                        <div class="col-lg-6 " >Logo</div>
+                        <div class="col-lg-6 p-0" >
                             <input type="checkbox"  style="width:100%;" id="id_chk_logo">
                         </div>
                     </div>
-                    <div class="col-lg-2 p-0 input-group-text" style="border: 1px solid;">
-                        <div class="col-lg-6 " style="border: 1px solid;">Date</div>
-                        <div class="col-lg-6 p-0" style="border: 1px solid;">
+                    <div class="col-lg-2 p-0 input-group-text" >
+                        <div class="col-lg-6 " >Date</div>
+                        <div class="col-lg-6 p-0" >
                             <input type="checkbox"  style="width:100%;" id="id_chk_date">
                         </div>
                     </div>
                 </div>
                 <div class="row mt-1">
-                    <div class="col-lg-12 p-0" style="border: 1px solid;">
+                    <div class="col-lg-12 p-0" >
                         <button type="button" name="update"  class="btn btn-success " onclick="updateConfig2()" style="width:100%;">Update</button>
                     </div>
                 </div>
@@ -336,7 +340,7 @@
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid">
         <div class="row mt-3"> <!-- Image ppt-->
-            <div class="col-lg-6" style="border: 1px solid;">
+            <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
                     <img src="/static/brand/ppt_example.PNG" class="img-fluid" alt="Responsive image">
                 </div>

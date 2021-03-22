@@ -51,8 +51,7 @@
                     <h4>{{username}}</h4>  
                     <p class="text-secondary mb-1">{{groups}}</p>
 
-                    <button class="btn btn-primary">Follow</button>
-                    <button class="btn btn-outline-primary">Message</button>
+                    <button class="btn btn-primary" onclick="change_password()">Change Password</button>
                   </div>
                 </div>
               </div>
@@ -111,6 +110,7 @@
                     {{date_joined}}
                   </div>
                 </div>
+
 
               </div>
             </div>
@@ -173,6 +173,27 @@
           </div>
         </div>
       </div>
+  </div>
+
+
+
+
+  <div class="form-content" style="display:none;">
+    <form class="form" role="form">
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="test@mail.ru"></input>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> Check me out
+        </label>
+      </div>
+    </form>
   </div>
 
 
@@ -271,7 +292,6 @@
           new_avataaar2()
         }
         
-
         document.getElementById('id_svg')
         .addEventListener('click', function (event) {
           new_avataaar2()
@@ -394,6 +414,41 @@ function new_avataaar2(){
         //cache
         localStorage['avatar'] = avatar; // only strings
         localStorage['avatar_min'] = avatar_min; // only strings
+}
+
+function change_password(){
+  console.log("change_password()")
+  var modal = bootbox.dialog({
+    closeButton: false,
+        message: $(".form-content").html(),
+        title: "Change password",
+        buttons: [
+          {
+            label: "Save",
+            className: "btn btn-primary pull-left",
+            callback: function() {
+
+              alert($('form #email').val());
+             
+              return false;
+            }
+          },
+          {
+            label: "Close",
+            className: "btn btn-default pull-left",
+            callback: function() {
+              console.log("just do something on close");
+            }
+          }
+        ],
+        show: false,
+        onEscape: function() {
+          modal.modal("hide");
+        }
+    });
+    
+    modal.modal("show");
+  
 }
 
 

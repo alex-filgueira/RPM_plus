@@ -1109,8 +1109,8 @@ function ImportECUlist(){
                                 pos_c = i
                             }
                         }
-                        //take week and convert to data
-                        date= newVal
+                        //take week and convert to date
+                        date = newVal
                         date_format = date
                         if((date != "") && (date != null)){
 
@@ -1566,6 +1566,8 @@ function import_csv(content_file){
                     //load in the table
                     //data_csv_cop = data_csv
                     error_list_import = []
+                    error_date_list_import = []
+
                     var flag_REimport = false
                     var ecu_list_csv = []
                     for(i=0;i<data_csv.length;i++){
@@ -1620,6 +1622,36 @@ function import_csv(content_file){
                             if(data_csv[i].marked1 == 'false'){data_csv[i].marked1  = 'False'}
                             if(data_csv[i].marked1 == '1'){data_csv[i].marked1  = 'True'}
                             if(data_csv[i].marked1 == 'true'){data_csv[i].marked1  = 'True'}
+
+
+                        
+                            //check date and date_week-------------
+                            newVal = data_csv[i].date
+                            //take data and convert to week
+                            date_week = newVal
+                            if((date_week != "") && (date_week != null)){
+                                d_list = date_week.split("/")
+                                d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
+                                d_m = moment(d);
+                                w = d_m.format('WW') //ISO week
+                                y = d_m.format('GGGG')
+                                date_week = w + '-' + y
+                            }
+                            if(date_week != data_csv[i].date_week){
+                                //hay diferencias entre date and date_week -> prevalece date_week
+                                //take week and convert to date
+                                newVal = data_csv[i].date_week
+                                date = newVal
+                                date_format = date
+                                if((date != "") && (date != null)){
+
+                                    date = getDateOfISOWeek(newVal.split("-")[0],newVal.split("-")[1]) //week, year
+                                    date_format = formatDate2(date)
+                                }
+                                data_csv[i].date = date_format
+                                error_date_list_import.push(i)
+                            }
+
                             
                             if(check_row_import_csv(data_csv[i])){
                                 //create new row
@@ -1671,6 +1703,12 @@ function import_csv(content_file){
                         bootbox.alert({
                             closeButton: false,
                             message: "Errors located in .CSV rows: "+error_list_import +" -> rows not imported!",
+                        });
+                    }
+                    if(error_date_list_import.length>0){
+                        bootbox.alert({
+                            closeButton: false,
+                            message: "Differences between date and date_week located in .CSV rows: "+error_date_list_import +" -> date was replaced by date_week ",
                         });
                     }
                 }

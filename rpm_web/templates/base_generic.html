@@ -6,24 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
-
-    <!-- Bootstrap Date-Picker Plugin -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-
-  
     <!-- Add additional CSS in static file -->
     {% load static %}
+
+    <!-- Cargar jquery (3.6.0)-->
+    <script  src="{% static 'js/jquery-3.6.0.min.js' %}">	</script>
 
     <!-- Color-picker Plugin -->
     <link href="{% static 'farbtastic/farbtastic.css' %}" rel="stylesheet">
@@ -53,10 +41,48 @@
     <script src="{% static 'js/jquery.csv.js' %}"></script>
   
     <!-- Cargar avataar(1)-->
+    <!--
     <script type="module" src="https://unpkg.com/a-avataaar/a-avataaar.js?module">	</script>
+    -->
 
     <!-- Cargar avataar(2)-->
     <script  src="{% static 'js/avataaars.js' %}">	</script>
+
+    <!-- Cargar pickaday-->
+    <!--
+    <script  src="{% static 'Pikaday/pikaday.js' %}">	</script>
+    <link rel="stylesheet" href="{% static 'Pikaday/css/pikaday.css' %}">
+    -->
+
+
+
+
+    <!-- online libraries -->
+
+    <!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    -->
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!--
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
+
+    <!-- Bootstrap Date-Picker Plugin -->
+    <!-- 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    -->
+
+  
+
 
   </head>
   {% endblock %}

@@ -1197,27 +1197,15 @@ function ImportECUlist(){
                 var data_table = []
                 for (i = 0; i < resp.RelInList_id.length; i++) {
                     // date to weeks
-                    console.log("RelInList_date[i]:",resp.RelInList_date[i])
                     date_week = resp.RelInList_date[i]
                     if(date_week != ""){
-                        console.log("date_week:",date_week)
                         d_list = date_week.split("/")
-                        console.log("d_list:",d_list)
                         d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
-                        console.log("d:",d)
-
                         d_m = moment(d);
-                        console.log("d_m:",d_m)
-
                         w = d_m.format('WW') //ISO week
-                        console.log("w:",w)
-
                         y = d_m.format('GGGG')
-                        console.log("y:",y)
-
                         date_week = w + '-' + y
                     }
- 
 
                     data_table.push({
                         "RelInList_id":resp.RelInList_id[i],
@@ -1241,16 +1229,6 @@ function ImportECUlist(){
                 console.log(resp.RelInList_id);
                 console.log(resp.RelInList_id_ecu);
                 console.log(resp.RelInList_id_type);
-                /*
-                for (i = 0; i < resp.ecuList_name.length; i++) {
-                    console.log("ecuList_name: ",resp.ecuList_name[i])
-                    if(resp.ecuList_dx[i] != ""){
-                        resp.ecuList_name[i] = resp.ecuList_name[i] + " - " + resp.ecuList_dx[i]
-                    }
-                    console.log("ecuList_dx: ",resp.ecuList_dx[i])
-                }
-                */
-
 
                 console.log("data_table: ",data_table);
             
@@ -1263,10 +1241,19 @@ function ImportECUlist(){
                 {data: "RelInList_id_ecu", type: 'numeric', readOnly: true, editor: false,allowEmpty:true},
                 {data: "RelInList_dx", readOnly: true, editor: false,allowEmpty:true},
                 //{data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true, validator: emptyValidator},
-                {data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true},
+                {data: "RelInList_ecu_name",type:'dropdown',source: resp.ecuList_name,strict:true, validator: function (value, callback) {
+                    if (value == '' || value == null) {
+                    //callback(this.allowEmpty);
+                    callback(false);
+                    return;
+                    }
+                    callback(true);
+                    },
+                },
                 {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
-                    if (value === '' || value == null) {
-                    callback(this.allowEmpty);
+                    if (value == '' || value == null) {
+                    //callback(this.allowEmpty);
+                    callback(false);
                     return;
                     }
                     callback(true);
@@ -1287,8 +1274,6 @@ function ImportECUlist(){
                     }
                 },
                 },
-
-
 
                 //date in weeks---
                 {data: "RelInList_date_w",allowEmpty:true,
@@ -1318,10 +1303,25 @@ function ImportECUlist(){
                 },
 
 
-
-                {data: "RelInList_type_name",type:'dropdown',source: resp.type_list_name, strict:true,},
+                {data: "RelInList_type_name",type:'dropdown',source: resp.type_list_name, strict:true, validator: function (value, callback) {
+                    if (value == '' || value == null) {
+                    //callback(this.allowEmpty);
+                    callback(false);
+                    return;
+                    }
+                    callback(true);
+                    },
+                },
                 //{data: "RelInList_plan",allowEmpty:true},
-                {data: "RelInList_plan",type:'dropdown',source: resp.plan_list_name, strict:true,},
+                {data: "RelInList_plan",type:'dropdown',source: resp.plan_list_name, strict:true, validator: function (value, callback) {
+                    if (value == '' || value == null) {
+                    //callback(this.allowEmpty);
+                    callback(false);
+                    return;
+                    }
+                    callback(true);
+                    },
+                },
                 {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},
                 {data: "RelInList_comment",allowEmpty:true, validator: function (value, callback) {
                     if(value != null){
@@ -1364,7 +1364,7 @@ function ImportECUlist(){
             tblExcel.alter('remove_row');
         }
 
-
+        /*
         function validate_table_propia(){
                 //var all_data = tblExcel.getData()//all data table. Formato Array
                 var all_data = tblExcel.getSourceData()//all data table. Formato JSON
@@ -1416,6 +1416,7 @@ function ImportECUlist(){
                 }
                 return flag_empty
         }
+        */
 
         //Validate and send (save) the table
         function sendDataReleaselist(){
@@ -1428,10 +1429,10 @@ function ImportECUlist(){
             tblExcel.validateCells((valid) => {
             if (valid) {
                 //is valid
-                flag_empty = validate_table_propia()
-                console.log("flag_empty: ",flag_empty)
+                //flag_empty = validate_table_propia()
+                //console.log("flag_empty: ",flag_empty)
 
-                if(flag_empty == false){
+                //if(flag_empty == false){
                     var all_data = tblExcel.getSourceData()
                     //implementar sistema que almacene orden de usuario (id_ecu visual) y reinserte las filas en el mismo al actualizar
                     id_v = version_id
@@ -1454,7 +1455,7 @@ function ImportECUlist(){
                                     failure: function(respuesta){console.log("Hay un error:" + respuesta.d);},
 
                             });
-                    }
+                    //}
             }
             else{
                 //is invalid

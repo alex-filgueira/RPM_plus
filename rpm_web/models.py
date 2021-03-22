@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.utils.timezone import datetime #important if using timezones
+from datetime import date
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
 #Para utilizar usuarios de Django:
@@ -156,9 +157,13 @@ class MProject(models.Model):
     name = models.CharField(max_length = 200,default='',blank=True)
     comment = models.CharField(max_length = 200,default='',blank=True)
     #variables representacion
-    date_ini = models.CharField(max_length = 50,default=datetime.now().strftime("%dY%m%Y"),blank=True)
-    date_end = models.CharField(max_length = 50,default=datetime.now().strftime("%d%m%Y"),blank=True)
-    date_status = models.CharField(max_length = 50,default=datetime.now().strftime("%d%m%Y"),blank=True)
+    #Get day today
+    today = date.today()
+    d1 = today.strftime('%Y-%m-%d')
+
+    date_ini = models.CharField(max_length = 50,default=d1,blank=True)
+    date_end = models.CharField(max_length = 50,default=d1,blank=True)
+    date_status = models.CharField(max_length = 50,default=d1,blank=True)
     max_ecu_slide = models.IntegerField(default=8,validators=[MinValueValidator(1), MaxValueValidator(100)])
     factor_weeks = models.IntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(100)])
 
@@ -214,7 +219,10 @@ class MRelease_input(models.Model):
 
     n_version = models.CharField(max_length = 50,default='',blank=True)
     #date_beantragt = models.CharField(max_length = 50,default=datetime.today,blank=True)
-    date_beantragt = models.CharField(max_length = 50,default=datetime.now().strftime("%d%m%Y"), blank=True)
+    today = date.today()
+    d1 = today.strftime("%d%m%Y")
+    #date_beantragt = models.CharField(max_length = 50,default=datetime.now().strftime("%d%m%Y"), blank=True)
+    date_beantragt = models.CharField(max_length = 50,default=d1, blank=True)
     
     #plan = models.CharField(max_length = 50,default='',blank=True)
     id_plan = models.ForeignKey(to=MPlan2, on_delete=models.SET_NULL, null=True, blank=True) # pondrá en null el campo si el registro del ECU relacionado es eliminado de la base de datos

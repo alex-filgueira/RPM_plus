@@ -881,6 +881,7 @@ function ImportECUlist(){
     });
 
 
+    var flag_after_change = true //flag for evite the relaunch afterchange edit automatic
 
     function load_RI(){
         console.log("load_RI()")
@@ -941,12 +942,17 @@ function ImportECUlist(){
         //populate data
         var data_table = []
         for (i = 0; i < RelInList_id.length; i++) {
+            // date to weeks
+            console.log("RelInList_date[i]:",RelInList_date[i])
+            date_week = ""
             data_table.push({
                 "RelInList_id":RelInList_id[i],
                 "RelInList_id_ecu":RelInList_id_ecu[i],
                 "RelInList_id_type":RelInList_id_type[i],
                 "RelInList_n_version":RelInList_n_version[i],
                 "RelInList_date":RelInList_date[i],
+                "RelInList_date_w":date_week,
+
                 "RelInList_plan":RelInList_plan[i],
                 "RelInList_id_plan":RelInList_id_plan[i],
                 "RelInList_visual":RelInList_visual[i],
@@ -963,12 +969,13 @@ function ImportECUlist(){
 
         searchFiled = document.getElementById('search_field');
 
+
         config_resultados = {
             data: data_table,
             //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
-            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null, RelInList_type_name: null, RelInList_plan: null, RelInList_visual: true, RelInList_comment: null, RelInList_marked1:null},
+            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null,RelInList_date_w: null,  RelInList_type_name: null, RelInList_plan: null, RelInList_visual: true, RelInList_comment: null, RelInList_marked1:null},
             //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
-            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','type','plan','visual', 'comment', 'marked1',],
+            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','date (ww-yyyy)','type','plan','visual', 'comment', 'marked1',],
             columns:[
                 /* Comented for evit the first load in false
                 {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
@@ -1043,13 +1050,87 @@ function ImportECUlist(){
             search: true,
             licenseKey: 'non-commercial-and-evaluation',
             
-            afterChange: function(registrosModificados,accionesHandsontable){
+            afterChange: function(changes,source){
                 //console.log("afterChange");
-                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
+                if(source != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
                     if(autosave){
                     sendDataReleaselist();
                     }
                 }
+
+
+                if(source == 'edit' && flag_after_change == true){
+                    flag_after_change = false
+
+                //first check if is valid
+                tblExcel.validateCells((valid) => {
+                if (valid) {
+                    //$.each(changes, function(index, element) {
+                    element = changes[0]
+                    var row = element[0];
+                    var col = element[1];
+                    //console.log("col:",col)
+                    //if change data celss
+                    if(col == 'RelInList_date'){
+                        //var oldVal = element[2];
+                        var newVal = element[3];
+                        var pos_c = 0
+                        var i = 0
+                        //get column for the RelInList_date
+                        for(var key in data_table[0]) {
+                            i++
+                            if(key == 'RelInList_date_w'){
+                                pos_c = i
+                            }
+                        }
+                        //take data and convert to week
+                        date_week = newVal
+                        if((date_week != "") && (date_week != null)){
+                            d_list = date_week.split("/")
+                            d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
+                            d_m = moment(d);
+                            w = d_m.format('WW') //ISO week
+                            y = d_m.format('GGGG')
+                            date_week = w + '-' + y
+                        }
+                        tblExcel.setDataAtCell(row,pos_c,date_week) //this launch a afterchange
+                    }
+
+                    //if change week celss
+                    if(col == 'RelInList_date_w'){
+                        //var oldVal = element[2];
+                        var newVal = element[3];
+                        var pos_c = 0
+                        var i = 0
+                        //get column for the RelInList_date
+                        for(var key in data_table[0]) {
+                            i++
+                            if(key == 'RelInList_date'){
+                                pos_c = i
+                            }
+                        }
+                        //take week and convert to data
+                        date= newVal
+                        if((date != "") && (date != null)){
+
+                            date = getDateOfISOWeek(newVal.split("-")[0],newVal.split("-")[1]) //week, year
+                            console.log("date:",date)
+                            date_format = formatDate2(date)
+                            console.log("date_format:",date_format)
+                        }
+                        tblExcel.setDataAtCell(row,pos_c,date_format) //this launch a afterchange
+                    }
+                }})
+                }
+                
+                else{
+                    flag_after_change = true
+                }
+            
+
+                
+
+
             },
             afterColumnSort:function(currentSortConfig,destinationSortConfigs){
                 console.log("afterColumnSort");
@@ -1089,11 +1170,10 @@ function ImportECUlist(){
 
         //Add table for ResultadoTabla
         tblExcel = new Handsontable(document.getElementById('ResultadoTabla'),config_resultados);
+
         tblExcel.render();
 
         tblExcel.validateCells();//launch the validator after load the page
-
-
 
         Handsontable.dom.addEvent(searchFiled, 'keyup', function (event) {
             var search = tblExcel.getPlugin('search');
@@ -1104,20 +1184,48 @@ function ImportECUlist(){
         });
     }
 
+    
+
 
         function updateRinputs(resp) {
                 console.log("updateRinputs()")
                 console.log("RelInList_id: ",resp.RelInList_id);
                 //formato: resp.
                 //ej: resp.ecuList_name
+
                 var data_table = []
                 for (i = 0; i < resp.RelInList_id.length; i++) {
+                    // date to weeks
+                    console.log("RelInList_date[i]:",resp.RelInList_date[i])
+                    date_week = resp.RelInList_date[i]
+                    if(date_week != ""){
+                        console.log("date_week:",date_week)
+                        d_list = date_week.split("/")
+                        console.log("d_list:",d_list)
+                        d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
+                        console.log("d:",d)
+
+                        d_m = moment(d);
+                        console.log("d_m:",d_m)
+
+                        w = d_m.format('WW') //ISO week
+                        console.log("w:",w)
+
+                        y = d_m.format('GGGG')
+                        console.log("y:",y)
+
+                        date_week = w + '-' + y
+                    }
+ 
+
                     data_table.push({
                         "RelInList_id":resp.RelInList_id[i],
                         "RelInList_id_ecu":resp.RelInList_id_ecu[i],
                         "RelInList_id_type":resp.RelInList_id_type[i],
                         "RelInList_n_version":resp.RelInList_n_version[i],
                         "RelInList_date":resp.RelInList_date[i],
+                        "RelInList_date_w":date_week,
+
                         "RelInList_plan":resp.RelInList_plan[i],
                         "RelInList_id_plan":resp.RelInList_id_plan[i],
                         "RelInList_visual":resp.RelInList_visual[i],
@@ -1181,6 +1289,35 @@ function ImportECUlist(){
 
 
 
+                //date in weeks---
+                {data: "RelInList_date_w",allowEmpty:true,
+                    validator: function(value, callback) {
+                        if((value == "") || (value == null)){
+                            callback(true)
+                        }
+                        else{
+                            if( (/^([0-9]|-){0,7}$/.test(value)) && (/[0-9](?=-)/.test(value)) && (/(?<=-)[0-9]/.test(value))){
+                                val_list = value.split("-")
+                                if(val_list.length == 2){ //2 grupos
+                                    console.log(val_list[0].length)
+                                    if((val_list[0].length == 2) && (val_list[1].length == 4)){
+                                        callback(true)
+                                    } else{
+                                        callback(false)
+                                    }
+                                
+                                } else{
+                                    callback(false)
+                                }
+                            } else {
+                                callback(false)
+                            }
+                        }
+                    }
+                },
+
+
+
                 {data: "RelInList_type_name",type:'dropdown',source: resp.type_list_name, strict:true,},
                 //{data: "RelInList_plan",allowEmpty:true},
                 {data: "RelInList_plan",type:'dropdown',source: resp.plan_list_name, strict:true,},
@@ -1214,6 +1351,7 @@ function ImportECUlist(){
 
                 //tblExcel.loadData(data_table);
             }
+
 
         function addRow_RI(){
             console.log("addRow_RI")
@@ -2379,6 +2517,20 @@ function formatDate(date) { //format date yyyy-mm-dd
         day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+function formatDate2(date) { //format date yyyy-mm-dd
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [day, month, year].join('/');
 }
 
 

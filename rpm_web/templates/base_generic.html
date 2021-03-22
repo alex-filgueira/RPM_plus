@@ -112,9 +112,162 @@
 
   {% block subheader %}
     <div class="container-fluid text-center">
-      <h3>RPM_web</h3>
-      <p>User: {{ user.get_username }}</p> 
+      <div class="row">
+        <div class="col-lg-1 p-0" >
+          <div id="id_svg_min"></div>
+        </div>
+        <div class="col-lg-1 p-0">
+          <p>User: {{ user.get_username }}</p> 
+        </div>
+        <div class="col-lg-2 offset-lg-3 p-0" >
+          <a href="{% url 'frontpage' %}">
+            <img class="mb-4" src="{% static 'brand/logo.svg' %}" alt="" width="82" height="82">
+         </a>
+        </div>
+
+      </div>
     </div>
+
+    <script>
+
+    $(document).ready(function() {
+
+    //new_avataaar()
+    //cache
+    var avatar_min_cache = localStorage['avatar_min'] || 'default';
+    var avatar_cache = localStorage['avatar'] || 'default';
+    //console.log("avatar_min_cache:",avatar_min_cache)
+    if(avatar_min_cache != "default"){
+      document.getElementById("id_svg_min").innerHTML = avatar_min_cache
+      
+      //document.getElementById("id_svg_min").innerHTML = avatar_min
+      document.getElementById("id_svg_min").value = avatar_cache
+    }
+    else{
+      new_avataaar()
+    }
+    //console.log("avatar:",avatar)
+
+    })
+
+        function new_avataaar(){
+          console.log("new_avataaar()")
+        //avatar = Avataaars.create(); //https://github.com/HB0N0/AvataaarsJs  && https://www.cssscript.com/svg-avatar-generator/
+
+        // Read all customizable Paths/Shapes as Array
+        //console.log(Object.keys(Avataaars.paths));
+        keys = Object.keys(Avataaars.paths)
+        // >> ["skin", "top", ...]
+        var par = {};
+
+        items = Object.keys(Avataaars.colors.skin)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['skinColor'] = item
+
+        items = Object.keys(Avataaars.paths.top)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['top'] = item
+
+        items = Object.keys(Avataaars.colors.hair)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['hairColor'] = item
+
+        items = Object.keys(Avataaars.colors.palette)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['hatColor'] = item
+
+        items = Object.keys(Avataaars.paths.accessories)
+        item = items[Math.floor(Math.random() * items.length)];
+        ran = Math.round(Math.random())
+        if(ran == 1){
+          par['accessories'] = item
+        }
+
+        items = Object.keys(Avataaars.colors.palette)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['accessoriesColor'] = item
+
+        items = Object.keys(Avataaars.paths.facialHair)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['facialHair'] = item
+
+        items = Object.keys(Avataaars.colors.hair)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['facialHairColor'] = item
+  
+        items = Object.keys(Avataaars.paths.clothing)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['clothing'] = item
+
+        items = Object.keys(Avataaars.paths.clothingGraphic)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['clothingGraphic'] = item
+
+        items = Object.keys(Avataaars.colors.palette)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['clothingColor'] = item
+  
+        items = Object.keys(Avataaars.paths.eyes)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['eyes'] = item
+
+        items = Object.keys(Avataaars.paths.eyebrows)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['eyebrows'] = item
+
+        items = Object.keys(Avataaars.paths.mouth)
+        item = items[Math.floor(Math.random() * items.length)];
+        par['mouth'] = item
+      
+        //console.log("par:",par)
+
+        var avatar = Avataaars.create({
+            //skinType: par['skinType'],
+            skin: par['skinColor'],
+            top: par['top'],
+            hairColor: par['hairColor'],
+            hatColor: par['hatColor'],
+            accessories: par['accessories'],
+            accessoriesColor: par['accessoriesColor'],
+            facialHair: par['facialHair'],
+            facialHairColor: par['facialHairColor'],
+            clothing: par['clothing'],
+            clothingGraphic: par['clothingGraphic'],
+            clothingColor: par['clothingColor'],
+            eyes: par['eyes'],
+            eyebrows: par['eyebrows'],
+            mouth: par['mouth'],
+            width: "300",
+            height: "300",
+        });
+        //document.getElementById("id_svg").innerHTML = avatar
+
+        avatar_min = Avataaars.create({
+            //skinType: par['skinType'],
+            skin: par['skinColor'],
+            top: par['top'],
+            hairColor: par['hairColor'],
+            hatColor: par['hatColor'],
+            accessories: par['accessories'],
+            accessoriesColor: par['accessoriesColor'],
+            facialHair: par['facialHair'],
+            facialHairColor: par['facialHairColor'],
+            clothing: par['clothing'],
+            clothingGraphic: par['clothingGraphic'],
+            clothingColor: par['clothingColor'],
+            eyes: par['eyes'],
+            eyebrows: par['eyebrows'],
+            mouth: par['mouth'],
+            width: "100",
+            height: "100",
+        });
+      
+        document.getElementById("id_svg_min").innerHTML = avatar_min
+        document.getElementById("id_svg_min").value = avatar 
+}
+
+    </script>
+
   {% endblock %}
 
   {% block mainmenu %}
@@ -182,5 +335,6 @@
 
 </body>
 {% endblock %}
+
 
 </html>

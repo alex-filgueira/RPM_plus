@@ -177,22 +177,68 @@
 
 
 
+<!--
+  <div class="form-content" >
+    {{ form.old_password }}
+    {{ form.new_password1 }}
+    {{ form.new_password2 }}
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Save changes</button>
+  </form>
+</div>
+
+
+<div class="form-content" style="display:none;">
+  <form class="form" role="form" method="post" id="id_form_pass">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-lg-6">
+        <label for="old_pass">Current Password</label>
+        </div>
+        <div class="col-lg-6">
+        {{ form.old_password }}
+        </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-6">
+      <label for="new_pass">New Password</label>
+      </div>
+      <div class="col-lg-6">
+      {{ form.new_password1 }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+      <label for="new_pass">Confirm New Password</label>
+      </div>
+      <div class="col-lg-6">
+      {{ form.new_password2 }}
+      </div>
+    </div>
+  </form>
+</div>
+-->
+<!--
   <div class="form-content" style="display:none;">
     <form class="form" role="form">
       <div class="form-group">
-        <label for="old_pass">Old password</label>
-        <input type="password" class="form-control" id="id_old_pass" name="old_pass" placeholder="Enter old Password" value=""></input>
+        <label for="old_pass">Current Password</label>
+        <input type="text" class="form-control" id="id_old_pass" name="old_pass" placeholder="Enter old Password" value=""></input>
       </div>
       <div class="form-group">
         <label for="new_pass">New Password</label>
         <input type="password" class="form-control" id="id_new_pass" name="new_password" placeholder="New Password">
       </div>
       <div class="form-group">
-        <label for="new_pass">Repeat New Password</label>
+        <label for="new_pass">Confirm New Password</label>
         <input type="password" class="form-control" id="id_rep_pass" name="rep_password" placeholder="New Password">
       </div>
     </form>
   </div>
+-->
 
 
 
@@ -419,41 +465,127 @@ function new_avataaar2(){
 
 function change_password(){
   console.log("change_password()")
-  var modal = bootbox.dialog({
+
+  bootbox.prompt({
     closeButton: false,
-        message: $(".form-content").html(),
-        title: "Change password",
-        buttons: [
-          {
-            label: "Save",
-            className: "btn btn-primary pull-left",
-            callback: function() {
-              console.log("save:")  
-              old_pass = document.getElementById("id_old_pass")
-              new_pass1 = document.getElementById("id_new_pass")
-              new_pass2 = document.getElementById("id_rep_pass")
-              console.log(old_pass)
-              console.log(new_pass1)
-              console.log(new_pass2)
-              console.log($('form #id_old_pass').val())
-            }
-          },
-          {
-            label: "Close",
-            className: "btn btn-default pull-left",
-            callback: function() {
-              console.log("just do something on close");
-            }
-          }
-        ],
-        show: false,
-        onEscape: function() {
-          modal.modal("hide");
+    title: "Introduce your current password",
+    inputType: 'password',
+    callback: function (result) {
+        console.log(result);
+        if((result != "") && (result != null)){
+        old_pass = result
+        send_old_pass(old_pass)
         }
-    });
-    
-    modal.modal("show");
-  
+    }
+  });
+ 
+}
+
+function send_old_pass(pass){
+  old_pass = pass
+  $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'change_pass' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { old_pass } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(resp){
+                                      console.log("resp:",resp)
+                                      if(resp.flag_pass_old){
+                                        console.log("TRUE")
+                                        create_new_pass()
+                                      }
+                                      else{
+                                        console.log("FALSE")
+                                        bootbox.alert({
+                                          closeButton: false,
+                                          message:"The password is incorrect!",
+                                        });
+                                      }
+
+                                    },
+                                    failure: function(resp){console.log("Hay un error:" + resp);},
+                            });
+}
+
+function create_new_pass(){
+  bootbox.prompt({
+    closeButton: false,
+    title: "Introduce your new password (8 characteres min)",
+    inputType: 'password',
+    callback: function (result) {
+        console.log(result);
+        if((result != "") && (result != null) && (result.length >=8 )){
+        new_pass = result
+        create_new_pass_check(new_pass)
+        }
+        else{
+          bootbox.alert({
+            closeButton: false,
+            message:"The new password will have a length 8 or more",
+          });
+        }
+    }
+  });
+}
+
+function create_new_pass_check(pass){
+  bootbox.prompt({
+    closeButton: false,
+    title: "Confirm your new password",
+    inputType: 'password',
+    callback: function (result) {
+        console.log(result);
+        if((result != "") && (result != null)){
+        new_pass2 = result
+        if(pass == new_pass2){
+          send_new_pass(pass)
+        }
+        else{
+          bootbox.alert({
+            closeButton: false,
+            message:"Error in the confirmation!",
+          });
+        }
+        }
+    }
+  });
+}
+
+function send_new_pass(pass){
+  new_pass = pass
+  $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'change_pass' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { new_pass } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(resp){
+                                      console.log("resp:",resp)
+                                      if(resp.flag_pass_new){
+                                        bootbox.alert({
+                                          closeButton: false,
+                                          message:"Congratulations: The password was updated! You will be logout.",
+                                          callback: function (result) {
+                                            //logout;
+                                            var url = "{% url 'logout'%}?next={{request.path}}";
+                                            document.location.href = url
+                                          }
+                                        });
+                                      }
+                                      else{
+                                        bootbox.alert({
+                                          closeButton: false,
+                                          message:"ERROR: Not update the password.",
+                                        });
+                                      }
+                                    },
+                                    failure: function(resp){console.log("Hay un error:" + resp);},
+                            });
 }
 
 

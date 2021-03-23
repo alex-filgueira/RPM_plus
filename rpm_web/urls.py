@@ -56,7 +56,8 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r'^user_profile/$', views.user_profile, name='user_profile'),                                                                                                                       
+    url(r'^user_profile/$', views.user_profile, name='user_profile'),
+    url(r'^change_pass/$', views.change_pass, name='change_pass'),
 ]
 
 

@@ -28,14 +28,43 @@ from django.contrib.auth.forms import UserCreationForm
 
 #------------User perfil----------------------------------------
 #------------------------------------------------------------------------
-def user_profile(request):
-    print("user_profile()")
+def change_pass(request):
+    print("change_pass()")
     if request.user.is_authenticated:
         if request.method == 'POST':
             json_table = json.loads(request.body)
             print("json_table:",json_table)
 
-        
+            flag_pass_old = False
+            flag_pass_new = False
+            if 'old_pass' in json_table:
+                #Check the old/actual pass
+                if request.user.check_password(json_table['old_pass']): #Compare password
+                    flag_pass_old = True
+            if 'new_pass' in json_table:
+                #Save the new pass
+                u = User.objects.get(username= request.user)
+                u.set_password(json_table['new_pass'])
+                u.save()
+                flag_pass_new = True
+
+            
+        return JsonResponse({
+            'ok':True,
+            'flag_pass_old':flag_pass_old,
+            'flag_pass_new':flag_pass_new,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+
+
+def user_profile(request):
+    print("user_profile()")
+    if request.user.is_authenticated:
+        #if request.method == 'POST':
+
+
         print("user:",request.user)
         user_obj = User.objects.filter(username = request.user) # https://docs.djangoproject.com/en/3.1/ref/contrib/auth/
         print("obj:",user_obj)
@@ -69,7 +98,7 @@ def user_profile(request):
         l = request.user.groups.values_list('name',flat = True) # QuerySet Object
         l_as_list = list(l)
         print("l_as_list:",l_as_list) 
-
+ 
         context = {
             'ok':True,
             'username':username,
@@ -78,6 +107,7 @@ def user_profile(request):
             'last_name':last_name,
             'groups':groups,
             'date_joined':date_joined,
+
         } 
 
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto

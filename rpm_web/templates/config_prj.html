@@ -351,10 +351,7 @@
 
 
 
-
-<form id = id_form name = "form" action = "{% url 'update_prj_form' %}" method = "POST" >{% csrf_token %}</form>
-
-
+{% csrf_token %}
 
 <script type="text/javascript">
       //Configuro ajax con el CSRFToken---------------------

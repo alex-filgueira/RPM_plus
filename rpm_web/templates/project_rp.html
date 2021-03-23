@@ -57,7 +57,6 @@
 <!-- Datos del proyecto-->
 <div class="card card-body"> <!-- card item-->
 <div class="container-fluid " >
-    <form id = id_form name = "form" action = "{% url 'update_prj_form' %}" method = "POST" >{% csrf_token %}
     <div class="row">
         <div class="col-lg-10 p-0">
                 <div class="row" >
@@ -67,10 +66,10 @@
                         <input type="text" class="form-control"  name = "prjname" placeholder="Project name..." value="{{prj_name}}" id="id_prj_name_input">
                     </div>
                     <div class="col-lg-3 p-0">
-                        <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="" id="id_prj_comment_input">
+                        <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="{{prj_comment}}" id="id_prj_comment_input">
                     </div>
                     <div class="col-lg-2 p-0">
-                        <button type="submit" name="update"  class="btn btn-success "  style="width:100%;">Update</button> <!-- Submit! form.-->
+                        <button type="button" name="update"  class="btn btn-success " onclick="updateProjectMetadata()" style="width:100%;">Update</button>
                     </div>
                     <div class="col-lg-1 p-0">
                         <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeProject()" style="width:100%;">X</button>
@@ -85,7 +84,6 @@
             </div>
         </div>
     </div>
-    </form> <!-- Cierra form.-->
 </div>
 </div>
 
@@ -461,6 +459,29 @@
     });
 
     //Project manager functions---------------------------------------------------
+function updateProjectMetadata(){
+    console.log("updateProjectMetadata()")
+
+    prj_name = document.getElementById("id_prj_name_input").value
+    prj_comment = document.getElementById("id_prj_comment_input").value
+    prj_id = "{{prj_id}}"
+
+    $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'update_project_metadata' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { prj_name, prj_comment,prj_id } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(respuesta){
+                                        console.log("respuesta:" + respuesta)
+                                    },
+                                    failure: function(respuesta){console.log("Hay un error:" + respuesta);},
+                            });
+
+}
+
     function removeProject(){
         console.log("removeProject()")
         bootbox.confirm({
@@ -1767,9 +1788,10 @@ function check_row_import_csv(csv_line){
             tblExcel.validateCells((valid) => {
             if (valid) {
                 //is valid
-                flag_empty = validate_table_propia()
-                console.log("flag_empty: ",flag_empty)
+                //flag_empty = validate_table_propia() //removed 23/03/21
+                //console.log("flag_empty: ",flag_empty)
 
+                flag_empty = false //force for test  23/03/21
                 if(flag_empty == false){
 
                     prj_id = "{{prj_id}}"; //this is the ID project

@@ -770,7 +770,7 @@ def generatePptData(request):
 
     else:
         return HttpResponseRedirect(reverse('login') )
-
+"""
 def pptgen(request):
     if request.user.is_authenticated:
         # Genera contadores de algunos de los objetos principales
@@ -794,7 +794,7 @@ def pptgen(request):
     else:
         return HttpResponseRedirect(reverse('login') )
 
-
+"""
 
 #------------Users----------------------------------------
 #------------------------------------------------------------------------
@@ -1015,6 +1015,7 @@ def frontpage(request):
 
 #------------Configurar proyectos----------------------------------------
 #------------------------------------------------------------------------
+"""
 def projectlist(request):
     print("projectlist()")
     if request.user.is_authenticated:
@@ -1027,14 +1028,15 @@ def projectlist(request):
 
     else:
         return HttpResponseRedirect(reverse('login') )
+"""
 
-
+"""
 def update_prj_form(request):
     print("update_prj_form()")
     if request.user.is_authenticated:
         if request.method == "POST":
                 print("POST")
-                #print("body:",request.body)
+                print("body:",request.body)
 
                 prjname = request.POST.get("prjname")#Viene de un FORM
                 print("prjname: ",prjname)
@@ -1053,26 +1055,15 @@ def update_prj_form(request):
                     project_objt_selected.comment = prjcomment
                     project_objt_selected.save()
 
-                """
-                else:
-                    if prjname != "":
-                        print("Create new")
-                        new_prj = MProject()
-                        new_prj.name = prjname
-                        new_prj.comment = prjcomment
-                        new_prj.id_user_id = request.user.id #need id_user_id not id_user
-                        new_prj.save()
-                    else:
-                        print("Need a name")
-                """
 
         return HttpResponseRedirect(reverse('projects_rp_load', kwargs={'pk':prjid}))
 
         #return HttpResponseRedirect(reverse('projects', args=("")))
     else:
         return HttpResponseRedirect(reverse('login') )
+"""
 
-
+"""
 def change_prj_select(request):
     print("change_prj_select()")
     if request.user.is_authenticated:
@@ -1104,17 +1095,6 @@ def change_prj_select(request):
                     prj_comment = elt.comment
                     prj_id = elt.id
 
-                """
-                version_obj = MVersion.objects.filter(id_project_id=select_value)
-                v_name = []
-                v_comment = []
-                v_id = []
-                for elt in version_obj:
-                    print("name: ",elt.name)
-                    v_name.append(elt.name)
-                    v_comment.append(elt.comment)
-                    v_id.append(elt.id)
-                """
 
                 return JsonResponse({
                     'prj_name':prj_name,
@@ -1139,6 +1119,7 @@ def change_prj_select(request):
 
     else:
         return HttpResponseRedirect(reverse('login') )
+"""
 
 def remove_project(request):
     print("remove_project()")
@@ -1253,11 +1234,23 @@ def projects_rp(request):
 """
 
 def projects_rp_load(request,pk):
+#def projects_rp_load(request):    
     print("projects_rp_load()")
-    print("project pk: ",pk)
+    
+    #print("project pk: ",pk)
+    #pk = -1
     if request.user.is_authenticated:
 
         project_list = MProject.objects.filter(id_user=request.user.id)
+
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            
+            if 'pk' in json_table:
+                pk = ['pk']
+
 
         if pk == "-1":#Select the first or create new
             print("Select first project")
@@ -1348,6 +1341,33 @@ def projects_rp_load(request,pk):
         return render(request,'project_rp.html',context=context)
     else:
         return HttpResponseRedirect(reverse('login') )
+
+def update_project_metadata(request):
+    print("update_project_metadata()")
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            print("POST")
+            print("body:",request.body)
+                
+            json_request= json.loads(request.body)
+            print("json_request:",json_request)
+
+            if 'prj_id' in json_request:
+                prj = MProject.objects.get(pk=json_request['prj_id'])
+                prj.name = json_request['prj_name']
+                prj.comment= json_request['prj_comment']
+                prj.save()
+
+            return JsonResponse({
+                'flag_ok':True,
+
+            })
+
+        #return HttpResponseRedirect(reverse('projects', args=("")))
+    else:
+        return HttpResponseRedirect(reverse('login') )            
+
+
 
 def update_version_form(request):
     print("update_version_form()")

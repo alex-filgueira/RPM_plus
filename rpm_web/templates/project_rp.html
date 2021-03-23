@@ -11,10 +11,10 @@
             <a class="nav-link"  href="{% url 'frontpage' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+            <a class="nav-link active" href="{% url 'projects_rp_load' -1%}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'config_prj'%}">Conf Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
+            <a class="nav-link" href="{% url 'config_prj'%}">Conf Projects</a> 
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'user_profile'%}">Profile</a>
@@ -39,11 +39,19 @@
 
 <!-- Tabs selectoras de proyecto-->
 <ul id="projects_tab" class="nav nav-tabs "   > 
-    {% for prj in mproject_list %}
+    {% for prj in project_list %}
         <li class="nav-item">
-            <a href="{% url 'projects_rp_load' prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
+            <a href="{% url 'projects_rp_load'  prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
         </li>
     {% endfor %}
+
+    <!-- Proyectos de otros usuarios-->
+    {% for prj in project_list_extra %}
+    <li class="nav-item" style="background-color: rgb(177, 86, 90);">
+        <a href="{% url 'projects_rp_load'  prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
+    </li>
+    {% endfor %} 
+     
     <li class="nav-item">
         <a href="{% url 'projects_rp_load' 0 %}" class="nav-link"  value="0">
             <i class="bi bi-plus-square"></i>
@@ -59,6 +67,14 @@
 <div class="container-fluid " >
     <div class="row">
         <div class="col-lg-10 p-0">
+            <div class="row" >
+                <div class="col-lg-2 input-group-text" id="id_prj_owner">Owner: </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 p-0">
                 <div class="row" >
                     <div class="col-lg-2 input-group-text" >Project data</div>
                     <div class="col-lg-3 p-0">
@@ -69,11 +85,12 @@
                         <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="{{prj_comment}}" id="id_prj_comment_input">
                     </div>
                     <div class="col-lg-2 p-0">
-                        <button type="button" name="update"  class="btn btn-success " onclick="updateProjectMetadata()" style="width:100%;">Update</button>
+                        <button type="button" name="update" id=id_updateProjectMetadata  class="btn btn-success " onclick="updateProjectMetadata()" style="width:100%;">Update</button>
                     </div>
                     <div class="col-lg-1 p-0">
-                        <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeProject()" style="width:100%;">X</button>
+                        <button type="button" name="remove" id="id_removeProject" class="btn btn-danger btn_remove" onclick="removeProject()" style="width:100%;">X</button>
                     </div>
+                    
                 </div>
         </div>
         <div class="col-lg-2 p-0">
@@ -106,13 +123,13 @@
                     <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="{{version_name}}" id="id_vers_name_input" size=2>
                 </div>
                 <div class="col-lg-2 p-0">
-                    <button type="button" name="update"  class="btn btn-success " onclick="updateVersion()" style="width:100%;">Update</button>
+                    <button type="button" name="update" id="id_updateVersion"  class="btn btn-success " onclick="updateVersion()" style="width:100%;">Update</button>
                 </div>
                 <div class="col-lg-1 p-0">
-                    <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;">X</button>
+                    <button type="button" name="remove" id="id_removeVersion" class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;">X</button>
                 </div>
                 <div class="col-lg-1 p-0">
-                    <button type="button" name="new"  class="btn btn-primary " onclick="newVersion()" style="width:100%;" title="Create new version based on this">New</button>
+                    <button type="button" name="new" id="id_newVersion" class="btn btn-primary " onclick="newVersion()" style="width:100%;" title="Create new version based on this">New</button>
                 </div>
             </div>
         </div>
@@ -350,6 +367,27 @@
         factor_weeks = "{{factor_weeks}}"
         max_ecu_slide = "{{max_ecu_slide}}"
 
+        //enable or disable buttons etc------
+
+        console.log("flag_disabled:")
+        console.log("{{flag_disabled}}")
+        flag_disable = false
+        if("{{flag_disabled}}" == "True"){
+            flag_disable = true
+        }
+        document.getElementById("id_prj_name_input").disabled = flag_disable
+        document.getElementById("id_prj_comment_input").disabled = flag_disable
+        document.getElementById("id_updateProjectMetadata").disabled = flag_disable
+        document.getElementById("id_removeProject").disabled = flag_disable
+        document.getElementById("id_vers_name_input").disabled = flag_disable
+        document.getElementById("id_updateVersion").disabled = flag_disable
+        document.getElementById("id_removeVersion").disabled = flag_disable
+        document.getElementById("id_newVersion").disabled = flag_disable
+
+        get_project_owner()
+
+        //---
+
         load_RI();
 
         //select tab
@@ -459,6 +497,28 @@
     });
 
     //Project manager functions---------------------------------------------------
+
+function get_project_owner(){
+    console.log("get_project_owner()")
+    prj_id = "{{prj_id}}"
+    $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'getprojectowner' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { prj_id } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(resp){
+                                        console.log("resp:" + resp)
+                                        document.getElementById('id_prj_owner').innerHTML = 'Owner: ' + resp.prj_owner
+                                    },
+                                    failure: function(resp){console.log("Hay un error:" + resp);},
+                            });
+
+}
+
+
 function updateProjectMetadata(){
     console.log("updateProjectMetadata()")
 

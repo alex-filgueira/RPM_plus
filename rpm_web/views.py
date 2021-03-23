@@ -770,31 +770,7 @@ def generatePptData(request):
 
     else:
         return HttpResponseRedirect(reverse('login') )
-"""
-def pptgen(request):
-    if request.user.is_authenticated:
-        # Genera contadores de algunos de los objetos principales
-        num_users=User.objects.all().count()
-        num_projects=MProject.objects.all().count()
 
-        # uso de sesiones: https://docs.djangoproject.com/en/3.1/topics/http/sessions/
-        # Numero de visitas a esta view, como está contado en la variable de sesión.
-        num_visits = request.session.get('num_visits', 0)
-        request.session['num_visits'] = num_visits + 1
-
-        context = {
-            'num_users':num_users,
-            'num_projects':num_projects,
-            'num_visits':num_visits,
-        } 
-
-        # Renderiza la plantilla HTML index.html con los datos en la variable contexto
-        return render(request,'pptgen.html',context=context)
-
-    else:
-        return HttpResponseRedirect(reverse('login') )
-
-"""
 
 #------------Users----------------------------------------
 #------------------------------------------------------------------------
@@ -1015,111 +991,7 @@ def frontpage(request):
 
 #------------Configurar proyectos----------------------------------------
 #------------------------------------------------------------------------
-"""
-def projectlist(request):
-    print("projectlist()")
-    if request.user.is_authenticated:
-        project_list = MProject.objects.filter(id_user=request.user.id)
-        context = {
-            'mproject_list':project_list,
-        } 
-        # Renderiza la plantilla HTML index.html con los datos en la variable contexto
-        return render(request,'project_manager.html',context=context)
 
-    else:
-        return HttpResponseRedirect(reverse('login') )
-"""
-
-"""
-def update_prj_form(request):
-    print("update_prj_form()")
-    if request.user.is_authenticated:
-        if request.method == "POST":
-                print("POST")
-                print("body:",request.body)
-
-                prjname = request.POST.get("prjname")#Viene de un FORM
-                print("prjname: ",prjname)
-
-                prjcomment = request.POST.get("prjcomment")
-                print("prjcomment: ",prjcomment)
-
-                prjid = request.POST.get("prjid")
-                print("prjid: ",prjid)
-
-                #If id != "" -> update. Else -> create new
-                if prjid != "":
-                    project_objt_selected = MProject.objects.get(pk=prjid)
-                    #print(project_objt_selected.name)
-                    project_objt_selected.name = prjname
-                    project_objt_selected.comment = prjcomment
-                    project_objt_selected.save()
-
-
-        return HttpResponseRedirect(reverse('projects_rp_load', kwargs={'pk':prjid}))
-
-        #return HttpResponseRedirect(reverse('projects', args=("")))
-    else:
-        return HttpResponseRedirect(reverse('login') )
-"""
-
-"""
-def change_prj_select(request):
-    print("change_prj_select()")
-    if request.user.is_authenticated:
-        #Search the projects that belong to the user selected (Test -> id_user=1)
-        project_objt = MProject.objects.filter(id_user_id=request.user.id)
-        prj_id = 0
-
-        #take the first
-        if len(project_objt) > 0:
-            prj_id = project_objt[0].id
-            version_obj = MVersion.objects.filter(id_project_id=prj_id)
-            #for elt in version_obj:
-                #print("Vname: ",elt.name)
-
-        if request.method == "POST":
-                print("POST")
-                print("body:",request.body)
-
-                json_request= json.loads(request.body)
-                select_value = json_request['select_value'] #ID project to return
-
-                project_objt_selected = MProject.objects.filter(id=select_value)
-                prj_name = ""
-                prj_comment = ""
-                prj_id = ""
-                for elt in project_objt_selected:
-                    print("name: ",elt.name)
-                    prj_name = elt.name
-                    prj_comment = elt.comment
-                    prj_id = elt.id
-
-
-                return JsonResponse({
-                    'prj_name':prj_name,
-                    'prj_comment':prj_comment,
-                    'prj_id' : prj_id,
-                    #'v_name' : v_name,
-                    #'v_comment' : v_comment,
-                    #'v_id' : v_id,
-                    })
-                
-
-        else:
-                print("NO POST")
-
-                return render(request, "project_manager.html", {
-                    #"project_objt" : project_objt,
-                    #"version_obj" : version_obj,
-                    })
-
-
-
-
-    else:
-        return HttpResponseRedirect(reverse('login') )
-"""
 
 def remove_project(request):
     print("remove_project()")
@@ -1144,46 +1016,9 @@ def remove_project(request):
                     'id_first_prj':project_list[0].id,
                 })
 
-
-        
-        #return HttpResponseRedirect(reverse('projects', args=("")))
     else:
         return HttpResponseRedirect(reverse('login') )
 
-"""
-def prj_vers_selected(request):
-    print("prj_vers_selected()")
-    if request.user.is_authenticated:
-        if request.method == "POST":
-                print("POST")
-                print("body:",request.body)
-
-                json_request= json.loads(request.body)
-                select_value = json_request['v_list_id'] #ID project to return
-                v_id = select_value
-                print("Version ID: ",select_value)
-
-                select_value = json_request['prj_id'] #ID project to return
-                print("Project ID: ",select_value)
-                prj_id = select_value
-
-                if v_id == "":
-                    print("no hay id de version -> crear!")
-                    new_v = MVersion()
-                    new_v.id_project_id = prj_id
-                    new_v.name = "XXX"
-                    new_v.save()
-                    v_id = new_v.id
-
-
-                return JsonResponse({
-                    'flag_ok':True,
-                    'v_id':v_id,
-                    })
-
-    else:
-        return HttpResponseRedirect(reverse('login') )
-"""
 
 def prj_selected(request):
     print("prj_selected()")
@@ -1232,25 +1067,19 @@ def projects_rp(request):
     else:
         return HttpResponseRedirect(reverse('login') )
 """
-
 def projects_rp_load(request,pk):
-#def projects_rp_load(request):    
     print("projects_rp_load()")
     
-    #print("project pk: ",pk)
-    #pk = -1
+    print("project pk: ",pk)
+    #pk = '-1'
+    flag_disabled = False
     if request.user.is_authenticated:
+        print("user.id:",request.user.id)
 
-        project_list = MProject.objects.filter(id_user=request.user.id)
+        project_list = MProject.objects.filter(id_user_id=request.user.id)
+        print("project_list:",project_list)
 
-        if request.method == 'POST':
-            json_table = json.loads(request.body)
-            print("json_table:",json_table)
-
-            
-            if 'pk' in json_table:
-                pk = ['pk']
-
+        project_list_extra = MProject.objects.exclude(id_user_id=request.user.id)
 
         if pk == "-1":#Select the first or create new
             print("Select first project")
@@ -1272,8 +1101,22 @@ def projects_rp_load(request,pk):
         #if pk != 0:#Esto significa que hay project
             #prj_objt_selected = MProject.objects.get(id=pk)
 
-        prj_objt_selected = MProject.objects.get(id=pk)
+        prj_list = MProject.objects.filter(id=pk)
+        if prj_list.count() > 0:
+            prj_objt_selected = MProject.objects.get(id=pk)
+            print(prj_objt_selected.id_user_id )
+            if prj_objt_selected.id_user_id != request.user.id:
+                print("Este project NO pertenece al usuario")
+                #return HttpResponseRedirect(reverse('frontpage') )
+                #Añadir aquí control de editar
+                flag_disabled = True
 
+
+            else:
+                print("Este project SI pertenece al usuario")
+        else:
+            print("Este project id NO existe")
+            return HttpResponseRedirect(reverse('frontpage') )
 
         #version list-----------------
         #Get the LAST version for the project with id = rp_load
@@ -1317,8 +1160,10 @@ def projects_rp_load(request,pk):
         cw_end = datetime.date(date_end_obj).strftime("%V")
         y_end = datetime.date(date_end_obj).strftime("%Y")
 
+        print("context")
         context = {
-            'mproject_list':project_list,
+            'project_list':project_list,
+            'project_list_extra':project_list_extra,
             'prj_id': pk,
             'prj_name': prj_objt_selected.name,
             'prj_comment': prj_objt_selected.comment,
@@ -1337,10 +1182,35 @@ def projects_rp_load(request,pk):
 
             'version_list': v_objt_selected,
             'version_name': version_name,
-        } 
+
+            'flag_disabled': flag_disabled,
+        }
+
         return render(request,'project_rp.html',context=context)
     else:
         return HttpResponseRedirect(reverse('login') )
+
+def getprojectowner(request):
+    print("getprojectowner()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            prj_owner = ""
+            if 'prj_id' in json_table:
+                prj = MProject.objects.get(id=json_table['prj_id'])
+                prj_owner = prj.id_user.username
+                print(prj_owner)
+
+            
+        return JsonResponse({
+            'ok':True,
+            'prj_owner':prj_owner,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
 
 def update_project_metadata(request):
     print("update_project_metadata()")
@@ -1363,7 +1233,6 @@ def update_project_metadata(request):
 
             })
 
-        #return HttpResponseRedirect(reverse('projects', args=("")))
     else:
         return HttpResponseRedirect(reverse('login') )            
 
@@ -1446,7 +1315,6 @@ def update_version_form(request):
                     'vers_id':vers_id,
             })
 
-        #return HttpResponseRedirect(reverse('projects', args=("")))
     else:
         return HttpResponseRedirect(reverse('login') )
 
@@ -1469,7 +1337,6 @@ def remove_version(request):
                     'id_removed':select_value,
                 })
 
-        #return HttpResponseRedirect(reverse('projects', args=("")))
     else:
         return HttpResponseRedirect(reverse('login') )
 
@@ -1509,7 +1376,6 @@ def updatedataproject(request):
                     'ecuList_id': ecuList_id,
                 })
 
-        #return HttpResponseRedirect(reverse('projects', args=("")))
     else:
         return HttpResponseRedirect(reverse('login') )
 
@@ -1517,345 +1383,7 @@ def updatedataproject(request):
 
 #------------Configurar ECU + Release Plan----------------------------------------
 #------------------------------------------------------------------------
-"""
-def rp_load(request,pk):
-    print("rp_load()")
-    print("project pk: ",pk)
-    if request.user.is_authenticated:
 
-        #Get the LAST version for the project with id = rp_load
-        v_objt_selected = MVersion.objects.filter(id_project=pk)
-
-        v_id = 0
-        if len(v_objt_selected) > 0:
-            for elt in v_objt_selected:
-                print("name v: ",elt.name)
-                v_id = elt.id
-        else:
-            print("Este proyecto no tiene ninguna versión!")
-
-
-
-        #Get the ECU list for the version ID
-        ECUlist_objt_selected = MECU.objects.filter(id_version=v_id)
-        ecuList_name = []
-        ecuList_comment = []
-        ecuList_dx = []
-        ecuList_id = []
-        for elt in ECUlist_objt_selected:
-            print("name eculist: ",elt.name)
-            ecuList_name.append(elt.name)
-            ecuList_comment.append(elt.comment)
-            ecuList_dx.append(elt.dx_ecu)
-            ecuList_id.append(str(elt.id))
-        print("ecuList_name:",ecuList_name)
-
-        if request.method == "POST":
-                print("POST")
-                print("body:",request.body)
-
-                # redirect to a new URL: ¿?
-                return JsonResponse({
-                    'ecuList_name': ecuList_name,
-                    'ecuList_comment': ecuList_comment,
-                    'ecuList_dx': ecuList_dx,
-                    'ecuList_id': ecuList_id,
-                })
-
-        else:
-                print("NO POST")
-
-        #found the [release_inputs -> MRelease_input] for all ECUs for this version
-        RelInList_id = []
-        RelInList_id_ecu = []
-        RelInList_id_type = []
-        RelInList_n_version = []
-        RelInList_date = []
-        RelInList_plan = []
-        RelInList_id_plan = []
-        RelInList_visual = []
-        RelInList_dx = []
-        RelInList_comment = []
-        RelInList_marked1 = []
-        
-        RelInList_ecu_name = []#Extra
-        RelInList_type_name = []#Extra
-        
-        for ecu_id in ecuList_id:
-            print("filter id:",ecu_id)
-            RelInputs_objt_selected = MRelease_input.objects.filter(id_ecu=ecu_id)
-            for elt in RelInputs_objt_selected:
-                RelInList_id.append(str(elt.id))
-                RelInList_id_ecu.append(str(elt.id_ecu_id))
-                RelInList_id_type.append(str(elt.id_type_input_id))
-                RelInList_n_version.append(elt.n_version)
-                RelInList_date.append(elt.date_beantragt)
-                #RelInList_plan.append(elt.plan)
-                RelInList_id_plan.append(str(elt.id_plan_id))
-                RelInList_visual.append(str(elt.flag_visual))
-                print("visual:",elt.flag_visual) #¿?¿?¿?
-
-                #RelInList_dx.append(elt.dx_ecu)
-                RelInList_comment.append(elt.comment)
-
-                RelInList_marked1.append(str(elt.flag_marked1))
-
-                ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
-                RelInList_ecu_name.append(ecu_name)
-                #print("elt.id_ecu:",elt.id_ecu_id)
-                type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
-                RelInList_type_name.append(type_name)
-
-                plan_name = MPlan.objects.get(id=elt.id_plan_id).name 
-                RelInList_plan.append(plan_name)
-
-                ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 
-                RelInList_dx.append(ecu_obj.dx_ecu)
-
-
-        #Get the all list of types
-        type_list_id = []#Extra
-        type_list_name = []#Extra
-        type_list_comment = []#Extra
-        type_list_obj = MType_input.objects.all()
-        
-        for elt in type_list_obj:
-            type_list_id.append(str(elt.id))
-            type_list_name.append(elt.name)
-            type_list_comment.append(elt.comment)
-
-        #Get the all list of plans
-        plan_list_id = []#Extra
-        plan_list_name = []#Extra
-        plan_list_comment = []#Extra
-        plan_list_obj = MPlan.objects.all()
-        
-        for elt in plan_list_obj:
-            plan_list_id.append(str(elt.id))
-            plan_list_name.append(elt.name)
-            plan_list_comment.append(elt.comment)
-
-
-        #Add (;)
-        RelInList_id = ';'.join(RelInList_id)
-        RelInList_id_ecu = ';'.join(RelInList_id_ecu)
-        RelInList_id_type = ';'.join(RelInList_id_type)
-        RelInList_n_version = ';'.join(RelInList_n_version)
-        RelInList_date = ';'.join(RelInList_date)
-        RelInList_plan = ';'.join(RelInList_plan)
-        RelInList_id_plan = ';'.join(RelInList_id_plan)
-        RelInList_visual = ';'.join(RelInList_visual)
-        RelInList_dx = ';'.join(RelInList_dx)
-        RelInList_comment = ';'.join(RelInList_comment)
-        RelInList_marked1 = ';'.join(RelInList_marked1)
-        
-        RelInList_ecu_name = ';'.join(RelInList_ecu_name)
-        RelInList_type_name = ';'.join(RelInList_type_name)
-
-        type_list_id = ';'.join(type_list_id)
-        type_list_name = ';'.join(type_list_name)
-        type_list_comment = ';'.join(type_list_comment)
-
-        ecuList_name = ';'.join(ecuList_name)
-        ecuList_comment = ';'.join(ecuList_comment)
-        ecuList_dx = ';'.join(ecuList_dx)
-        ecuList_id = ';'.join(ecuList_id)
-        
-
-        return render(request, "rp.html", {
-            'ecuList_name': ecuList_name,
-            'ecuList_comment': ecuList_comment,
-            'ecuList_dx': ecuList_dx,
-            'ecuList_id': ecuList_id,
-            'id_v' : v_id,
-
-            'RelInList_id': RelInList_id,
-            'RelInList_id_ecu': RelInList_id_ecu,
-            'RelInList_id_type': RelInList_id_type,
-            'RelInList_n_version': RelInList_n_version,
-            'RelInList_date': RelInList_date,
-            'RelInList_plan': RelInList_plan,
-            'RelInList_id_plan': RelInList_id_plan,
-            'RelInList_visual': RelInList_visual,
-            'RelInList_dx': RelInList_dx,
-            'RelInList_comment': RelInList_comment,
-            'RelInList_marked1': RelInList_marked1,
-
-            'RelInList_ecu_name': RelInList_ecu_name,
-            'RelInList_type_name': RelInList_type_name,
-
-            'type_list_id': type_list_id,
-            'type_list_name': type_list_name,
-            'type_list_comment': type_list_comment,
-
-            'plan_list_id': plan_list_id,
-            'plan_list_name': plan_list_name,
-            'planlist_comment': plan_list_comment,
-        
-        })   #Search the projects that belong to the user selected (Test -> id_user=1)
-        #id_user=1
-
-        #Get the ECU list for the version ID
-        ECUlist_objt_selected = MECU.objects.filter(id_version=v_id)
-        ecuList_name = []
-        ecuList_comment = []
-        ecuList_dx = []
-        ecuList_id = []
-        for elt in ECUlist_objt_selected:
-            print("name eculist: ",elt.name)
-            ecuList_name.append(elt.name)
-            ecuList_comment.append(elt.comment)
-            ecuList_dx.append(elt.dx_ecu)
-            ecuList_id.append(str(elt.id))
-        print("ecuList_name:",ecuList_name)
-
-        if request.method == "POST":
-                print("POST")
-                print("body:",request.body)
-
-                # redirect to a new URL: ¿?
-                return JsonResponse({
-                    'ecuList_name': ecuList_name,
-                    'ecuList_comment': ecuList_comment,
-                    'ecuList_dx': ecuList_dx,
-                    'ecuList_id': ecuList_id,
-                })
-
-        else:
-                print("NO POST")
-
-        #found the [release_inputs -> Release_input_model] for all ECUs for this version
-        RelInList_id = []
-        RelInList_id_ecu = []
-        RelInList_id_type = []
-        RelInList_n_version = []
-        RelInList_date = []
-        RelInList_plan = []
-        RelInList_id_plan = []
-        RelInList_visual = []
-        RelInList_dx = []
-        RelInList_comment = []
-        RelInList_marked1= []
-        
-        RelInList_ecu_name = []#Extra
-        RelInList_type_name = []#Extra
-        
-        for ecu_id in ecuList_id:
-            print("filter id:",ecu_id)
-            RelInputs_objt_selected = MRelease_input.objects.filter(id_ecu=ecu_id)
-            for elt in RelInputs_objt_selected:
-                RelInList_id.append(str(elt.id))
-                RelInList_id_ecu.append(str(elt.id_ecu_id))
-                RelInList_id_type.append(str(elt.id_type_input_id))
-                RelInList_n_version.append(elt.n_version)
-                RelInList_date.append(elt.date_beantragt)
-                #RelInList_plan.append(elt.plan)
-                RelInList_id_plan.append(str(elt.id_plan_id))
-                RelInList_visual.append(str(elt.flag_visual))
-                print("visual:",elt.flag_visual) #¿?¿?¿?
-
-                #RelInList_dx.append(elt.dx_ecu)
-                RelInList_comment.append(elt.comment)
-
-                RelInList_marked1.append(str(elt.flag_marked1))
-
-                ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
-                RelInList_ecu_name.append(ecu_name)
-                #print("elt.id_ecu:",elt.id_ecu_id)
-                type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
-                RelInList_type_name.append(type_name)
-
-                plan_name = MPlan.objects.get(id=elt.id_plan_id).name 
-                RelInList_plan.append(plan_name)
-
-                ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 
-                RelInList_dx.append(ecu_obj.dx_ecu)
-
-
-        #Get the all list of types
-        type_list_id = []#Extra
-        type_list_name = []#Extra
-        type_list_comment = []#Extra
-        type_list_obj = MType_input.objects.all()
-        
-        for elt in type_list_obj:
-            type_list_id.append(str(elt.id))
-            type_list_name.append(elt.name)
-            type_list_comment.append(elt.comment)
-
-        #Get the all list of plans
-        plan_list_id = []#Extra
-        plan_list_name = []#Extra
-        plan_list_comment = []#Extra
-        plan_list_obj = MPlan.objects.all()
-        
-        for elt in plan_list_obj:
-            plan_list_id.append(str(elt.id))
-            plan_list_name.append(elt.name)
-            plan_list_comment.append(elt.comment)
-
-
-        #Add (;)
-        RelInList_id = ';'.join(RelInList_id)
-        RelInList_id_ecu = ';'.join(RelInList_id_ecu)
-        RelInList_id_type = ';'.join(RelInList_id_type)
-        RelInList_n_version = ';'.join(RelInList_n_version)
-        RelInList_date = ';'.join(RelInList_date)
-        RelInList_plan = ';'.join(RelInList_plan)
-        RelInList_id_plan = ';'.join(RelInList_id_plan)
-        RelInList_visual = ';'.join(RelInList_visual)
-        RelInList_dx = ';'.join(RelInList_dx)
-        RelInList_comment = ';'.join(RelInList_comment)
-        RelInList_marked1 = ';'.join(RelInList_marked1)
-        
-        RelInList_ecu_name = ';'.join(RelInList_ecu_name)
-        RelInList_type_name = ';'.join(RelInList_type_name)
-
-        type_list_id = ';'.join(type_list_id)
-        type_list_name = ';'.join(type_list_name)
-        type_list_comment = ';'.join(type_list_comment)
-
-        ecuList_name = ';'.join(ecuList_name)
-        ecuList_comment = ';'.join(ecuList_comment)
-        ecuList_dx = ';'.join(ecuList_dx)
-        ecuList_id = ';'.join(ecuList_id)
-        
-
-        return render(request, "rp.html", {
-            'ecuList_name': ecuList_name,
-            'ecuList_comment': ecuList_comment,
-            'ecuList_dx': ecuList_dx,
-            'ecuList_id': ecuList_id,
-            'id_v' : v_id,
-
-            'RelInList_id': RelInList_id,
-            'RelInList_id_ecu': RelInList_id_ecu,
-            'RelInList_id_type': RelInList_id_type,
-            'RelInList_n_version': RelInList_n_version,
-            'RelInList_date': RelInList_date,
-            'RelInList_plan': RelInList_plan,
-            'RelInList_id_plan': RelInList_id_plan,
-            'RelInList_visual': RelInList_visual,
-            'RelInList_dx': RelInList_dx,
-            'RelInList_comment': RelInList_comment,
-            'RelInList_marked1': RelInList_marked1,
-
-            'RelInList_ecu_name': RelInList_ecu_name,
-            'RelInList_type_name': RelInList_type_name,
-
-            'type_list_id': type_list_id,
-            'type_list_name': type_list_name,
-            'type_list_comment': type_list_comment,
-
-            'plan_list_id': plan_list_id,
-            'plan_list_name': plan_list_name,
-            'planlist_comment': plan_list_comment,
-        
-        })
-    else:
-        return HttpResponseRedirect(reverse('login') )
-
-"""
 
 def update_ECU_list(request):
     print("update_ECU_list()")
@@ -2068,7 +1596,7 @@ def update_ECU_list(request):
 
         else:
                 print("NO POST")
-                return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
+                #return HttpResponseRedirect(reverse('rp_load', args=(json_id_v)))
 
     else:
         return HttpResponseRedirect(reverse('login') )
@@ -2398,85 +1926,3 @@ def copy_ecu_list(request):
        return HttpResponseRedirect(reverse('login') )
 
 
-
-
-#Vistas genéricas-----------
-"""
-def index(request):
-
-    # Genera contadores de algunos de los objetos principales
-    num_users=User.objects.all().count()
-    num_projects=MProject.objects.all().count()
-
-    # uso de sesiones: https://docs.djangoproject.com/en/3.1/topics/http/sessions/
-    # Numero de visitas a esta view, como está contado en la variable de sesión.
-    num_visits = request.session.get('num_visits', 0)
-    request.session['num_visits'] = num_visits + 1
-
-    context = {
-        'num_users':num_users,
-        'num_projects':num_projects,
-        'num_visits':num_visits,
-    } 
-
-    # Renderiza la plantilla HTML index.html con los datos en la variable contexto
-    return render(request,'index.html',context=context)
-
-
-#Vistas genéricas-----------
-from django.views import generic
-
-class ProjectListView(generic.ListView):
-    model = MProject
-    paginate_by = 2 #más de X registros la vista comenzará a paginar la información que envía a la plantilla. A las diferentes páginas se accede usando parámetros GET -- para acceder a la página 2 usarías la URL: /rpm_web/projects/?page=2
-
-class ProjectDetailView(generic.DetailView):
-    model = MProject
-
-#La siguiente función permite limitar el acceso a los usuarios logueados. si n oestás, se te remite a la pag de login.
-class LoanedProjectsByUserListView(LoginRequiredMixin,generic.ListView):
-
-    model = MProject
-    template_name ='catalog/project_model_list_borrowed_user.html'
-    paginate_by = 2
-
-    def get_queryset(self):
-        return MProject.objects.filter(borrower=self.request.user)
-
-#Forms----------
-from django.contrib.auth.decorators import permission_required
-
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-import datetime
-
-from .forms import RenewBookModelForm
-
-#@permission_required('catalog.can_mark_returned')
-def renew_book_librarian(request, pk):
-
-    book_inst=get_object_or_404(MProject, pk = pk)
-
-    # If this is a POST request then process the Form data
-    if request.method == 'POST':
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = RenewBookModelForm(request.POST)
-
-        # Check if the form is valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-            #book_inst.due_back = form.cleaned_data['renewal_date']
-            #book_inst.save()
-
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('index') )
-
-    # If this is a GET (or any other method) create the default form.
-    else:
-        proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
-        form = RenewBookModelForm(initial={'name': 'testname',})
-
-    return render(request, 'rpm_web/book_renew_librarian.html', {'form': form, 'bookinst':book_inst})
-"""

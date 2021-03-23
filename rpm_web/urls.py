@@ -33,10 +33,15 @@ urlpatterns += [
 urlpatterns += [
     #url(r'^projects_rp/$', views.projects_rp, name='projects_rp'),
     url(r'^projects/rp/(?P<pk>[-\w]+)/$', views.projects_rp_load, name='projects_rp_load'),
+    #url(r'^projects/$', views.projects_rp_load, name='projects_rp_load'),
+
     url(r'^update_project_metadata/$', views.update_project_metadata, name='update_project_metadata'),
     url(r'^update_version_form/$', views.update_version_form, name='update_version_form'),
     url(r'^remove_version/$', views.remove_version, name='remove_version'),
-    url(r'^updatedataproject/$', views.updatedataproject, name='updatedataproject'),                                                                                                                                      
+    url(r'^updatedataproject/$', views.updatedataproject, name='updatedataproject'),  
+
+    url(r'^getprojectowner/$', views.getprojectowner, name='getprojectowner'), 
+                                                                                                                                        
 ]
 
 urlpatterns += [

@@ -265,7 +265,9 @@
         });
       
         document.getElementById("id_svg_min").innerHTML = avatar_min
-        document.getElementById("id_svg_min").value = avatar 
+        //document.getElementById("id_svg_min").value = avatar
+        localStorage['avatar'] = avatar; // only strings
+        localStorage['avatar_min'] = avatar_min; // only strings
 }
 
     </script>

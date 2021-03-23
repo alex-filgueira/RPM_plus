@@ -34,10 +34,9 @@
 {% endblock %}
 
 {% block content %}
-{{ block.super }}
 
 
-<div class="container">
+<div class="container-fluid">
   <div class="main-body">
 
         <div class="row gutters-sm">
@@ -279,18 +278,21 @@
 
       $(document).ready(function() {
 
-        //new_avataaar()
-        div_svg = document.getElementById('id_svg')
-        div_svg_min = document.getElementById('id_svg_min')
-
-        //console.log(div_svg_min.value)
-        if((div_svg_min.value != "") && (div_svg_min.value !=  undefined)){
-          div_svg.innerHTML = div_svg_min.value
+        //Chek avatar
+        var avatar_min_cache = localStorage['avatar_min'] || 'default';
+        var avatar_cache = localStorage['avatar'] || 'default';
+        //console.log("avatar_cache:",avatar_cache)
+        if(avatar_cache != "default"){
+          //document.getElementById("id_svg_min").innerHTML = avatar_min_cache
+          
+          document.getElementById("id_svg").innerHTML = avatar_cache
+          //document.getElementById("id_svg_min").value = avatar_cache
         }
         else{
           new_avataaar2()
         }
         
+        //add event click to  main avatar
         document.getElementById('id_svg')
         .addEventListener('click', function (event) {
           new_avataaar2()

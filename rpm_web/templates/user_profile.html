@@ -181,17 +181,16 @@
   <div class="form-content" style="display:none;">
     <form class="form" role="form">
       <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="test@mail.ru"></input>
+        <label for="old_pass">Old password</label>
+        <input type="password" class="form-control" id="id_old_pass" name="old_pass" placeholder="Enter old Password" value=""></input>
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+        <label for="new_pass">New Password</label>
+        <input type="password" class="form-control" id="id_new_pass" name="new_password" placeholder="New Password">
       </div>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox"> Check me out
-        </label>
+      <div class="form-group">
+        <label for="new_pass">Repeat New Password</label>
+        <input type="password" class="form-control" id="id_rep_pass" name="rep_password" placeholder="New Password">
       </div>
     </form>
   </div>
@@ -427,10 +426,14 @@ function change_password(){
             label: "Save",
             className: "btn btn-primary pull-left",
             callback: function() {
-
-              alert($('form #email').val());
-             
-              return false;
+              console.log("save:")  
+              old_pass = document.getElementById("id_old_pass")
+              new_pass1 = document.getElementById("id_new_pass")
+              new_pass2 = document.getElementById("id_rep_pass")
+              console.log(old_pass)
+              console.log(new_pass1)
+              console.log(new_pass2)
+              console.log($('form #id_old_pass').val())
             }
           },
           {

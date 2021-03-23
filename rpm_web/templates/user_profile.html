@@ -85,10 +85,10 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-sm-3">
-                    <h6 class="mb-0">Full Name</h6>
+                    <h6 class="mb-0">First Name</h6>
                   </div>
                   <div class="col-sm-9 text-secondary">
-                    {{first_name}}
+                    <input type="text" class="form-control" placeholder="Type name..." value="{{first_name}}" id="id_type_name" style="width:100%;">
                   </div>
                 </div>
                 <hr>
@@ -97,10 +97,16 @@
                     <h6 class="mb-0">Email</h6>
                   </div>
                   <div class="col-sm-9 text-secondary">
-                    {{email}}
+                    <input type="text" class="form-control" placeholder="Type email..." value="{{email}}" id="id_type_email" style="width:100%;">
                   </div>
                 </div>
                 <hr>
+
+                <div class="row">
+                  <button type="button" class="btn btn-success " onclick="UpdateUserData()" style="width:100%;">Update</button>
+                </div>
+                <hr>
+
                 <div class="row">
                   <div class="col-sm-3">
                     <h6 class="mb-0">Date joined</h6>
@@ -518,6 +524,28 @@ function send_new_pass(pass){
                                     },
                                     failure: function(resp){console.log("Hay un error:" + resp);},
                             });
+}
+
+function UpdateUserData(){
+  console.log("UpdateUserData()")
+  user_first_name = document.getElementById("id_type_name").value
+  user_email = document.getElementById("id_type_email").value
+  console.log("user_first_name:",user_first_name)
+  console.log("user_email:",user_email)
+  $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'update_user_data' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { user_first_name, user_email } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(resp){
+                                      console.log("resp:",resp)
+                                    },
+                                    failure: function(resp){console.log("Hay un error:" + resp);},
+                            });
+
 }
 
 

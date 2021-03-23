@@ -28,6 +28,29 @@ from django.contrib.auth.forms import UserCreationForm
 
 #------------User perfil----------------------------------------
 #------------------------------------------------------------------------
+def update_user_data(request):
+    print("update_user_data()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+
+            if 'user_first_name' in json_table:
+                u = User.objects.get(username= request.user)
+                u.first_name= json_table['user_first_name']
+                u.save()
+            if 'user_email' in json_table:
+                u = User.objects.get(username= request.user)
+                u.email= json_table['user_email']
+                u.save()
+            
+        return JsonResponse({
+            'ok':True,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+
 def change_pass(request):
     print("change_pass()")
     if request.user.is_authenticated:

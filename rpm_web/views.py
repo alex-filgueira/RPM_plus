@@ -1362,6 +1362,7 @@ def updatedataproject(request):
                 ecuList_dx = []
                 ecuList_id = []
                 ecuList_created_by = []
+                ecuList_created_by_name = []
 
                 for elt in ECUlist_objt_selected:
                     #print("name eculist: ",elt.name)
@@ -1369,7 +1370,14 @@ def updatedataproject(request):
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)
                     ecuList_id.append(str(elt.id))
-                    ecuList_created_by.append(str(elt.created_by.id))
+
+                    print(elt.created_by)
+                    if elt.created_by != None:
+                        ecuList_created_by.append(str(elt.created_by.id))
+                        ecuList_created_by_name.append(elt.created_by.username)
+                    else:
+                        ecuList_created_by.append("")
+                        ecuList_created_by_name.append("")
 
                 print("ecuList_name:",ecuList_name)
 
@@ -1380,6 +1388,7 @@ def updatedataproject(request):
                     'ecuList_dx': ecuList_dx,
                     'ecuList_id': ecuList_id,
                     'ecuList_created_by':ecuList_created_by,
+                    'ecuList_created_by_name':ecuList_created_by_name,
                 })
 
     else:
@@ -1453,7 +1462,7 @@ def update_ECU_list(request):
                             ecu_obj.comment = row['comment']
                             ecu_obj.dx_ecu = row['dx']
 
-                            if row['created_by'] != 'null':
+                            if row['created_by'] != 'null' and row['created_by'] != '':
                                 #get user by id and save it
                                 user = User.objects.get(id=int(row['created_by'])) 
                                 ecu_obj.created_by = user
@@ -1477,6 +1486,7 @@ def update_ECU_list(request):
                 ecuList_dx = []
                 ecuList_id = []
                 ecuList_created_by = []
+                ecuList_created_by_name = []
 
                 ECUlist_objt_selected = MECU.objects.filter(id_version=json_id_v)
                 for elt in ECUlist_objt_selected:
@@ -1486,6 +1496,7 @@ def update_ECU_list(request):
                     ecuList_dx.append(elt.dx_ecu)
                     ecuList_id.append(str(elt.id))
                     ecuList_created_by.append(elt.created_by.id)
+                    ecuList_created_by_name.append(elt.created_by.username)
 
                 print("ecuList_name:",ecuList_name)
                 print("ecuList_comment:",ecuList_comment)
@@ -1588,6 +1599,7 @@ def update_ECU_list(request):
                     'ecuList_dx': ecuList_dx,
                     'ecuList_id': ecuList_id,
                     'ecuList_created_by':ecuList_created_by,
+                    'ecuList_created_by_name':ecuList_created_by_name,
 
                     'id_v' : json_id_v,
 

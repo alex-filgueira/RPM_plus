@@ -52,11 +52,14 @@
     </li>
     {% endfor %} 
      
-    <li class="nav-item">
+    <!-- [+] for create new projects only if the user is in group "integradores"-->
+    {% if flag_integradores %}
+    <li class="nav-item" >
         <a href="{% url 'projects_rp_load' 0 %}" class="nav-link"  value="0">
             <i class="bi bi-plus-square"></i>
         </a> 
     </li>
+    {% endif %}
 </ul>
 
 

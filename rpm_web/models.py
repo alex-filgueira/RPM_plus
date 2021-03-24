@@ -13,62 +13,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 #------------------------------------------------------------------------
 #-----------new relacionales---------------------------------------------
 #------------------------------------------------------------------------
-"""
-class Types_users_model(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length = 200,default='',blank=True)
-    comment = models.CharField(max_length = 200,default='',blank=True)
-
-    class Meta: # This class will let you force the name of the table to what you like.
-        db_table = "Types_users"
-
-    def __str__(self):
-        return '%s, %s' % (self.id, self.name)
-
-
-class User_model(models.Model):
-    id = models.AutoField(primary_key=True)
-    id_type_user = models.ForeignKey(to=Types_users_model, on_delete=models.CASCADE)
-    name = models.CharField(max_length = 200,default='',blank=True)
-    comment = models.CharField(max_length = 200,default='',blank=True)
-
-    class Meta: # This class will let you force the name of the table to what you like.
-        db_table = "Users"
-
-    def __str__(self):
-        return '%s, %s' % (self.id, self.name)
-
-    def get_absolute_url(self):
-
-        return reverse('model-detail-view', args=[str(self.id)])
-"""
-class MType_input(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length = 200,default='',blank=True)
-    comment = models.CharField(max_length = 200,default='',blank=True)
-   
-    class Meta: # This class will let you force the name of the table to what you like.
-        db_table = "Type_input"
-       
-    def get_name(self):
-        return self.name
-
-    def __str__(self):
-        return '%s, %s' % (self.id, self.name)
-
-class MPlan(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length = 200,default='',blank=True)
-    comment = models.CharField(max_length = 200,default='',blank=True)
-   
-    class Meta: # This class will let you force the name of the table to what you like.
-        db_table = "Plan"
-       
-    def get_name(self):
-        return self.name
-
-    def __str__(self):
-        return '%s, %s' % (self.id, self.name)
 
 class MType_input2(models.Model):
     id = models.AutoField(primary_key=True)

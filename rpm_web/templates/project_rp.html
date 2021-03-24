@@ -47,7 +47,7 @@
 
     <!-- Proyectos de otros usuarios-->
     {% for prj in project_list_extra %}
-    <li class="nav-item" style="background-color: rgb(177, 86, 90);">
+    <li class="nav-item" style="background-color: rgb(161, 109, 127);">
         <a href="{% url 'projects_rp_load'  prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
     </li>
     {% endfor %} 
@@ -321,7 +321,21 @@
 </div>
 </div>
 <style>
+.nav {
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+}
 
+.nav li {
+  display: inline-block
+}
 </style>
 
 

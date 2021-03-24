@@ -2082,16 +2082,15 @@ function check_row_import_csv(csv_line){
 
 
         //Calcula slides en función de max_ecu_slide--------------------
-
+        /*
         console.log("resp.nECU:",resp.nECU)
-        ecuList = resp.ecuList_name
 
         Nslides = Math.floor(resp.nECU / max_ecu_slide)
         if((resp.nECU % max_ecu_slide)>0){
             Nslides = Nslides + 1
         }
         console.log("Nslides:",Nslides)
-        
+        */
         var cont_jump = 0
         //Slide by slide (Not master)--------------------------
         //Recorre lista Ecus que se visualizan--------------
@@ -2105,6 +2104,7 @@ function check_row_import_csv(csv_line){
             for(j=0;j<resp.RelInList_id_ecu.length;j++){
                 if(resp.RelInList_id_ecu[j] == resp.ecuList_id[i]){
                     var date_ReIn = moment(resp.RelInList_date[j], 'DD-MM-YYYY')
+                    //console.log("date_ReIn",date_ReIn)
                     if(date_ReIn.isBetween(date_ini, date_end)){
                         flag_entrada_in = true
                     }
@@ -2116,8 +2116,10 @@ function check_row_import_csv(csv_line){
             }
 
             console.log("flag_entrada_in:",flag_entrada_in)
+            //if(flag_entrada_in == true){
+
             //checkea si toca añadir slide
-            if (((i+1-cont_jump) > (cont_slides * (max_ecu_slide))) ){
+            if ((((i+1-cont_jump) > (cont_slides * (max_ecu_slide))) )  || (cont_slides == 0))  { // (cont_slides == 0) asegura que aunque no haya entradas par alguna ecu, genere 1 slide y node error powerpoint
                 cont_slides = cont_slides + 1
                 console.log("Create slide")
                 //var slide = pptx.addNewSlide();
@@ -2230,6 +2232,7 @@ function check_row_import_csv(csv_line){
 
                 cont_ecu_slide = 0 //resetea contador ecus por slide
             }
+            //}
             //añade datos de cada ECU y sus entradas------------------
 /*
             //checkea que haya alguna entrada para esta ECU dentro del tiempo

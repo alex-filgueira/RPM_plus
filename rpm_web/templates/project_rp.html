@@ -1845,6 +1845,8 @@ function check_row_import_csv(csv_line){
         console.log("pptGenerator()")
 
             //Validate all cells and only pass if all are valids
+            console.log("tblExcel.rows:",tblExcel.countRows())
+            if(tblExcel.countRows() > 0){
             tblExcel.validateCells((valid) => {
             if (valid) {
                 //is valid
@@ -1875,7 +1877,20 @@ function check_row_import_csv(csv_line){
                     });
                 }
             }
+            else{
+                bootbox.alert({
+                    closeButton: false,
+                    message: "Someone cell in the data table is incorrect!"
+                });
+            }
         })
+        }
+        else{
+            bootbox.alert({
+                    closeButton: false,
+                    message: "The data table have 0 rows!"
+                });
+        }
     }
 
     //var slide = []; //global

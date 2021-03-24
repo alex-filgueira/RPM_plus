@@ -1297,6 +1297,9 @@ def update_version_form(request):
                         new_Ri.flag_visual = obj.flag_visual
                         new_Ri.comment = obj.comment
                         new_Ri.flag_marked1 = obj.flag_marked1
+                        new_Ri.flag_marked2 = obj.flag_marked2
+                        new_Ri.flag_marked3 = obj.flag_marked3
+                        new_Ri.created_by = obj.created_by
                         
 
                         new_Ri.save()
@@ -1518,6 +1521,11 @@ def update_ECU_list(request):
                 RelInList_dx = []
                 RelInList_comment = []
                 RelInList_marked1 = []
+                RelInList_marked2 = []
+                RelInList_marked3 = []
+
+                RelInList_created_by = []
+                RelInList_created_by_name = []
                 
                 RelInList_ecu_name = []#Extra
                 RelInList_type_name = []#Extra
@@ -1539,6 +1547,15 @@ def update_ECU_list(request):
                         #RelInList_dx.append(elt.dx_ecu)
                         RelInList_comment.append(elt.comment)
                         RelInList_marked1.append(str(elt.flag_marked1))
+                        RelInList_marked2.append(str(elt.flag_marked2))
+                        RelInList_marked3.append(str(elt.flag_marked3))
+
+                        if elt.created_by != None:
+                            RelInList_created_by.append(str(elt.created_by.id))
+                            RelInList_created_by_name.append(str(elt.created_by.username))
+                        else:
+                            RelInList_created_by.append("")
+                            RelInList_created_by_name.append("")
 
                         ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                         RelInList_ecu_name.append(ecu_name)
@@ -1614,6 +1631,11 @@ def update_ECU_list(request):
                     'RelInList_dx': RelInList_dx,
                     'RelInList_comment': RelInList_comment,
                     'RelInList_marked1': RelInList_marked1,
+                    'RelInList_marked2': RelInList_marked2,
+                    'RelInList_marked3': RelInList_marked3,
+
+                    'RelInList_created_by': RelInList_created_by,
+                    'RelInList_created_by_name':RelInList_created_by_name,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
                     'RelInList_type_name': RelInList_type_name,
@@ -1762,6 +1784,7 @@ def update_Release_list(request):
                             flag_visual = flag_visual,
                             comment = row['RelInList_comment'],
                             flag_marked1 = flag_marked1,
+                            created_by = request.user,
                         )
                         RI_model.save()
 
@@ -1777,6 +1800,11 @@ def update_Release_list(request):
             RelInList_dx = []
             RelInList_comment = []
             RelInList_marked1 = []
+            RelInList_marked2 = []
+            RelInList_marked3 = []
+
+            RelInList_created_by = []
+            RelInList_created_by_name = []
                 
             RelInList_ecu_name = []#Extra
             RelInList_type_name = []#Extra
@@ -1807,6 +1835,15 @@ def update_Release_list(request):
                     #RelInList_dx.append(elt.dx_ecu)
                     RelInList_comment.append(elt.comment)
                     RelInList_marked1.append(str(elt.flag_marked1))
+                    RelInList_marked2.append(str(elt.flag_marked2))
+                    RelInList_marked3.append(str(elt.flag_marked3))
+
+                    if elt.created_by != None:
+                        RelInList_created_by.append(str(elt.created_by.id))
+                        RelInList_created_by_name.append(str(elt.created_by.username))
+                    else:
+                        RelInList_created_by.append("")
+                        RelInList_created_by_name.append("")
 
                     ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                     RelInList_ecu_name.append(ecu_name)
@@ -1861,6 +1898,11 @@ def update_Release_list(request):
                     'RelInList_dx': RelInList_dx,
                     'RelInList_comment': RelInList_comment,
                     'RelInList_marked1': RelInList_marked1,
+                    'RelInList_marked2': RelInList_marked2,
+                    'RelInList_marked3': RelInList_marked3,
+
+                    'RelInList_created_by': RelInList_created_by,
+                    'RelInList_created_by_name':RelInList_created_by_name,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
                     'RelInList_type_name': RelInList_type_name,

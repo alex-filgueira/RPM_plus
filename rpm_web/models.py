@@ -143,7 +143,7 @@ class MECU(models.Model):
     name = models.CharField(max_length = 200,default='',blank=False, unique=False)
     dx_ecu = models.CharField(max_length = 50,default='',blank=True)
     comment = models.CharField(max_length = 200,default='',blank=True)
-    created_by = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True) #user
     
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "ECU"

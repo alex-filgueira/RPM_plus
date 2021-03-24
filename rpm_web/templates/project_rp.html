@@ -246,6 +246,7 @@
                         <th >ECU Name</th>
                         <th >ECU Dx</th>
                         <th >ECU Comment</th>
+                        <th >Created by</th>
                         <th ></th>
                         </tr>
                     </thead>
@@ -449,7 +450,10 @@
             id_i_ecu++;
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%"><input type="text" name="id"  required="required" size="2" value = '+0+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-            $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+            //$('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+            $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td></td><td ><input type="text" name="created_by"  placeholder="" style= '+'width:10em'+'  maxlength="199" disabled  ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+
+            //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required" size="6" style= '+'width:3em'+' value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:17em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td ><input type="text" name="created_by"  placeholder="created_by" style= '+'width:10em'+'  maxlength="199"  value = "'+ created_by +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
 
             //document.getElementById("id_enviareculist").disabled = false
         });  
@@ -738,7 +742,7 @@ function update_data_project(prj_id, vers_id){
 
                                         flag_first_time = true //test for load table R input
 
-                                        load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx)
+                                        load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx, resp.ecuList_created_by,)
                                     },
                                     failure: function(resp){console.log("Hay un error:" + resp.d);},
                             });
@@ -748,9 +752,11 @@ function update_data_project(prj_id, vers_id){
 //ECU manager functions---------------------------------------------------
 var flag_first_time = true //global
 
-function load_ecu_list(id_list,name_list,comment_list, dx_list){
+function load_ecu_list(id_list,name_list,comment_list, dx_list, created_by_list){
     console.log("load_ecu_list()")
     for (i = 0; i < id_list.length; i++) {
+        var created_by = created_by_list[i];
+        console.log("created_by: ",created_by)
         var dx = dx_list[i];
         console.log("dx: ",dx)
         var comment = comment_list[i];
@@ -763,7 +769,9 @@ function load_ecu_list(id_list,name_list,comment_list, dx_list){
         //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%" ><input type="text" name="id"  required="required" size="2" value = '+id+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10" value = '+name+ '></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" value = '+comment+'  ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
         //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" name="id"  required="required" size="3" value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:20em'+'  maxlength="199"   value = "'+name+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
         id_i_ecu = i
-        $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required" size="6" style= '+'width:3em'+' value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:17em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+        //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required" size="6" style= '+'width:3em'+' value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:17em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+        $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required" size="6" style= '+'width:3em'+' value = '+id+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:17em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder="ECU Dx"  style= '+'width:10em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"  value = "'+ comment +'""  > </td><td ><input type="text" name="created_by"  placeholder="created_by" style= '+'width:10em'+'  maxlength="199"  value = "'+ created_by +'" " disabled > </td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+
     }
 
     if(flag_first_time == true){
@@ -783,6 +791,7 @@ function sendDataECUlist(){
             var name;
             var dx;
             var comment;
+            var created_by;
             var list_name = []
             var flag_name_empty = false;
             for (var i = 0, element; element = form[i++];) {
@@ -808,7 +817,11 @@ function sendDataECUlist(){
                 if (element.name == "comment"){
                     comment = element.value
                     list_name.push(name)
-                    ecu_list.push({id:id,name:name,dx:dx,comment:comment}) //Formato correcto para JSON!!
+                    //ecu_list.push({id:id,name:name,dx:dx,comment:comment}) //Formato correcto para JSON!!
+                }
+                if (element.name == "created_by"){
+                    created_by = element.value
+                    ecu_list.push({id:id,name:name,dx:dx,comment:comment,created_by:created_by}) //Formato correcto para JSON!!
                 }
             };
             console.log(ecu_list)
@@ -854,7 +867,7 @@ function sendDataECUlist(){
                             $("#id_ecu_table tr").remove();  //remove all rows
 
                             //populate table
-                            load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx);
+                            load_ecu_list(resp.ecuList_id,resp.ecuList_name,resp.ecuList_comment,resp.ecuList_dx, resp.ecuList_created_by,);
                         
                             //update ReleaseInput table
                             updateRinputs(resp);

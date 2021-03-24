@@ -1281,6 +1281,7 @@ def update_version_form(request):
                     new_ecu.dx_ecu = elt.dx_ecu
                     new_ecu.comment = elt.comment
                     new_ecu.id_version_id = new_v.id
+                    new_ecu.created_by = elt.created_by
                     new_ecu.save()
 
                     #Copy all MRelease_input to new version for each ecu
@@ -1360,12 +1361,16 @@ def updatedataproject(request):
                 ecuList_comment = []
                 ecuList_dx = []
                 ecuList_id = []
+                ecuList_created_by = []
+
                 for elt in ECUlist_objt_selected:
                     #print("name eculist: ",elt.name)
                     ecuList_name.append(elt.name)
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)
                     ecuList_id.append(str(elt.id))
+                    ecuList_created_by.append(str(elt.created_by.id))
+
                 print("ecuList_name:",ecuList_name)
 
 
@@ -1374,6 +1379,7 @@ def updatedataproject(request):
                     'ecuList_comment': ecuList_comment,
                     'ecuList_dx': ecuList_dx,
                     'ecuList_id': ecuList_id,
+                    'ecuList_created_by':ecuList_created_by,
                 })
 
     else:
@@ -1446,6 +1452,13 @@ def update_ECU_list(request):
                             ecu_obj.name = row['name']
                             ecu_obj.comment = row['comment']
                             ecu_obj.dx_ecu = row['dx']
+
+                            if row['created_by'] != 'null':
+                                #get user by id and save it
+                                user = User.objects.get(id=int(row['created_by'])) 
+                                ecu_obj.created_by = user
+                            else:
+                                ecu_obj.created_by = request.user
                             ecu_obj.save()
                         else:
                             print("create new")
@@ -1453,7 +1466,8 @@ def update_ECU_list(request):
                                 name = row['name'],
                                 comment = row['comment'],
                                 dx_ecu = row['dx'],
-                                id_version_id = json_id_v
+                                id_version_id = json_id_v,
+                                created_by = request.user,
                             )
                             ecu_model.save()
 
@@ -1462,6 +1476,8 @@ def update_ECU_list(request):
                 ecuList_comment = []
                 ecuList_dx = []
                 ecuList_id = []
+                ecuList_created_by = []
+
                 ECUlist_objt_selected = MECU.objects.filter(id_version=json_id_v)
                 for elt in ECUlist_objt_selected:
                     print("name: ",elt.name)
@@ -1469,10 +1485,13 @@ def update_ECU_list(request):
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)
                     ecuList_id.append(str(elt.id))
+                    ecuList_created_by.append(elt.created_by.id)
+
                 print("ecuList_name:",ecuList_name)
                 print("ecuList_comment:",ecuList_comment)
                 print("ecuList_dx:",ecuList_dx)
                 print("ecuList_id:",ecuList_id)
+                print("ecuList_created_by:",ecuList_created_by)
                 
                 
                 #----------------
@@ -1568,6 +1587,8 @@ def update_ECU_list(request):
                     'ecuList_comment': ecuList_comment,
                     'ecuList_dx': ecuList_dx,
                     'ecuList_id': ecuList_id,
+                    'ecuList_created_by':ecuList_created_by,
+
                     'id_v' : json_id_v,
 
                     'RelInList_id': RelInList_id,
@@ -1911,6 +1932,7 @@ def copy_ecu_list(request):
                 new_ecu.name = obj.name
                 new_ecu.dx_ecu = obj.dx_ecu
                 new_ecu.comment = obj.comment
+                new_ecu.created_by = obj.created_by
                 #save
                 new_ecu.save()
 

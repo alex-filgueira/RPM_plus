@@ -1203,6 +1203,7 @@ def projects_rp_load(request,pk):
             dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             new_prj.name = "Auto-"+dt_string
             new_prj.id_user_id = request.user.id #need id_user_id not id_user
+            new_prj.date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             new_prj.save()
 
             pk = new_prj.id
@@ -1281,6 +1282,8 @@ def projects_rp_load(request,pk):
         cw_end = datetime.date(date_end_obj).strftime("%V")
         y_end = datetime.date(date_end_obj).strftime("%Y")
 
+        date_created = prj_objt_selected.date_created
+
         print("context")
         context = {
             'project_list':project_list,
@@ -1306,6 +1309,8 @@ def projects_rp_load(request,pk):
 
             'flag_disabled': flag_disabled,
             'flag_integradores':flag_integradores,
+
+            'date_created':date_created,
         }
 
         return render(request,'project_rp.html',context=context)
@@ -1422,6 +1427,7 @@ def update_version_form(request):
                         new_Ri.flag_marked2 = obj.flag_marked2
                         new_Ri.flag_marked3 = obj.flag_marked3
                         new_Ri.created_by = obj.created_by
+                        new_Ri.date_created = obj.date_created
                         
 
                         new_Ri.save()
@@ -1648,6 +1654,7 @@ def update_ECU_list(request):
 
                 RelInList_created_by = []
                 RelInList_created_by_name = []
+                RelInList_date_created = []
                 
                 RelInList_ecu_name = []#Extra
                 RelInList_type_name = []#Extra
@@ -1678,6 +1685,8 @@ def update_ECU_list(request):
                         else:
                             RelInList_created_by.append("")
                             RelInList_created_by_name.append("")
+
+                        RelInList_date_created.append(elt.date_created)
 
                         ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                         RelInList_ecu_name.append(ecu_name)
@@ -1758,6 +1767,7 @@ def update_ECU_list(request):
 
                     'RelInList_created_by': RelInList_created_by,
                     'RelInList_created_by_name':RelInList_created_by_name,
+                    'RelInList_date_created': RelInList_date_created,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
                     'RelInList_type_name': RelInList_type_name,
@@ -1907,6 +1917,7 @@ def update_Release_list(request):
                             comment = row['RelInList_comment'],
                             flag_marked1 = flag_marked1,
                             created_by = request.user,
+                            date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                         )
                         RI_model.save()
 
@@ -1927,6 +1938,7 @@ def update_Release_list(request):
 
             RelInList_created_by = []
             RelInList_created_by_name = []
+            RelInList_date_created = []
                 
             RelInList_ecu_name = []#Extra
             RelInList_type_name = []#Extra
@@ -1966,6 +1978,8 @@ def update_Release_list(request):
                     else:
                         RelInList_created_by.append("")
                         RelInList_created_by_name.append("")
+
+                    RelInList_date_created.append(elt.date_created)
 
                     ecu_name = MECU.objects.get(id=ecu_id).name #Get ecu name for this Ri
                     RelInList_ecu_name.append(ecu_name)
@@ -2025,6 +2039,7 @@ def update_Release_list(request):
 
                     'RelInList_created_by': RelInList_created_by,
                     'RelInList_created_by_name':RelInList_created_by_name,
+                    'RelInList_date_created':RelInList_date_created,
 
                     'RelInList_ecu_name': RelInList_ecu_name,
                     'RelInList_type_name': RelInList_type_name,

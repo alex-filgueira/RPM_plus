@@ -77,16 +77,6 @@ class MConfig_prj(models.Model):
     created_by = models.CharField(max_length = 200,default='[EE-32]',blank=True)
     logo_url = models.CharField(max_length = 500,default="/static/brand/logos_seat_cupra.png",blank=True) #¿?
 
-    #fig1_color_1 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
-    #fig1_color_2 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
-    #fig1_color_3 = models.CharField(max_length = 10,default='',blank=True) # to MPlan2
-    #fig1_s= models.FloatField(default=0.28) # to MType_input2
-    #fig1_border_w= models.IntegerField(default=1) # to MPlan2
-    #fig1_name= models.CharField(max_length = 50,default='',blank=True) # to MType_input2
-
-    #type_name= models.CharField(max_length = 50,default='',blank=True)
-    #plan_name= models.CharField(max_length = 50,default='',blank=True)
-
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Config_prj"
 
@@ -95,6 +85,8 @@ class MConfig_prj(models.Model):
 
     def get_absolute_url(self):
         return reverse('project-detail', args=[str(self.id)])
+
+
 class MProject(models.Model):
     id = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -110,6 +102,10 @@ class MProject(models.Model):
     date_status = models.CharField(max_length = 50,default=d1,blank=True)
     max_ecu_slide = models.IntegerField(default=8,validators=[MinValueValidator(1), MaxValueValidator(100)])
     factor_weeks = models.IntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(100)])
+
+    now = datetime.now()
+    d2 = now.strftime('%d/%m/%Y-%H:%M')
+    date_created = models.CharField(max_length = 50,default=d2, blank=True)
 
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Project"
@@ -180,6 +176,9 @@ class MRelease_input(models.Model):
     flag_marked3 = models.BooleanField(default=False,blank=True)
 
     created_by = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, blank=True) #user
+    now = datetime.now()
+    d2 = now.strftime('%d/%m/%Y-%H:%M')
+    date_created = models.CharField(max_length = 50,default=d2, blank=True)
 
 
     class Meta: # This class will let you force the name of the table to what you like.

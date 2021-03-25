@@ -47,19 +47,26 @@
 
     <!-- Proyectos de otros usuarios-->
     {% for prj in project_list_extra %}
-    <li class="nav-item" style="background-color: rgb(161, 109, 127);">
+    <li class="nav-item" style="background-color: rgb(127, 174, 235);">
         <a href="{% url 'projects_rp_load'  prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
     </li>
     {% endfor %} 
      
     <!-- [+] for create new projects only if the user is in group "integradores"-->
-    {% if flag_integradores %}
     <li class="nav-item" >
-        <a href="{% url 'projects_rp_load' 0 %}" class="nav-link"  value="0">
-            <i class="bi bi-plus-square"></i>
-        </a> 
+        {% if flag_integradores %}
+        <a href="{% url 'projects_rp_load' 0 %}" class="nav-link" id="id_create_project" value="0">
+            <i class="bi bi-plus-square" ></i>
+        </a>
+        {%else%}
+        <a  class="nav-link" id="id_create_project" value="0">
+            <i class="bi bi-plus-square" ></i>
+        </a>
+        {% endif %}
     </li>
-    {% endif %}
+
+
+    
 </ul>
 
 
@@ -312,13 +319,13 @@
 
             </div>
 
-
+            <!---
             <div class="row" >
                 <div class="col-lg-12 p-0" >
                     <p id="id_info_log">Log:</p>
                 </div>
             </div>
-    
+            -->
 
 </div>
 </div>
@@ -386,7 +393,6 @@
         max_ecu_slide = "{{max_ecu_slide}}"
 
         //enable or disable buttons etc------
-
         console.log("flag_disabled:")
         console.log("{{flag_disabled}}")
         flag_disable = false
@@ -405,6 +411,18 @@
         get_project_owner()
 
         //---
+
+        //listener---
+        document.getElementById("id_create_project").addEventListener("click", function(){
+            console.log("{{flag_integradores}}")
+            if("{{flag_integradores}}" == 'False'){
+                bootbox.alert({
+                    closeButton: false,
+                    message: "Only the users in the group 'integradores' can create new projects. If you need create a project, please write to: alexandre.filgueira@seat.es"
+                });
+            }   
+        }); 
+        //----
 
         load_RI();
 

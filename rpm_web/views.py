@@ -86,8 +86,6 @@ def user_profile(request):
     print("user_profile()")
     if request.user.is_authenticated:
         #if request.method == 'POST':
-
-
         print("user:",request.user)
         user_obj = User.objects.filter(username = request.user) # https://docs.djangoproject.com/en/3.1/ref/contrib/auth/
         print("obj:",user_obj)
@@ -118,9 +116,15 @@ def user_profile(request):
             print("last_login:",obj.last_login)
             print("date_joined:",obj.date_joined)
 
+        #Get the groups for the user
         l = request.user.groups.values_list('name',flat = True) # QuerySet Object
-        l_as_list = list(l)
-        print("l_as_list:",l_as_list) 
+        groups_list = list(l)
+        group = ""
+        print("groups_list:",groups_list)
+        if len(groups_list) > 0:
+            group = groups_list[0]
+        else:
+            group = "no group"
  
         context = {
             'ok':True,
@@ -130,6 +134,7 @@ def user_profile(request):
             'last_name':last_name,
             'groups':groups,
             'date_joined':date_joined,
+            'group':group,
 
         } 
 
@@ -778,8 +783,111 @@ from .forms import CustomUserCreationForm
 from django.contrib import messages
 
 
-#...
 def register(request):
+    notes = []
+    flag_ok = False
+    if request.method == 'POST':
+        json_table = json.loads(request.body)
+        print("json_table:",json_table)
+        
+        if User.objects.filter(email = json_table['email']).count() > 0:
+            notes.append("This email is in use for other user")
+
+        print("notes:",notes)
+
+        if len(notes) == 0:
+            print("save user")
+
+            user = User.objects.create_user(json_table['user'],json_table['email'],json_table['pass1'] )
+
+            user.save()
+
+            messages.success(request, 'Account created successfully')
+
+            #Create first inputs in BBDD
+            #Populate the first project config
+            config_prj_list = MConfig_prj.objects.filter(id_user=user.id)
+            if(len(config_prj_list) == 0):
+                print("config_prj If is empty, create")
+                config_prj = MConfig_prj()
+                config_prj.id_user_id = user.id
+                config_prj.save()
+            
+            type_list = MType_input2.objects.filter(id_user=user.id)
+            if(len(type_list) == 0):
+                print("type_list If is empty, create")
+                #create diamond -> SW
+                type_ = MType_input2()
+                type_.id_user_id = user.id
+                type_.name = "SW"
+                type_.fig1_name = "pptx.ShapeType.diamond"
+                type_.fig1_s = 0.28
+                type_.save()
+                #create diamond(triangle) -> HW
+                type_ = MType_input2()
+                type_.id_user_id = user.id
+                type_.name = "HW"
+                type_.fig1_name = "pptx.ShapeType.triangle"
+                type_.fig1_s = 0.28
+                type_.save()
+                #create hexagon -> ZDC
+                type_ = MType_input2()
+                type_.id_user_id = user.id
+                type_.name = "ZDC"
+                type_.fig1_name = "pptx.ShapeType.hexagon"
+                type_.fig1_s = 0.28
+                type_.save()
+            
+            plan_list = MPlan2.objects.filter(id_user=user.id)
+            if(len(plan_list) == 0):
+                print("plan_list If is empty, create")
+                #create vbv
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "vbv"
+                plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "000000" #border color //negro
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+                #create te.vbv
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "te.vbv"
+                plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_border_w = 0.75 #border w
+                plan_.save()
+                #create planned
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "planned"
+                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_border_w = 0.75 #border w
+                plan_.save()
+                #create additional
+                plan_ = MPlan2()
+                plan_.id_user_id = user.id
+                plan_.name = "additional"
+                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "ff0000" #border color //rojo
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+
+            flag_ok = True
+
+        
+        return JsonResponse({
+            'notes': notes,
+            'flag_ok':flag_ok,
+        })
+
+
+    return render(request, 'registration/register.html', {
+        'notes': notes
+        })
+
+def register2(request):
     if request.method == 'POST':
         f = CustomUserCreationForm(request.POST)
         if f.is_valid():
@@ -862,7 +970,7 @@ def register(request):
         f = CustomUserCreationForm()
 
     return render(request, 'registration/register.html', {'form': f})
-
+"""
 def register_old(request):
     # Creamos el formulario de autenticación vacío
     form = UserCreationForm()
@@ -961,11 +1069,12 @@ def register_old(request):
 
     # Si llegamos al final renderizamos el formulario
     return render(request, "registration/register.html", {'form': form})
-
+"""
 
 #------------FrontPage----------------------------------------
 #------------------------------------------------------------------------
-
+import os
+import glob
 def frontpage(request):
     if request.user.is_authenticated:
         # Genera contadores de algunos de los objetos principales
@@ -1098,9 +1207,21 @@ def projects_rp_load(request,pk):
 
             pk = new_prj.id
 
-        #if pk != 0:#Esto significa que hay project
-            #prj_objt_selected = MProject.objects.get(id=pk)
+        #Get the groups for the user
+        l = request.user.groups.values_list('name',flat = True) # QuerySet Object
+        groups_list = list(l)
+        group = ""
+        print("groups_list:",groups_list)
+        if len(groups_list) > 0:
+            group = groups_list[0]
+        else:
+            group = "no group"
 
+        flag_integradores = False
+        if group == 'integradores':
+            flag_integradores = True
+
+        #Check if the user is the owner for the project
         prj_list = MProject.objects.filter(id=pk)
         if prj_list.count() > 0:
             prj_objt_selected = MProject.objects.get(id=pk)
@@ -1184,6 +1305,7 @@ def projects_rp_load(request,pk):
             'version_name': version_name,
 
             'flag_disabled': flag_disabled,
+            'flag_integradores':flag_integradores,
         }
 
         return render(request,'project_rp.html',context=context)

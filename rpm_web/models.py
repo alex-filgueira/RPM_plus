@@ -91,7 +91,7 @@ class MConfig_prj(models.Model):
         db_table = "Config_prj"
 
     def __str__(self):
-        return '%s, %s' % (self.id, self.name)
+        return '%s, %s' % (self.id, self.id)
 
     def get_absolute_url(self):
         return reverse('project-detail', args=[str(self.id)])
@@ -186,7 +186,7 @@ class MRelease_input(models.Model):
         db_table = "Release_input"
 
     def __str__(self):
-        return '%s, %s' % (self.id, self.name)
+        return '%s, %s' % (self.id, self.id)
 
     def get_absolute_url(self):
         return reverse('model-detail-view', args=[str(self.id)])

@@ -43,7 +43,7 @@
 
 
 <!-- Tabs selectoras de proyecto-->
-<ul id="projects_tab" class="nav nav-tabs "  data-title="Project tabs" data-intro="Here are all the projects. In grey have your projects and in blue have the projects from  another users."  > 
+<ul id="projects_tab" class="nav nav-tabs " data-step="2" data-title="Project tabs" data-intro="Here are all the projects. In grey have your projects and in blue have the projects from  another users."  > 
     {% for prj in project_list %}
         <li class="nav-item" >
             <a href="{% url 'projects_rp_load'  prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
@@ -428,10 +428,25 @@
 
         document.getElementById("id_tutorial").addEventListener("click",function(event){
           console.log(event)
-          introJs().start();
+          
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+
         },false);
 
         //----
+
+        //tutorial -> first time
+        if("{{flag_first_time_prj}}" == 'True'){
+          console.log("flag_first_time_prj -> True")
+
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+
+        }
+
 
         load_RI();
 

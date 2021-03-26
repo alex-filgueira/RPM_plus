@@ -132,9 +132,9 @@
           </div>
           
         </div>
-        <div class="col-lg-2 offset-lg-3 p-0" >
+        <div class="col-lg-2 offset-lg-3 p-0">
           <a href="{% url 'frontpage' %}">
-            <img class="mb-4" src="{% static 'brand/logo.svg' %}" alt="" width="82" height="82">
+            <img class="mb-4"  src="{% static 'brand/logo.svg' %}" alt="" width="82" height="82" data-step="1" data-title="WELCOME!" data-intro='I know that is your first time here. This app is a "little"complex. So I would like that you do this tutorial. PS: You can start this tutorial in any moment clicking in the button "Tutorial?" at the corner top right.'>
          </a>
         </div>
 
@@ -291,19 +291,19 @@
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item" data-title="Home" data-intro="Click here and you will go to this main page.">
+            <li class="nav-item" data-step="2" data-title="Home" data-intro="Click here and you will go to this main page.">
               <a class="nav-link active" href="{% url 'frontpage' %}">Home</a>
             </li>
-            <li class="nav-item" data-title="Projects" data-intro="Here for go inside the projects area.">
+            <li class="nav-item" data-step="3" data-title="Projects" data-intro="Here for go inside the projects area.">
               <a class="nav-link" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
             </li>
-            <li class="nav-item" data-title="Conf Projects" data-intro="Click here and you will be able to config a lot of things.">
+            <li class="nav-item" data-step="4" data-title="Conf Projects" data-intro="Click here and you will be able to config a lot of things.">
               <a class="nav-link" href="{% url 'config_prj'%}">Conf Projects</a> 
             </li>
-            <li class="nav-item" data-title="Profile" data-intro="Here are your personal data.">
+            <li class="nav-item" data-step="5" ata-title="Profile" data-intro="Here are your personal data.">
               <a class="nav-link" href="{% url 'user_profile'%}">Profile</a>
             </li>
-            <li class="nav-item" data-title="Login/Logout" data-intro="Click here to said goodbye.">
+            <li class="nav-item" data-step="6" data-title="Login/Logout" data-intro="Click here to said goodbye.">
               {% if user.is_authenticated %}
               <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
               {% else %}
@@ -327,13 +327,25 @@
 
         document.getElementById("id_tutorial").addEventListener("click",function(event){
           console.log(event)
-          introJs().start();
+          //introJs().start();
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+
         },false);
 
         if("{{flag_first_time}}" == 'True'){
           console.log("flag_first_time -> True")
-          introJs().start();
+
+          introJs().setOptions({
+            showProgress: true,
+          }).start()
+          //introJs().start(); //start in the first step
+
         }
+
+
+
 
       })
 

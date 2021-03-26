@@ -195,6 +195,9 @@ class MUser_extra(models.Model):
     id = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, blank=True)
     flag_first_time = models.BooleanField(default=True,blank=True)
+    flag_first_time_prj = models.BooleanField(default=True,blank=True)
+    flag_first_time_conf = models.BooleanField(default=True,blank=True)
+    flag_first_time_profile = models.BooleanField(default=True,blank=True)
 
 
     class Meta: # This class will let you force the name of the table to what you like.

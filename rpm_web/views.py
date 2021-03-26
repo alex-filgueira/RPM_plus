@@ -126,6 +126,15 @@ def user_profile(request):
         else:
             group = "no group"
  
+        #get first_time for tutorial
+        flag_first_time_profile = False
+        user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
+        if user_extra_list.count() > 0:
+             user_extra = MUser_extra.objects.get(id_user = request.user.id)
+             flag_first_time_profile = user_extra.flag_first_time_profile
+             user_extra.flag_first_time_profile = False
+             user_extra.save()
+
         context = {
             'ok':True,
             'username':username,
@@ -135,6 +144,7 @@ def user_profile(request):
             'groups':groups,
             'date_joined':date_joined,
             'group':group,
+            'flag_first_time_profile':flag_first_time_profile,
 
         } 
 
@@ -449,6 +459,15 @@ def config_prj(request):
 
             config_prj.save()
 
+        #get first_time for tutorial
+        flag_first_time_conf = False
+        user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
+        if user_extra_list.count() > 0:
+             user_extra = MUser_extra.objects.get(id_user = request.user.id)
+             flag_first_time_conf = user_extra.flag_first_time_conf
+             user_extra.flag_first_time_conf = False
+             user_extra.save()
+
         print("request.user.id:",request.user.id)
         config_prj_list = MConfig_prj.objects.filter(id_user=request.user.id)
         if(len(config_prj_list) == 0):
@@ -471,6 +490,7 @@ def config_prj(request):
             'config_prj':config_prj_list,
             'type_list':type_list,
             'plan_list':plan_list,
+            'flag_first_time_conf':flag_first_time_conf,
         } 
 
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto
@@ -1300,6 +1320,15 @@ def projects_rp_load(request,pk):
 
         date_created = prj_objt_selected.date_created
 
+        #get first_time for tutorial
+        flag_first_time_prj = False
+        user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
+        if user_extra_list.count() > 0:
+             user_extra = MUser_extra.objects.get(id_user = request.user.id)
+             flag_first_time_prj = user_extra.flag_first_time_prj
+             user_extra.flag_first_time_prj = False
+             user_extra.save()
+
         print("context")
         context = {
             'project_list':project_list,
@@ -1327,6 +1356,8 @@ def projects_rp_load(request,pk):
             'flag_integradores':flag_integradores,
 
             'date_created':date_created,
+
+            'flag_first_time_prj':flag_first_time_prj,
         }
 
         return render(request,'project_rp.html',context=context)

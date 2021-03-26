@@ -27,6 +27,11 @@
             {% endif %}
           </li>
         </ul>
+        <ul class="navbar-nav ml-auto justify-content-right">
+            <li class="nav-item">
+              <a class="nav-link" id="id_tutorial" href="#">Tutorial?</a>
+            </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -36,7 +41,7 @@
 {% block content %}
 
 
-<div class="card card-body"> <!-- card item-->
+<div class="card card-body" data-step="2" data-title="Shape format" data-intro="Here you can configure all the parameters....." > <!-- card item-->
 <div class="container-fluid">
     <div class="row mb-3"> <!-- canvas fig -->
         <div class="col-lg-6 offset-lg-3" >
@@ -432,6 +437,29 @@
         
         //launch the first time
         changesSelectShape()
+
+        //listener
+        document.getElementById("id_tutorial").addEventListener("click",function(event){
+          console.log(event)
+
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+
+        },false);
+
+        //----
+
+        //tutorial -> first time
+        if("{{flag_first_time_conf}}" == 'True'){
+          console.log("flag_first_time_conf -> True")
+
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+        }
+
+
     });
 
     function select_color(param) {

@@ -1889,9 +1889,11 @@ def update_Release_list(request):
                 if flag_empty_row == False:
                     #Find id_ecu, por si se cambió de ECU
                     #Clean value if have: name - dx
-                    list_filter = row['RelInList_ecu_name'].split("-")
-                    name_clean = list_filter[0].rstrip() #rstrip() elimina los ultimos espacios si los hay
-                    print("name_clean:->",name_clean,"<-")
+                    #list_filter = row['RelInList_ecu_name'].split("-")
+                    #name_clean = list_filter[0].rstrip() #rstrip() elimina los ultimos espacios si los hay
+                    name_clean = row['RelInList_ecu_name']
+                    #print("name_clean:->",name_clean,"<-")
+                    print("name_ecu:->",name_clean,"<-")
 
                     ECU_selected = MECU.objects.filter(name=name_clean, id_version=json_id_v)
                     ecu_id = 0

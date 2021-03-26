@@ -1226,6 +1226,16 @@ def projects_rp_load(request,pk):
 
         project_list_extra = MProject.objects.exclude(id_user_id=request.user.id)
 
+        flag_first_time_prj = False
+        if pk != "-1" and pk != "0": #Is here because if pk= -1 or pk = 0 the page will be reload and the tutorial aborted
+            #get first_time for tutorial
+            user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
+            if user_extra_list.count() > 0:
+                user_extra = MUser_extra.objects.get(id_user = request.user.id)
+                flag_first_time_prj = user_extra.flag_first_time_prj
+                user_extra.flag_first_time_prj = False
+                user_extra.save()
+
         if pk == "-1":#Select the first or create new
             print("Select first project")
             if len(project_list) > 0:
@@ -1320,14 +1330,7 @@ def projects_rp_load(request,pk):
 
         date_created = prj_objt_selected.date_created
 
-        #get first_time for tutorial
-        flag_first_time_prj = False
-        user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
-        if user_extra_list.count() > 0:
-             user_extra = MUser_extra.objects.get(id_user = request.user.id)
-             flag_first_time_prj = user_extra.flag_first_time_prj
-             user_extra.flag_first_time_prj = False
-             user_extra.save()
+
 
         print("context")
         context = {

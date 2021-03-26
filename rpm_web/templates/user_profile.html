@@ -27,6 +27,11 @@
             {% endif %}
           </li>
         </ul>
+        <ul class="navbar-nav ml-auto justify-content-right">
+          <li class="nav-item">
+            <a class="nav-link" id="id_tutorial" href="#">Tutorial?</a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -41,7 +46,7 @@
 
         <div class="row gutters-sm">
           <div class="col-md-4 mb-3">
-            <div class="card">
+            <div class="card" data-step="2" data-title="Your avatar" data-intro="please, click in the image of the avatar.....">
               <div class="card-body">
                 <div class="d-flex flex-column align-items-center text-center">
                   <!--<a-avataaar identifier={{username}} ></a-avataaar>-->
@@ -281,6 +286,29 @@
         .addEventListener('click', function (event) {
           new_avataaar2()
         });
+
+        //listener
+        document.getElementById("id_tutorial").addEventListener("click",function(event){
+          console.log(event)
+
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+
+        },false);
+
+        //----
+
+        //tutorial -> first time
+        if("{{flag_first_time_profile}}" == 'True'){
+          console.log("flag_first_time_profile -> True")
+
+          introJs().setOptions({
+            showProgress: true,
+          }).start().goToStep(2); //estart in step 2
+        }
+
+
       })
 
 function new_avataaar2(){

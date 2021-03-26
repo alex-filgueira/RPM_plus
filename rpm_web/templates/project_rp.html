@@ -27,6 +27,11 @@
             {% endif %}
           </li>
         </ul>
+        <ul class="navbar-nav ml-auto justify-content-right">
+            <li class="nav-item">
+              <a class="nav-link" id="id_tutorial" href="#">Tutorial?</a>
+            </li>
+          </ul>
       </div>
     </div>
   </nav>
@@ -38,9 +43,9 @@
 
 
 <!-- Tabs selectoras de proyecto-->
-<ul id="projects_tab" class="nav nav-tabs "   > 
+<ul id="projects_tab" class="nav nav-tabs "  data-title="Project tabs" data-intro="Here are all the projects. In grey have your projects and in blue have the projects from  another users."  > 
     {% for prj in project_list %}
-        <li class="nav-item">
+        <li class="nav-item" >
             <a href="{% url 'projects_rp_load'  prj.id %}" class="nav-link border border-primary border-bottom-0"  id="{{ prj.id }}" value="{{ prj.id }}" name="{{ prj.name }}" >{{ prj.name }}</a> 
         </li>
     {% endfor %}
@@ -64,19 +69,16 @@
         </a>
         {% endif %}
     </li>
-
-
-    
 </ul>
 
 
 <div id="id_total_body" style="visibility: hidden">
 
 <!-- Datos del proyecto-->
-<div class="card card-body"> <!-- card item-->
+<div class="card card-body" > <!-- card item-->
 <div class="container-fluid " >
-    <div class="row">
-        <div class="col-lg-10 p-0">
+    <div class="row" >
+        <div class="col-lg-10 p-0" data-title="Project info" data-intro="Here you have some project info.">
             <div class="row" >
                 <div class="col-lg-2 input-group-text" id="id_prj_owner">Owner: </div>
                 <div class="col-lg-3 input-group-text" id="id_prj_date_created">Date Created: {{date_created}}</div>
@@ -85,7 +87,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-10 p-0">
+        <div class="col-lg-10 p-0" data-title="Project info" data-intro="You can change the project name and add some comments.">
                 <div class="row" >
                     <div class="col-lg-2 input-group-text" >Project data</div>
                     <div class="col-lg-3 p-0">
@@ -96,10 +98,10 @@
                         <input type="text" class="form-control"  name = "prjcomment" placeholder="Project comment..." value="{{prj_comment}}" id="id_prj_comment_input">
                     </div>
                     <div class="col-lg-2 p-0">
-                        <button type="button" name="update" id=id_updateProjectMetadata  class="btn btn-success " onclick="updateProjectMetadata()" style="width:100%;">Update</button>
+                        <button type="button" name="update" id=id_updateProjectMetadata  class="btn btn-success " onclick="updateProjectMetadata()" style="width:100%;" data-intro="Not forget to click Update!">Update</button>
                     </div>
                     <div class="col-lg-1 p-0">
-                        <button type="button" name="remove" id="id_removeProject" class="btn btn-danger btn_remove" onclick="removeProject()" style="width:100%;">X</button>
+                        <button type="button" name="remove" id="id_removeProject" class="btn btn-danger btn_remove" onclick="removeProject()" style="width:100%;" data-intro="And Be careful! you can remove all the project. ">X</button>
                     </div>
                     
                 </div>
@@ -124,23 +126,23 @@
             <div class="row" >
                 <div class="col-lg-2 input-group-text" >Version list</div>
                 <div class="col-lg-3 p-0">
-                    <select class="form-control" id= "id_vers_list" name="versSelect" onchange="changesSelectVersion()"> <!-- Campo Desplegable proyectos.-->
+                    <select class="form-control" id= "id_vers_list" name="versSelect" onchange="changesSelectVersion()" data-title="Project version" data-intro="Here you can select the version in wich you want work."> <!-- Campo Desplegable proyectos.-->
                         {% for vers in version_list %}
                           <option value="{{ vers.id }}" id="{{ vers.name }}" >{{ vers.name }} -- {{ vers.date }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-lg-3 p-0">
-                    <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="{{version_name}}" id="id_vers_name_input" size=2>
+                    <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="{{version_name}}" id="id_vers_name_input" size=2  data-intro="You can write a new name more appropriate.">
                 </div>
                 <div class="col-lg-2 p-0">
-                    <button type="button" name="update" id="id_updateVersion"  class="btn btn-success " onclick="updateVersion()" style="width:100%;">Update</button>
+                    <button type="button" name="update" id="id_updateVersion"  class="btn btn-success " onclick="updateVersion()" style="width:100%;" data-intro="Please, click here after change someone name.">Update</button>
                 </div>
                 <div class="col-lg-1 p-0">
-                    <button type="button" name="remove" id="id_removeVersion" class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;">X</button>
+                    <button type="button" name="remove" id="id_removeVersion" class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;" data-intro="The X not need more info...">X</button>
                 </div>
                 <div class="col-lg-1 p-0">
-                    <button type="button" name="new" id="id_newVersion" class="btn btn-primary " onclick="newVersion()" style="width:100%;" title="Create new version based on this">New</button>
+                    <button type="button" name="new" id="id_newVersion" class="btn btn-primary " onclick="newVersion()" style="width:100%;" title="Create new version based on this" data-intro="And if you click here, a new version will be created. Will be a copy to the version selected (same ECUs, etc. but until this moment, both will be diferents and not connected. ).">New</button>
                 </div>
             </div>
         </div>
@@ -423,6 +425,12 @@
                 });
             }   
         }); 
+
+        document.getElementById("id_tutorial").addEventListener("click",function(event){
+          console.log(event)
+          introJs().start();
+        },false);
+
         //----
 
         load_RI();

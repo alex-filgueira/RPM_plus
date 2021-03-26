@@ -54,7 +54,9 @@
     <link rel="stylesheet" href="{% static 'Pikaday/css/pikaday.css' %}">
     -->
 
-
+  <!-- Cargar intro.js (dynamic tutorial): https://introjs.com/docs/-->
+  <script  src="{% static 'intro.js/intro.js' %}">	</script>
+  <link rel="stylesheet" href="{% static 'intro.js/introjs.css' %}">
 
 
     <!-- online libraries -->
@@ -82,7 +84,6 @@
     -->
 
   
-
 
   </head>
   {% endblock %}
@@ -290,19 +291,19 @@
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
+            <li class="nav-item" data-title="Home" data-intro="Click here and you will go to this main page.">
               <a class="nav-link active" href="{% url 'frontpage' %}">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-title="Projects" data-intro="Here for go inside the projects area.">
               <a class="nav-link" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-title="Conf Projects" data-intro="Click here and you will be able to config a lot of things.">
               <a class="nav-link" href="{% url 'config_prj'%}">Conf Projects</a> 
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-title="Profile" data-intro="Here are your personal data.">
               <a class="nav-link" href="{% url 'user_profile'%}">Profile</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" data-title="Login/Logout" data-intro="Click here to said goodbye.">
               {% if user.is_authenticated %}
               <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
               {% else %}
@@ -310,9 +311,29 @@
               {% endif %}
             </li>
           </ul>
+          <ul class="navbar-nav ml-auto justify-content-right">
+            <li class="nav-item">
+              <a class="nav-link" id="id_tutorial" href="#">Tutorial?</a>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
+
+
+
+    <script>
+      $(document).ready(function(){
+
+        document.getElementById("id_tutorial").addEventListener("click",function(event){
+          console.log(event)
+          introJs().start();
+        },false);
+
+
+
+      })
+    </script>
 
   {% endblock %}
 

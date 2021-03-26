@@ -189,3 +189,19 @@ class MRelease_input(models.Model):
 
     def get_absolute_url(self):
         return reverse('model-detail-view', args=[str(self.id)])
+
+
+class MUser_extra(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, blank=True)
+    flag_first_time = models.BooleanField(default=True,blank=True)
+
+
+    class Meta: # This class will let you force the name of the table to what you like.
+        db_table = "User_extra"
+
+    def __str__(self):
+        return '%s, %s' % (self.id, self.id)
+
+    def get_absolute_url(self):
+        return reverse('model-detail-view', args=[str(self.id)])

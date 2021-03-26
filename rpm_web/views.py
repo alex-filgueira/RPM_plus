@@ -874,6 +874,11 @@ def register(request):
                 plan_.fig1_border_w = 1.75 #border w
                 plan_.save()
 
+            print("Create user_extra")
+            user_extra = MUser_extra()
+            user_extra.id_user_id = user.id
+            user_extra.save()
+
             flag_ok = True
 
         
@@ -1086,10 +1091,21 @@ def frontpage(request):
         num_visits = request.session.get('num_visits', 0)
         request.session['num_visits'] = num_visits + 1
 
+        #get the flag_first_time if exist
+        flag_first_time = False
+        user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
+        if user_extra_list.count() > 0:
+             user_extra = MUser_extra.objects.get(id_user = request.user.id)
+             flag_first_time = user_extra.flag_first_time
+             user_extra.flag_first_time = False
+             user_extra.save()
+
+        print("flag_first_time:",flag_first_time)
         context = {
             'num_users':num_users,
             'num_projects':num_projects,
             'num_visits':num_visits,
+            'flag_first_time':flag_first_time,
         } 
 
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto

@@ -330,9 +330,15 @@
           introJs().start();
         },false);
 
-
+        if("{{flag_first_time}}" == 'True'){
+          console.log("flag_first_time -> True")
+          introJs().start();
+        }
 
       })
+
+
+
     </script>
 
   {% endblock %}

@@ -2101,7 +2101,8 @@ function check_row_import_csv(csv_line){
         var margin_l2 = 2.15
 
         //variables espacios
-        var space_btwn_ecus = h_printZone / max_ecu_slide
+        var space_btwn_ecus = (h_printZone -(margin_t  ))  / max_ecu_slide
+        //pos_y = margin_t + margin_t2 + cont_ecu_slide * space_btwn_ecus
         console.log("space_btwn_ecus:",space_btwn_ecus)
 
         //calcula semanas entre fechas a visualizar

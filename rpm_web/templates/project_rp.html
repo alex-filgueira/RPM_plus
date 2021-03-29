@@ -1708,6 +1708,10 @@ function ImportECUlist(){
             else{
                 //is invalid
                 console.log("one or some cells are invalid!")
+                bootbox.alert({
+                    closeButton: false,
+                    message: "One or more cells values are invalid!",
+                });
             }
             })
         }

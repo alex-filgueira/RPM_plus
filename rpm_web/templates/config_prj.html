@@ -170,7 +170,7 @@
                 <button type="button" class="btn btn-success " onclick="updateFig()">Save</button>
             </div>
             <div class="row">
-                <button type="button" class="btn btn-warning " onclick="createBasics()">  (Add predef shapes) </button>
+                <button type="button" class="btn btn-warning " onclick="resetbasicsshapes()">  (Reset shapes) </button>
             </div>
         </div>
     </div>
@@ -934,11 +934,21 @@ function validURL(str) {
         type_list = document.getElementById("id_type_list")
         type_name = ""
         type_id = 0
+        
         for (var i = 0, element; element = type_list[i++];) {
             if(element.selected == true){
-                type_id = element.value
+                //not remove predef
                 type_name = element.id
-                element.remove();
+                if((type_name != 'SW') && (type_name != 'HW') && (type_name != 'ZDC')){
+                    type_id = element.value
+                    element.remove();
+                }
+                else{
+                    bootbox.alert({
+                    closeButton: false,
+                    message: "You can´t remove the predef shapes."
+                });
+                }
             }
         }
         console.log("remove:", type_name)
@@ -968,9 +978,18 @@ function validURL(str) {
         plan_id = 0
         for (var i = 0, element; element = plan_list[i++];) {
             if(element.selected == true){
-                plan_id = element.value
+                //not remove predef
                 plan_name = element.id
+                if((plan_name != 'vbv') && (plan_name != 'te.vbv') && (plan_name != 'planned')&& (plan_name != 'additional')){
+                plan_id = element.value
                 element.remove();
+                }
+                else{
+                    bootbox.alert({
+                    closeButton: false,
+                    message: "You can´t remove the predef shapes."
+                });
+                }
             }
         }
         console.log("remove:", plan_name)
@@ -1057,10 +1076,10 @@ function validURL(str) {
     }
 
 
-    function createBasics(){
+    function resetbasicsshapes(){
         $.ajax({
                         type: "POST",
-                        url: "{% url 'create_basics' %}",
+                        url: "{% url 'reset_basics_shapes' %}",
                         name: "testname",
                         data: JSON.stringify( {
 

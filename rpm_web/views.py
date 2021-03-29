@@ -282,6 +282,67 @@ def create_basics(request):
     else:
         return HttpResponseRedirect(reverse('login') )
 
+def reset_basics_shapes(request):
+    print("reset_basics_shapes()")
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            json_table = json.loads(request.body)
+            print("json_table:",json_table)
+            print("type_list If is empty, create")
+            #create diamond -> SW
+            #type_ = MType_input2()
+            type_list = MType_input2.objects.filter(id_user = request.user.id)
+            for type_ in type_list:
+                if type_.name == "SW":
+                    type_.fig1_name = "pptx.ShapeType.diamond"
+                    type_.fig1_s = 0.28
+                    type_.save()
+                #create diamond(triangle) -> HW
+                if type_.name == "HW":
+                    type_.fig1_name = "pptx.ShapeType.triangle"
+                    type_.fig1_s = 0.28
+                    type_.save()
+                #create hexagon -> ZDC
+                if type_.name == "ZDC":
+                    type_.fig1_name = "pptx.ShapeType.hexagon"
+                    type_.fig1_s = 0.28
+                    type_.save()
+        
+            print("plan_list If is empty, create")
+            #create vbv
+            #plan_ = MPlan2()
+            plan_list = MPlan2.objects.filter(id_user = request.user.id)
+            for plan_ in plan_list:
+                if plan_.name == "vbv":
+                    plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+                    plan_.fig1_color_2 = "#000000" #border color //negro
+                    plan_.fig1_border_w = 1.75 #border w
+                    plan_.save()
+            #create te.vbv
+                if plan_.name == "te.vbv":
+                    plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+                    plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
+                    plan_.fig1_border_w = 0.75 #border w
+                    plan_.save()
+            #create planned
+                if plan_.name == "planned":
+                    plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                    plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
+                    plan_.fig1_border_w = 0.75 #border w
+                    plan_.save()
+            #create additional
+                if plan_.name == "additional":
+                    plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                    plan_.fig1_color_2 = "#ff0000" #border color //rojo
+                    plan_.fig1_border_w = 1.75 #border w
+                    plan_.save()
+
+            
+        return JsonResponse({
+            'ok':True,
+        })
+    else:
+        return HttpResponseRedirect(reverse('login') )
 
 
 def update_fig(request):
@@ -377,6 +438,7 @@ def create_type(request):
         })
     else:
         return HttpResponseRedirect(reverse('login') )
+
 
 def create_plan(request):
     print("create_plan()")
@@ -481,8 +543,10 @@ def config_prj(request):
         print("config_prj_list.id:",config_prj_list.id)
 
         #type_list = []
+        create_predef_type(request.user.id)
         type_list = MType_input2.objects.filter(id_user=request.user.id)
         #plan_list = []
+        create_predef_plan(request.user.id)
         plan_list = MPlan2.objects.filter(id_user=request.user.id)
 
         context = {
@@ -852,6 +916,72 @@ def generatePptData(request):
 from .forms import CustomUserCreationForm
 from django.contrib import messages
 
+def create_predef_type(user_id):
+            type_list = MType_input2.objects.filter(id_user=user_id)
+            if(len(type_list) == 0):
+                print("type_list If is empty, create")
+                #create diamond -> SW
+                type_ = MType_input2()
+                type_.id_user_id = user_id
+                type_.name = "SW"
+                type_.fig1_name = "pptx.ShapeType.diamond"
+                type_.fig1_s = 0.28
+                type_.save()
+                #create diamond(triangle) -> HW
+                type_ = MType_input2()
+                type_.id_user_id = user_id
+                type_.name = "HW"
+                type_.fig1_name = "pptx.ShapeType.triangle"
+                type_.fig1_s = 0.28
+                type_.save()
+                #create hexagon -> ZDC
+                type_ = MType_input2()
+                type_.id_user_id = user_id
+                type_.name = "ZDC"
+                type_.fig1_name = "pptx.ShapeType.hexagon"
+                type_.fig1_s = 0.28
+                type_.save()
+
+def create_predef_plan(user_id):
+            plan_list = MPlan2.objects.filter(id_user=user_id)
+            if(len(plan_list) == 0):
+                print("plan_list If is empty, create")
+                #create vbv
+                plan_ = MPlan2()
+                plan_.id_user_id = user_id
+                plan_.name = "vbv"
+                plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "000000" #border color //negro
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+                #create te.vbv
+                plan_ = MPlan2()
+                plan_.id_user_id = user_id
+                plan_.name = "te.vbv"
+                plan_.fig1_color_1 = "00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_border_w = 0.75 #border w
+                plan_.save()
+                #create planned
+                plan_ = MPlan2()
+                plan_.id_user_id = user_id
+                plan_.name = "planned"
+                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_border_w = 0.75 #border w
+                plan_.save()
+                #create additional
+                plan_ = MPlan2()
+                plan_.id_user_id = user_id
+                plan_.name = "additional"
+                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "ff0000" #border color //rojo
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+
+
+
+
 
 def register(request):
     notes = []
@@ -962,6 +1092,7 @@ def register(request):
         'notes': notes
         })
 
+"""
 def register2(request):
     if request.method == 'POST':
         f = CustomUserCreationForm(request.POST)
@@ -1045,6 +1176,7 @@ def register2(request):
         f = CustomUserCreationForm()
 
     return render(request, 'registration/register.html', {'form': f})
+"""   
 """
 def register_old(request):
     # Creamos el formulario de autenticación vacío
@@ -1774,7 +1906,7 @@ def update_ECU_list(request):
                 #ECUlist_objt_selected.count()
                 
                 for elt in ECUlist_objt_selected:
-                    print("order:",elt.order, " name:",elt.name)
+                    #print("order:",elt.order, " name:",elt.name)
                     ecuList_name.append(elt.name)
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)
@@ -1892,7 +2024,7 @@ def update_ECU_list(request):
                             RelInList_plan.append(plan_name)
                         else:
                             RelInList_plan.append("null")
-                        print("RelInList_plan: ",RelInList_plan)
+                        #print("RelInList_plan: ",RelInList_plan)
 
                         ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 
                         RelInList_dx.append(ecu_obj.dx_ecu)
@@ -1902,10 +2034,10 @@ def update_ECU_list(request):
                 type_list_id = []#Extra
                 type_list_name = []#Extra
                 type_list_comment = []#Extra
-                #type_list_obj = MType_input.objects.all()
-                type_list_obj = MType_input2.objects.all()
+                #type_list_obj = MType_input2.objects.all()
+                #type_list_obj = MType_input2.objects.filter(id_user = request.user.id)
+                type_list_obj = MType_input2.objects.filter(id_user = request.user.id)
 
-                
                 for elt in type_list_obj:
                     type_list_id.append(str(elt.id))
                     type_list_name.append(elt.name)
@@ -1916,8 +2048,8 @@ def update_ECU_list(request):
                 plan_list_id = []#Extra
                 plan_list_name = []#Extra
                 plan_list_comment = []#Extra
-                #plan_list_obj = MPlan.objects.all()
-                plan_list_obj = MPlan2.objects.all()
+                #plan_list_obj = MPlan2.objects.all()
+                plan_list_obj = MPlan2.objects.filter(id_user = request.user.id)
                 
                 for elt in plan_list_obj:
                     plan_list_id.append(str(elt.id))
@@ -2203,7 +2335,8 @@ def update_Release_list(request):
             plan_list_id = []#Extra
             plan_list_name = []#Extra
             plan_list_comment = []#Extra
-            plan_list_obj = MPlan2.objects.all()
+            #plan_list_obj = MPlan2.objects.all()
+            plan_list_obj = MPlan2.objects.filter(id_user = request.user.id)
             
             for elt in plan_list_obj:
                 plan_list_id.append(str(elt.id))

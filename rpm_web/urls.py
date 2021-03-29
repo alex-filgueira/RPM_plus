@@ -58,6 +58,7 @@ urlpatterns += [
     url(r'^remove_plan/$', views.remove_plan, name='remove_plan'),     
     url(r'^update_fig/$', views.update_fig, name='update_fig'),  
     url(r'^create_basics/$', views.create_basics, name='create_basics'),
+    url(r'^reset_basics_shapes/$', views.reset_basics_shapes, name='reset_basics_shapes'),
     url(r'^get_type/$', views.get_type, name='get_type'),
     url(r'^get_plan/$', views.get_plan, name='get_plan'),
 ]

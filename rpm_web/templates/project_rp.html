@@ -625,6 +625,8 @@ function updateProjectMetadata(){
                                     dataType: "json",
                                     success: function(respuesta){
                                         console.log("respuesta:" + respuesta)
+                                        //reload
+                                        self.location=self.location;
                                     },
                                     failure: function(respuesta){console.log("Hay un error:" + respuesta);},
                             });

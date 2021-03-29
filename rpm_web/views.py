@@ -1942,13 +1942,15 @@ def update_Release_list(request):
 
                         RI_selected.id_ecu_id = int(ecu_id)
                         RI_selected.id_type_input_id = type_id
-                        RI_selected.n_version = row['RelInList_n_version']
+                        aux_string =  row['RelInList_n_version'].replace('\n', ' ').replace('\r', '')
+                        RI_selected.n_version = aux_string
                         RI_selected.date_beantragt = row['RelInList_date']
                         #RI_selected.plan = row['RelInList_plan']
                         RI_selected.id_plan_id = plan_id
 
                         RI_selected.flag_visual = flag_visual
-                        RI_selected.comment = row['RelInList_comment']
+                        aux_string =  row['RelInList_comment'].replace('\n', ' ').replace('\r', '')
+                        RI_selected.comment = aux_string
                         RI_selected.flag_marked1= flag_marked1
                         RI_selected.save()
 
@@ -1957,16 +1959,19 @@ def update_Release_list(request):
                     else:
                         print("create new:")
                         print("ecu_id:",ecu_id)
+                        aux_string_ver =  row['RelInList_n_version'].replace('\n', ' ').replace('\r', '')
+                        aux_string_com =  row['RelInList_comment'].replace('\n', ' ').replace('\r', '')
+
                         RI_model = MRelease_input(
                             #id = row['RelInList_id'],
                             id_ecu_id = ecu_id,
                             id_type_input_id = type_id,
-                            n_version = row['RelInList_n_version'],
+                            n_version = aux_string_ver,
                             date_beantragt = row['RelInList_date'],
                             #plan = row['RelInList_plan'],
                             id_plan_id = plan_id,
                             flag_visual = flag_visual,
-                            comment = row['RelInList_comment'],
+                            comment = aux_string_com,
                             flag_marked1 = flag_marked1,
                             created_by = request.user,
                             date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S"),

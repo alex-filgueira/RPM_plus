@@ -1639,8 +1639,11 @@ def update_ECU_list(request):
                             print("update value")
                             #print("int(row['id']): ",int(row['id']))
                             ecu_obj = MECU.objects.get(id=int(row['id'])) 
-                            ecu_obj.name = row['name']
-                            ecu_obj.comment = row['comment']
+                            aux_string =  row['name'].replace('\n', ' ').replace('\r', '')
+                            ecu_obj.name = aux_string
+                            aux_string =  row['comment'].replace('\n', ' ').replace('\r', '')
+                            ecu_obj.comment = aux_string
+                            aux_string =  row['dx'].replace('\n', ' ').replace('\r', '')
                             ecu_obj.dx_ecu = row['dx']
 
                             if row['created_by'] != 'null' and row['created_by'] != '':
@@ -1652,10 +1655,13 @@ def update_ECU_list(request):
                             ecu_obj.save()
                         else:
                             print("create new")
+                            aux_string_name =  row['name'].replace('\n', ' ').replace('\r', '')
+                            aux_string_com =  row['comment'].replace('\n', ' ').replace('\r', '')
+                            aux_string_dx =  row['dx'].replace('\n', ' ').replace('\r', '')
                             ecu_model = MECU(
-                                name = row['name'],
-                                comment = row['comment'],
-                                dx_ecu = row['dx'],
+                                name = aux_string_name,
+                                comment = aux_string_com,
+                                dx_ecu = aux_string_dx,
                                 id_version_id = json_id_v,
                                 created_by = request.user,
                             )

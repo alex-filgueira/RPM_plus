@@ -150,11 +150,11 @@
             <div class="row">
                 <div class="col-lg-2 input-group-text"  >Fill</div>
                 <div class="col-lg-2 p-0" >
-                    <input type="text" readOnly class="form-control"  name = "shape_color" placeholder="Shape color..."  value="{{plan_list.0.fig1_color_1}}" id="id_shape_color" onClick="changeColorShape(this)" style="width:100%;"> 
+                    <input type="text"  class="form-control"  name = "shape_color" placeholder="Shape color..."  value="{{plan_list.0.fig1_color_1}}" id="id_shape_color" onClick="changeColorShape(this)"  style="width:100%;"> 
                 </div>
                 <div class="col-lg-2 input-group-text"  >Border</div>
                 <div class="col-lg-2 p-0" >
-                    <input type="text" readOnly class="form-control"  name = "border_color" placeholder="Border color..."  value="{{plan_list.0.fig1_color_2}}" id="id_border_color" onClick="changeBorderColorShape(this)" style="width:100%;"> 
+                    <input type="text"  class="form-control"  name = "border_color" placeholder="Border color..."  value="{{plan_list.0.fig1_color_2}}" id="id_border_color" onClick="changeBorderColorShape(this)" style="width:100%;"> 
                 </div>
                 <div class="col-lg-2 input-group-text"  >Width</div>
                 <div class="col-lg-2 p-0" >
@@ -206,7 +206,7 @@
                 <div class="row">
                     <div class="col-lg-4  input-group-text"  >Marked1</div>
                     <div class="col-lg-5 p-0" >
-                        <input type="text" readOnly  class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"> 
+                        <input type="text"   class="form-control"  name = "marked1_color" placeholder="Marked1 color..." value="{{config_prj.marked1_color}}" id="id_marked1_color" onClick="select_color(this)"> 
                     </div>
                     <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number"  min="0.01" step="0.01" id="id_marked1_w"  value="{{config_prj.marked1_w}}" onchange="update_w(this)">
@@ -219,7 +219,7 @@
                 <div class="row">
                     <div class="col-lg-4 input-group-text"  >Marked2</div>
                     <div class="col-lg-5 p-0" >
-                        <input type="text" readOnly  class="form-control"  name = "marked2_color" placeholder="Marked2 color..." value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"> 
+                        <input type="text"   class="form-control"  name = "marked2_color" placeholder="Marked2 color..." value="{{config_prj.marked2_color}}" id="id_marked2_color" onClick="select_color(this)"> 
                     </div>
                     <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number" min="1" id="id_marked2_w"  value="{{config_prj.marked2_w}}" onchange="update_w(this)">
@@ -232,7 +232,7 @@
                 <div class="row">
                     <div class="col-lg-4 input-group-text"  >Marked3</div>
                     <div class="col-lg-5 p-0" >
-                        <input type="text" readOnly  class="form-control"  name = "marked3_color" placeholder="Marked3 color..." value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"> 
+                        <input type="text"   class="form-control"  name = "marked3_color" placeholder="Marked3 color..." value="{{config_prj.marked3_color}}" id="id_marked3_color" onClick="select_color(this)"> 
                     </div>
                     <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number" min="1" id="id_marked3_w"  value="{{config_prj.marked3_w}}" onchange="update_w(this)">
@@ -245,7 +245,7 @@
                 <div class="row">
                     <div class="col-lg-4 input-group-text"  >Week</div>
                     <div class="col-lg-5 p-0" >
-                        <input type="text" readOnly  class="form-control"  name = "week_color" placeholder="Marked2 color..." value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"> 
+                        <input type="text"  class="form-control"  name = "week_color" placeholder="Marked2 color..." value="{{config_prj.week_color}}" id="id_week_color" onClick="select_color(this)"> 
                     </div>
                     <div class="col-lg-3 p-0" >
                         <input class="form-control" type="number" min="0.02" step="0.02" id="id_week_s"  value="{{config_prj.week_s}}" onchange="update_w(this)">
@@ -482,20 +482,34 @@
     function updateConfig(){
         console.log("updateConfig()")
 
+        flag_color = true
         marked1_color = document.getElementById("id_marked1_color").value
+        if(isHexColor(marked1_color)== false){
+            flag_color = false
+        }
         marked1_w= document.getElementById("id_marked1_w").value
         if(marked1_w == ""){marked1_w = "0.01"}
         marked2_color = document.getElementById("id_marked2_color").value
+        if(isHexColor(marked2_color)== false){
+            flag_color = false
+        }
         marked2_w= document.getElementById("id_marked2_w").value
         if(marked2_w == ""){marked2_w = "1"}
         marked3_color = document.getElementById("id_marked3_color").value
+        if(isHexColor(marked3_color)== false){
+            flag_color = false
+        }
         marked3_w= document.getElementById("id_marked3_w").value
         if(marked3_w == ""){marked3_w = "1"}
 
         week_color = document.getElementById("id_week_color").value
+        if(isHexColor(week_color)== false){
+            flag_color = false
+        }
         week_s= document.getElementById("id_week_s").value
         if(week_s == ""){week_s = "0.02"}
 
+        if(flag_color){
         $.ajax({
                     type: "POST",
                     url: "{% url 'config_prj' %}",
@@ -518,6 +532,13 @@
                     },
                     failure: function(resp){console.log("Hay un error:" + resp.d);},
             });
+        }
+        else{
+            bootbox.alert({
+                    closeButton: false,
+                    message: "Some color value is wrong!.Ex: #ce4b6c"
+                });
+        }
     }
 
     function updateConfig2(){
@@ -756,6 +777,7 @@ function validURL(str) {
         ctx.fillStyle = color;//relleno
         ctx.fill();
     }
+
 
     function changeBorderColorShape(param){
         console.log("changesBorderColorShape()")
@@ -1040,9 +1062,16 @@ function validURL(str) {
                 }
             }
             //get shape fill color
+            flag_color = true
             fill_color = document.getElementById("id_shape_color").value;
+            if(isHexColor(fill_color) == false){
+                flag_color = false
+            }
             //get shape border color
             border_color = document.getElementById("id_border_color").value;
+            if(isHexColor(border_color) == false){
+                flag_color = false
+            }
             //get border w
             border_w = document.getElementById("id_border_w").value
             if(border_w == ""){border_w = "0"}
@@ -1050,6 +1079,7 @@ function validURL(str) {
             shape_s = document.getElementById("id_shape_s").value
             if(shape_s == ""){shape_s = "0.01"}
 
+            if(flag_color){
             //send data
             $.ajax({
                         type: "POST",
@@ -1072,6 +1102,13 @@ function validURL(str) {
                         },
                         failure: function(resp){console.log("Hay un error:" + resp.d);},
                 });
+            }
+            else{
+                bootbox.alert({
+                    closeButton: false,
+                    message: "Some color value is wrong!.Ex: #ce4b6c"
+                });
+            }
         }
     }
 
@@ -1117,9 +1154,16 @@ function setContrast (rgb){
     else{
         return '#000000'
     }
-
 }
 
+//console.log("isHexColor:",isHexColor('ffffff'))
+function isHexColor (hex) {
+    hex = hex.replace('#','');
+//withou #
+  return typeof hex === 'string'
+      && hex.length === 6
+      && !isNaN(Number('0x' + hex))
+}
     
 //console.log("color:", setContrast(hexToRgb("#ffffff")))
 

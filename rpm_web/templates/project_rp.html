@@ -252,15 +252,15 @@
 
         <div class="row ">
             <div class="col-lg-12 p-0 text-center" >
-                <table data-toggle="table" data-sortable="true" data-sort-class="table-active" style="margin-bottom:5px; width:100%;" class="sortable table table-responsive table-striped" id="id_table_ecu" > <!--bootstrap-table	An extended Bootstrap table-->
+                <table  style="margin-bottom:5px; width:100%;" class="table-sort table table-responsive table-striped" id="id_table_ecu" > <!--bootstrap-table	An extended Bootstrap table-->
                     <thead >
                         <tr id="id_ecu_table_th">
-                        <th >ID</th>
-                        <th  >ECU Name</th>
-                        <th  >ECU Dx</th>
-                        <th >ECU Comment</th>
-                        <th >Created by</th>
-                        <th ></th>
+                            <th >ID ↕️</th>
+                            <th  >ECU Name ↕️</th>
+                            <th  >ECU Dx ↕️</th>
+                            <th >ECU Comment ↕️</th>
+                            <th >Created by ↕️</th>
+                            <th ></th>
                         </tr>
                     </thead>
                     <tbody id="id_ecu_table">
@@ -440,134 +440,6 @@
 
 
         //sort table ecu--------------
-        var tables = document.querySelectorAll("table.sortable"),
-        table,
-        thead,
-        headers,
-        i,
-        j;
-
-        for (i = 0; i < tables.length; i++) {
-            table = tables[i];
-            if (thead = table.querySelector("thead")) {
-                headers = thead.querySelectorAll("th");
-
-                for (j = 0; j < headers.length; j++) {
-                    headers[j].innerHTML = "<a href='#'>" + headers[j].innerText + "</a>";
-                }
-                thead.addEventListener("click", sortTableFunction(table));
-            }
-        }
-
-        /**
-         * Create a function to sort the given table.
-         */
-        function sortTableFunction(table) {
-            return function(ev) {
-                if (ev.target.tagName.toLowerCase() == 'a') {
-                    sortRows(table, siblingIndex(ev.target.parentNode));
-                    ev.preventDefault();
-                }
-            };
-        }
-
-        /**
-         * Get the index of a node relative to its siblings — the first (eldest) sibling
-         * has index 0, the next index 1, etc.
-         */
-        function siblingIndex(node) {
-            var count = 0;
-            while (node = node.previousElementSibling) {
-                count++;
-            }
-            return count;
-        }
-
-        /**
-         * Sort the given table by the numbered column (0 is the first column, etc.)
-         */
-        function sortRows(table, columnIndex) {
-            var rows = table.querySelectorAll("tbody tr"),
-                sel = "thead th:nth-child(" + (columnIndex + 1) + ")",
-                sel2 = "td:nth-child(" + (columnIndex + 1) + ")",
-                classList = table.querySelector(sel).classList,
-                values = [],
-                cls = "",
-                allNum = true,
-                val,
-                index,
-                node;
-            if (classList) {
-                if (classList.contains("date")) {
-                    cls = "date";
-                } else if (classList.contains("number")) {
-                    cls = "number";
-                }
-            }
-
-            for (index = 0; index < rows.length; index++) {
-                node = rows[index].querySelector(sel2);
-                val = node.innerText;
-                if (isNaN(val)) {
-                    allNum = false;
-                } else {
-                    val = parseFloat(val);
-                }
-                values.push({ value: val, row: rows[index] });
-            }
-            if (cls == "" && allNum) {
-                cls = "number";
-            }
-            if (cls == "number") {
-                values.sort(sortNumberVal);
-                values = values.reverse();
-            } else if (cls == "date") {
-                values.sort(sortDateVal);
-            } else {
-                values.sort(sortTextVal);
-            }
-            for (var idx = 0; idx < values.length; idx++) {
-                table.querySelector("tbody").appendChild(values[idx].row);
-            }
-        }
-
-        /**
-         * Compare two 'value objects' numerically
-         */
-        function sortNumberVal(a, b) {
-            return sortNumber(a.value, b.value);
-        }
-
-        /**
-         * Numeric sort comparison
-         */
-        function sortNumber(a, b) {
-            return a - b;
-        }
-
-        /**
-         * Compare two 'value objects' as dates
-         */
-        function sortDateVal(a, b) {
-            var dateA = Date.parse(a.value),
-                dateB = Date.parse(b.value);
-            return sortNumber(dateA, dateB);
-        }
-
-        /**
-         * Compare two 'value objects' as simple text; case-insensitive
-         */
-        function sortTextVal(a, b) {
-            var textA = (a.value + "").toUpperCase();
-            var textB = (b.value + "").toUpperCase();
-            if (textA < textB) {
-                return -1;
-            }
-            if (textA > textB) {
-                return 1;
-            }
-            return 0;
-        }
 
         //----
 
@@ -989,8 +861,7 @@ function load_ecu_list(id_list,name_list,comment_list, dx_list, created_by_list,
 
     }
     
-    $("#id_table_ecu").tableDnD(); // for draggability the ecu table 
-
+    $("#id_ecu_table").tableDnD(); // for draggability the ecu table 
 
 
 

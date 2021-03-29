@@ -623,23 +623,73 @@ def generatePptData(request):
             #Get ECU list
             ECUlist_objt_selected = MECU.objects.filter(id_version=version_id)
             #flag_new_ecu = True
-            for obj in ECUlist_objt_selected:
+
+
+            ecuList_name_pre = []
+            ecuList_id_pre = []#Extra
+            ecuList_comment_pre = []#Extra
+            ecuList_dx_pre = []#Extra
+            ecuList_order_pre = []
+            for elt in ECUlist_objt_selected:
+                #print("name eculist: ",elt.name)
+                ecuList_name_pre.append(elt.name)
+                ecuList_comment_pre.append(elt.comment)
+                ecuList_dx_pre.append(elt.dx_ecu)
+                ecuList_id_pre.append(str(elt.id))
+                ecuList_order_pre.append(elt.order)
+
+
+            ecuList_name_sorted = []
+            ecuList_comment_sorted  = []
+            ecuList_dx_sorted  = []
+            ecuList_id_sorted  = []
+
+            ecuList_order_sorted = sorted(ecuList_order_pre)
+            for i in ecuList_order_sorted:
+                #print(ecuList_order_sorted[i-1])
+                cont_j = 0
+                for j in ecuList_order_pre:
+                    cont_j += 1
+                    if i == j:
+                        ecuList_name_sorted.append(ecuList_name_pre[cont_j-1])
+                        ecuList_comment_sorted.append(ecuList_comment_pre[cont_j-1])
+                        ecuList_dx_sorted.append(ecuList_dx_pre[cont_j-1])
+                        ecuList_id_sorted.append(ecuList_id_pre[cont_j-1])
+
+
+
+
+            #for obj in ECUlist_objt_selected:
+            cont_i = 0
+            for i in ecuList_id_sorted:
+                cont_i += 1
                 #ecuList_name.append(obj.name)
                 #ecu_id = obj.id
                 flag_new_ecu = True
 
                 #Get sw/hw/zdc inputs for each ECU -> MRelease_input
-                MR_inputlist_objt_selected = MRelease_input.objects.filter(id_ecu=obj.id).filter(flag_visual=True)
+                #MR_inputlist_objt_selected = MRelease_input.objects.filter(id_ecu=obj.id).filter(flag_visual=True)
+
+                MR_inputlist_objt_selected = MRelease_input.objects.filter(id_ecu=i).filter(flag_visual=True)
                 for elt in MR_inputlist_objt_selected:
                     if flag_new_ecu == True:
                         nECU = nECU + 1
                         flag_new_ecu = False
+                        """
                         ecuList_comment.append(obj.comment)
                         ecuList_dx.append(obj.dx_ecu)
                         ecuList_name.append(obj.name)
                         ecuList_id.append(obj.id)
                         ecu_id = obj.id
+                        """
+                        ecuList_comment.append(ecuList_comment_sorted[cont_i-1])
+                        ecuList_dx.append(ecuList_dx_sorted[cont_i-1])
+                        ecuList_name.append(ecuList_name_sorted[cont_i-1])
+                        ecuList_id.append(ecuList_id_sorted[cont_i-1])
+                        ecu_id = ecuList_id_sorted[cont_i-1]
                         print("nECU:",nECU)
+
+                        
                     print("founded id:",elt.id)
                     RelInList_id.append(str(elt.id))
                     RelInList_id_ecu.append(str(elt.id_ecu_id))
@@ -1544,6 +1594,7 @@ def updatedataproject(request):
                 ecuList_id = []
                 ecuList_created_by = []
                 ecuList_created_by_name = []
+                ecuList_order = []
 
                 for elt in ECUlist_objt_selected:
                     #print("name eculist: ",elt.name)
@@ -1551,8 +1602,9 @@ def updatedataproject(request):
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)
                     ecuList_id.append(str(elt.id))
+                    ecuList_order.append(elt.order)
 
-                    print(elt.created_by)
+                    #print(elt.created_by)
                     if elt.created_by != None:
                         ecuList_created_by.append(str(elt.created_by.id))
                         ecuList_created_by_name.append(elt.created_by.username)
@@ -1561,15 +1613,51 @@ def updatedataproject(request):
                         ecuList_created_by_name.append("")
 
                 print("ecuList_name:",ecuList_name)
+                #print("ecuList_comment:",ecuList_comment)
+                #print("ecuList_dx:",ecuList_dx)
+                #print("ecuList_id:",ecuList_id)
+                #print("ecuList_created_by:",ecuList_created_by)
+                #order lists -> sorted
+                ecuList_name_sorted = []
+                ecuList_comment_sorted  = []
+                ecuList_dx_sorted  = []
+                ecuList_id_sorted  = []
+                ecuList_created_by_sorted  = []
+                ecuList_created_by_name_sorted  = []
+                ecuList_order_sorted = sorted(ecuList_order)
+                cont_i = 0
+                for i in ecuList_order_sorted:
+                    cont_i += 1
+                    #print(ecuList_order_sorted[i-1])
+                    cont_j = 0
+                    if i != 0: #order = 0 -> no inicializados
+                        for j in ecuList_order:
+                            cont_j += 1
+                            if j == i:
+                                ecuList_name_sorted.append(ecuList_name[cont_j-1])
+                                ecuList_comment_sorted.append(ecuList_comment[cont_j-1])
+                                ecuList_dx_sorted.append(ecuList_dx[cont_j-1])
+                                ecuList_id_sorted.append(ecuList_id[cont_j-1])
+                                ecuList_created_by_sorted.append(ecuList_created_by[cont_j-1])
+                                ecuList_created_by_name_sorted.append(ecuList_created_by_name[cont_j-1])
+                    else:
+                         ecuList_name_sorted.append(ecuList_name[cont_i-1])
+                         ecuList_comment_sorted.append(ecuList_comment[cont_i-1])
+                         ecuList_dx_sorted.append(ecuList_dx[cont_i-1])
+                         ecuList_id_sorted.append(ecuList_id[cont_i-1])
+                         ecuList_created_by_sorted.append(ecuList_created_by[cont_i-1])
+                         ecuList_created_by_name_sorted.append(ecuList_created_by_name[cont_i-1])
+                            
+                print("ecuList_name_sorted:",ecuList_name_sorted)
 
 
                 return JsonResponse({
-                    'ecuList_name': ecuList_name,
-                    'ecuList_comment': ecuList_comment,
-                    'ecuList_dx': ecuList_dx,
-                    'ecuList_id': ecuList_id,
-                    'ecuList_created_by':ecuList_created_by,
-                    'ecuList_created_by_name':ecuList_created_by_name,
+                    'ecuList_name': ecuList_name_sorted,
+                    'ecuList_comment': ecuList_comment_sorted,
+                    'ecuList_dx': ecuList_dx_sorted,
+                    'ecuList_id': ecuList_id_sorted,
+                    'ecuList_created_by':ecuList_created_by_sorted,
+                    'ecuList_created_by_name':ecuList_created_by_name_sorted,
                 })
 
     else:
@@ -1619,7 +1707,10 @@ def update_ECU_list(request):
 
 
                 #Guarda entradas nuevas
+                cont_ecu = 0
                 for row in json_allData:
+                    cont_ecu = cont_ecu + 1
+                    print("cont_ecu:",cont_ecu)
                     flag_empty_row = True
                     print("row:",row)
 
@@ -1645,6 +1736,7 @@ def update_ECU_list(request):
                             ecu_obj.comment = aux_string
                             aux_string =  row['dx'].replace('\n', ' ').replace('\r', '')
                             ecu_obj.dx_ecu = row['dx']
+                            ecu_obj.order = cont_ecu
 
                             if row['created_by'] != 'null' and row['created_by'] != '':
                                 #get user by id and save it
@@ -1664,6 +1756,7 @@ def update_ECU_list(request):
                                 dx_ecu = aux_string_dx,
                                 id_version_id = json_id_v,
                                 created_by = request.user,
+                                order = cont_ecu,
                             )
                             ecu_model.save()
 
@@ -1674,23 +1767,62 @@ def update_ECU_list(request):
                 ecuList_id = []
                 ecuList_created_by = []
                 ecuList_created_by_name = []
+                ecuList_order = []
 
+                #load ecu_list
                 ECUlist_objt_selected = MECU.objects.filter(id_version=json_id_v)
+                #ECUlist_objt_selected.count()
+                
                 for elt in ECUlist_objt_selected:
-                    print("name: ",elt.name)
+                    print("order:",elt.order, " name:",elt.name)
                     ecuList_name.append(elt.name)
                     ecuList_comment.append(elt.comment)
                     ecuList_dx.append(elt.dx_ecu)
                     ecuList_id.append(str(elt.id))
                     ecuList_created_by.append(elt.created_by.id)
                     ecuList_created_by_name.append(elt.created_by.username)
+                    ecuList_order.append(elt.order)
 
                 print("ecuList_name:",ecuList_name)
-                print("ecuList_comment:",ecuList_comment)
-                print("ecuList_dx:",ecuList_dx)
-                print("ecuList_id:",ecuList_id)
-                print("ecuList_created_by:",ecuList_created_by)
-                
+                #print("ecuList_comment:",ecuList_comment)
+                #print("ecuList_dx:",ecuList_dx)
+                #print("ecuList_id:",ecuList_id)
+                #print("ecuList_created_by:",ecuList_created_by)
+
+                #order lists -> sorted
+                ecuList_name_sorted = []
+                ecuList_comment_sorted  = []
+                ecuList_dx_sorted  = []
+                ecuList_id_sorted  = []
+                ecuList_created_by_sorted  = []
+                ecuList_created_by_name_sorted  = []
+
+                ecuList_order_sorted = sorted(ecuList_order)
+                cont_i = 0
+                for i in ecuList_order_sorted:
+                    cont_i += 1
+                    #print(ecuList_order_sorted[i-1])
+                    cont_j = 0
+                    if i != 0: #order = 0 -> no inicializados
+                        for j in ecuList_order:
+                            cont_j += 1
+                            if j == i:
+                                ecuList_name_sorted.append(ecuList_name[cont_j-1])
+                                ecuList_comment_sorted.append(ecuList_comment[cont_j-1])
+                                ecuList_dx_sorted.append(ecuList_dx[cont_j-1])
+                                ecuList_id_sorted.append(ecuList_id[cont_j-1])
+                                ecuList_created_by_sorted.append(ecuList_created_by[cont_j-1])
+                                ecuList_created_by_name_sorted.append(ecuList_created_by_name[cont_j-1])
+                    else:
+                         ecuList_name_sorted.append(ecuList_name[cont_i-1])
+                         ecuList_comment_sorted.append(ecuList_comment[cont_i-1])
+                         ecuList_dx_sorted.append(ecuList_dx[cont_i-1])
+                         ecuList_id_sorted.append(ecuList_id[cont_i-1])
+                         ecuList_created_by_sorted.append(ecuList_created_by[cont_i-1])
+                         ecuList_created_by_name_sorted.append(ecuList_created_by_name[cont_i-1])
+                            
+                #print("ecuList_name_sorted:",ecuList_name_sorted)
+
                 
                 #----------------
                 #found the [release_inputs -> Release_input_model] for all ECUs for this version
@@ -1798,12 +1930,12 @@ def update_ECU_list(request):
                 # redirect to a new URL: ¿?
                 return JsonResponse({
                     'flag_ok' : True,
-                    'ecuList_name': ecuList_name,
-                    'ecuList_comment': ecuList_comment,
-                    'ecuList_dx': ecuList_dx,
-                    'ecuList_id': ecuList_id,
-                    'ecuList_created_by':ecuList_created_by,
-                    'ecuList_created_by_name':ecuList_created_by_name,
+                    'ecuList_name': ecuList_name_sorted ,
+                    'ecuList_comment': ecuList_comment_sorted ,
+                    'ecuList_dx': ecuList_dx_sorted ,
+                    'ecuList_id': ecuList_id_sorted ,
+                    'ecuList_created_by':ecuList_created_by_sorted ,
+                    'ecuList_created_by_name':ecuList_created_by_name_sorted ,
 
                     'id_v' : json_id_v,
 

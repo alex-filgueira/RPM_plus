@@ -316,7 +316,7 @@
             
             <div class="row" >
                 <div class="col-lg-10 offset-lg-1 p-0  mt-2 text-center" >
-                    <div style=" height:487px; overflow: hidden; " id = "ResultadoTabla" ></div> <!-- Tabla !!!. width: 805px-->
+                    <div style=" height:800px; overflow: hidden; " id = "ResultadoTabla" ></div> <!-- Tabla !!!. height:487px width: 805px-->
                     <!-- <div style=" overflow: hidden; width: 100%;" id = "ResultadoTabla" ></div> --><!-- Tabla !!!. width: 805px-->
                 </div>
 
@@ -1204,11 +1204,11 @@ function ImportECUlist(){
             ],
             fillHandle: {
                 direction: 'vertical',
-                autoInsertRow: true //dejar si quiero que se añada una fila al arrastrar
+                autoInsertRow: false//true //dejar si quiero que se añada una fila al arrastrar
             },
             rowHeaders:true,
             //fixedRowsTop: 2,
-            height: 487,
+            height: 800,//487,
             //height: '100%',
             width: '100%',//805, //ver: https://handsontable.com/docs/8.3.1/tutorial-grid-sizing.html
             //width: 2000,
@@ -1223,6 +1223,8 @@ function ImportECUlist(){
             contextMenu:true,
             manualRowMove: true,
             columnSorting: true,
+            filters: true,
+            dropdownMenu: true,
             
             columnSorting: {
                 initialConfig: {

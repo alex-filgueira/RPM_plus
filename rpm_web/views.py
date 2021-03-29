@@ -2016,14 +2016,16 @@ def update_ECU_list(request):
                             type_name = MType_input2.objects.get(id=elt.id_type_input_id).name
                             RelInList_type_name.append(type_name)
                         else:
-                            RelInList_type_name.append("null")
+                            #RelInList_type_name.append("null")
+                            RelInList_type_name.append("")
 
                         #plan_name = MPlan.objects.get(id=elt.id_plan_id).name
                         if MPlan2.objects.filter(id = elt.id_plan_id).count() > 0:
                             plan_name = MPlan2.objects.get(id=elt.id_plan_id).name
                             RelInList_plan.append(plan_name)
                         else:
-                            RelInList_plan.append("null")
+                            #RelInList_plan.append("null")
+                            RelInList_plan.append("")
                         #print("RelInList_plan: ",RelInList_plan)
 
                         ecu_obj = MECU.objects.get(id=elt.id_ecu_id) 

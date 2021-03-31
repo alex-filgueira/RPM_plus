@@ -2182,18 +2182,20 @@ def update_Release_list(request):
                         print("ecu_id:",ecu_id)
 
                     #Find type, por si se cambió
-                    type_selected = MType_input2.objects.filter(name=row['RelInList_type_name'])
+                    user_type_list = MType_input2.objects.filter(id_user = request.user.id)
                     type_id = 0
-                    for elt in type_selected:
-                        type_id = elt.id
-                        print("type_id:",type_id)
+                    for t in user_type_list:
+                        if t.name == row['RelInList_type_name']:
+                            type_id = t.id
+                            print("type_id:",type_id)
 
                     #Find plan, por si se cambió
-                    plan_selected = MPlan2.objects.filter(name=row['RelInList_plan'])
+                    user_plan_list = MPlan2.objects.filter(id_user = request.user.id)
                     plan_id = 0
-                    for elt in plan_selected:
-                        plan_id = elt.id
-                        print("plan_id: ",plan_id)
+                    for p in user_plan_list:
+                        if p.name == row['RelInList_plan']:
+                            plan_id = p.id
+                            print("plan_id: ",plan_id)
 
                     #Adecua booleans
                     flag_visual = True
@@ -2334,7 +2336,7 @@ def update_Release_list(request):
             type_list_id = []#Extra
             type_list_name = []#Extra
             type_list_comment = []#Extra
-            type_list_obj = MType_input2.objects.all()
+            type_list_obj = MType_input2.objects.filter(id_user = request.user.id)
                 
             for elt in type_list_obj:
                 type_list_id.append(str(elt.id))

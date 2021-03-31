@@ -386,6 +386,8 @@
       var factor_weeks //global
       var max_ecu_slide //global
 
+      var id_i_ecu = 0 //global
+
 
     $(document).ready(function(){
         console.log("ready function")
@@ -512,7 +514,6 @@
 
         
         //add ecu list control
-        var id_i_ecu
         $('#add').click(function(){  
             id_i_ecu++;
             //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%"><input type="text" name="id"  required="required" size="2" value = '+0+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   

@@ -72,6 +72,21 @@
 </ul>
 
 
+
+<!-- Modal -->
+
+<div class="modal  " id="myModal" tabindex="-1" role="dialog"  aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered " role="document">
+      <div class="modal-content">
+
+        <div id="id_load_spinner" class="d-flex justify-content-center"  >
+            <div class="spinner-border text-success" role="status"></div>
+        </div>
+
+      </div>
+    </div>
+</div>
+
 <div id="id_total_body" style="visibility: hidden">
 
 <!-- Datos del proyecto-->
@@ -389,6 +404,11 @@
       var max_ecu_slide //global
 
       var id_i_ecu = 0 //global
+
+
+      $(window).on('load', function() {
+        $('#myModal').modal('show');
+     });
 
 
     $(document).ready(function(){
@@ -968,6 +988,9 @@ function sendDataECUlist(){
                                 console.log("Envio correcto!");
 
                                 document.getElementById("id_total_body").style.visibility = "visible" //make appear the document when have load all data
+                                
+                                //document.getElementById("id_load_spinner").style.visibility = "hidden"
+                                $('#myModal').modal('hide');
                             }
                             //console.log("{{ecuList_name}}")//no actualizado
                             //console.log(resp.ecuList_name);//actualizado
@@ -990,6 +1013,8 @@ function sendDataECUlist(){
                     message: "We don´t accept 2 or more ecu names repeated or empty: "+name_rep,
                 });
                 document.getElementById("id_total_body").style.visibility = "visible" //make appear the document when have load all data
+                //document.getElementById("id_load_spinner").style.visibility = "hidden"
+                $('#myModal').modal('hide');
             }
     }
 

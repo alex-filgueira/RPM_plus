@@ -899,7 +899,17 @@ function sendDataECUlist(){
                     id = element.value
                 }
                 if (element.name == "name"){
-                    name = element.value
+                    var ecu_name = element.value
+                    list_name.push(ecu_name)
+
+                    for (var k = 0; k < list_name.length-1; k++) {
+                        if(list_name[k] == ecu_name){
+                            console.log("ecu_name rep:",ecu_name)
+                            element.style.backgroundColor = "yellow";
+                        }
+                    }
+
+
                     if(element.value == ""){
                         flag_name_empty = true;
                         element.style.border = "1px solid red";
@@ -915,12 +925,12 @@ function sendDataECUlist(){
                 }
                 if (element.name == "comment"){
                     comment = element.value
-                    list_name.push(name)
+                    //list_name.push(name)
                     //ecu_list.push({id:id,name:name,dx:dx,comment:comment}) //Formato correcto para JSON!!
                 }
                 if (element.name == "created_by"){
                     created_by = element.value
-                    ecu_list.push({id:id,name:name,dx:dx,comment:comment,created_by:created_by}) //Formato correcto para JSON!!
+                    ecu_list.push({id:id,name:ecu_name,dx:dx,comment:comment,created_by:created_by}) //Formato correcto para JSON!!
                 }
             };
             console.log(ecu_list)
@@ -975,11 +985,11 @@ function sendDataECUlist(){
                 }
             }
             else{
-                //alert("We don´t accept 2 or more ecu names repeated: "+name_rep);
                 bootbox.alert({
                     closeButton: false,
                     message: "We don´t accept 2 or more ecu names repeated or empty: "+name_rep,
                 });
+                document.getElementById("id_total_body").style.visibility = "visible" //make appear the document when have load all data
             }
     }
 

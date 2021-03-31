@@ -2412,7 +2412,8 @@ def get_prj_list_user(request):
             #print("body:",request.body)
 
             #get the proyects for the user
-            prj_list = MProject.objects.filter(id_user=request.user.id)
+            #prj_list = MProject.objects.filter(id_user=request.user.id)
+            prj_list = MProject.objects.all()
             prj_name_list = []
             prj_id_list = []
             for obj in prj_list:

@@ -1418,23 +1418,6 @@ def projects_rp_load(request,pk):
                 user_extra.flag_first_time_prj = False
                 user_extra.save()
 
-        if pk == "-1":#Select the first or create new
-            print("Select first project")
-            if len(project_list) > 0:
-                pk = project_list[0].id
-            else:
-                pk = "0"
-
-        if pk == "0":#Crea nuevo project
-            print("Create new project")
-            new_prj = MProject()
-            dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            new_prj.name = "Auto-"+dt_string
-            new_prj.id_user_id = request.user.id #need id_user_id not id_user
-            new_prj.date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            new_prj.save()
-
-            pk = new_prj.id
 
         #Get the groups for the user
         l = request.user.groups.values_list('name',flat = True) # QuerySet Object
@@ -1450,6 +1433,33 @@ def projects_rp_load(request,pk):
         if group == 'integradores':
             flag_integradores = True
 
+        if flag_integradores == True:
+            if pk == "-1":#Select the first or create new
+                print("Select first project")
+                if len(project_list) > 0:
+                    pk = project_list[0].id
+                else:
+                    pk = "0"
+
+            if pk == "0":#Crea nuevo project
+                print("Create new project")
+                new_prj = MProject()
+                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                new_prj.name = "Auto-"+dt_string
+                new_prj.id_user_id = request.user.id #need id_user_id not id_user
+                new_prj.date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                new_prj.save()
+
+                pk = new_prj.id
+        else:
+            if pk == "-1":#Select the first in project_list_extra
+                print("Select first project")
+                if len(project_list_extra) > 0:
+                    pk = project_list_extra[0].id
+                else:
+                    pk = "0"
+
+
         #Check if the user is the owner for the project
         prj_list = MProject.objects.filter(id=pk)
         if prj_list.count() > 0:
@@ -1460,8 +1470,6 @@ def projects_rp_load(request,pk):
                 #return HttpResponseRedirect(reverse('frontpage') )
                 #Añadir aquí control de editar
                 flag_disabled = True
-
-
             else:
                 print("Este project SI pertenece al usuario")
         else:

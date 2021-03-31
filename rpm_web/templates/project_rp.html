@@ -1987,7 +1987,18 @@ function import_csv(content_file){
                                     "RelInList_dx":data_csv[i].Dx_ecu, 
                                     "RelInList_created_by_name":data_csv[i].created_by_name, 
                                     "RelInList_date_created":data_csv[i].date_created, 
+
+                                    "RelInList_id": 0,
+                                   // "RelInList_id_ecu":resp.RelInList_id_ecu[i],
+                                    //"RelInList_id_type":resp.RelInList_id_type[i],
+
+                                    //"RelInList_id_plan":resp.RelInList_id_plan[i],
+                                    //"RelInList_marked2":resp.RelInList_marked2[i],
+                                    //"RelInList_marked3":resp.RelInList_marked3[i],
+
                                 })
+
+
 
                                 //setDataAtCell is very slow for this I changed the method
                                 //tblExcel.alter('insert_row');

@@ -1422,16 +1422,16 @@ def projects_rp_load(request,pk):
         #Get the groups for the user
         l = request.user.groups.values_list('name',flat = True) # QuerySet Object
         groups_list = list(l)
-        group = ""
         print("groups_list:",groups_list)
-        if len(groups_list) > 0:
-            group = groups_list[0]
-        else:
-            group = "no group"
 
         flag_integradores = False
-        if group == 'integradores':
-            flag_integradores = True
+        flag_administradores = False
+        for group in groups_list:
+            if group == 'integradores':
+                flag_integradores = True
+            if group == 'administradores':
+                flag_administradores = True
+
 
         if flag_integradores == True:
             if pk == "-1":#Select the first or create new
@@ -1470,6 +1470,10 @@ def projects_rp_load(request,pk):
                 #return HttpResponseRedirect(reverse('frontpage') )
                 #Añadir aquí control de editar
                 flag_disabled = True
+                #Check if the user is a admin
+                if flag_administradores == True:
+                    flag_disabled = False
+                
             else:
                 print("Este project SI pertenece al usuario")
         else:

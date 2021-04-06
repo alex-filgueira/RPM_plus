@@ -93,7 +93,7 @@ def user_profile(request):
         email = ""
         first_name = ""
         last_name = ""
-        groups = ""
+        #groups = ""
         date_joined = ""
 
         for obj in user_obj:
@@ -108,7 +108,7 @@ def user_profile(request):
             print("first_name:",obj.first_name)
             print("last_name:",obj.last_name)
             print("password:",obj.password)
-            print("groups:",obj.groups)
+            #print("groups:",obj.groups)
             print("user_permissions:",obj.user_permissions)
             print("is_staff:",obj.is_staff)
             print("is_active:",obj.is_active)
@@ -119,13 +119,14 @@ def user_profile(request):
         #Get the groups for the user
         l = request.user.groups.values_list('name',flat = True) # QuerySet Object
         groups_list = list(l)
+        """
         group = ""
         print("groups_list:",groups_list)
         if len(groups_list) > 0:
             group = groups_list[0]
         else:
             group = "no group"
- 
+        """
         #get first_time for tutorial
         flag_first_time_profile = False
         user_extra_list = MUser_extra.objects.filter(id_user = request.user.id)
@@ -141,9 +142,10 @@ def user_profile(request):
             'email':email,
             'first_name':first_name,
             'last_name':last_name,
-            'groups':groups,
+            #'groups':groups,
+            'groups':groups_list,
             'date_joined':date_joined,
-            'group':group,
+            #'group':group,
             'flag_first_time_profile':flag_first_time_profile,
 
         } 

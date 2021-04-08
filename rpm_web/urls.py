@@ -26,7 +26,6 @@ urlpatterns += [
 
     re_path(r'^get_prj_list_user/$', views.get_prj_list_user, name='get_prj_list_user'),
     re_path(r'^copy_ecu_list/$', views.copy_ecu_list, name='copy_ecu_list'),
-    
 ]
 
 
@@ -40,8 +39,7 @@ urlpatterns += [
     re_path(r'^remove_version/$', views.remove_version, name='remove_version'),
     re_path(r'^updatedataproject/$', views.updatedataproject, name='updatedataproject'),  
 
-    re_path(r'^getprojectowner/$', views.getprojectowner, name='getprojectowner'), 
-                                                                                                                                        
+    re_path(r'^getprojectowner/$', views.getprojectowner, name='getprojectowner'),                                                                                                                        
 ]
 
 urlpatterns += [
@@ -67,5 +65,9 @@ urlpatterns += [
     re_path(r'^user_profile/$', views.user_profile, name='user_profile'),
     re_path(r'^change_pass/$', views.change_pass, name='change_pass'),
     re_path(r'^update_user_data/$', views.update_user_data, name='update_user_data'),
+]
+
+urlpatterns += [
+    re_path(r'^ie_warning/$', views.ie_warning, name='ie_warning'),
 ]
 

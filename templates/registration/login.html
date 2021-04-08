@@ -52,7 +52,8 @@
         var browser=get_browser();
         console.log("browser:",browser.name);
         if(browser.name == "IE"){
-        alert("You are using Internet Explorer, please, change to Firefox or Edge!");
+        //alert("You are using Internet Explorer, please, change to Firefox or Edge!");
+        self.location="{% url 'ie_warning' %}"
         }
         })
 

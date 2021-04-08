@@ -23,10 +23,22 @@ from datetime import datetime
 
 from django.contrib.auth.forms import UserCreationForm
 
+#------------IE (internet Explorer) warning----------------------------------------
+#------------------------------------------------------------------------
+def ie_warning(request):
+    print("ie_warning()")
+    if request.user.is_authenticated:
+        context = {
+            'ok':True,
+        } 
+        # Renderiza la plantilla HTML index.html con los datos en la variable contexto
+        return render(request,'ie_warning.html',context=context)
+    else:
+        return HttpResponseRedirect(reverse('login') )
 
 
 
-#------------User perfil----------------------------------------
+#------------User profile----------------------------------------
 #------------------------------------------------------------------------
 def update_user_data(request):
     print("update_user_data()")

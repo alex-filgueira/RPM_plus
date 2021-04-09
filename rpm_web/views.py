@@ -54,6 +54,7 @@ def update_user_data(request):
             if 'user_email' in json_table:
                 u = User.objects.get(username= request.user)
                 u.email= json_table['user_email']
+                u.username = json_table['user_email']
                 u.save()
             
         return JsonResponse({

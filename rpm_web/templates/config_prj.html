@@ -227,7 +227,8 @@
                 </div>
             </div>
         </div>
-        <div class="row"> <!-- Marked3 line 1  -->
+        <!--
+        <div class="row"> --> <!-- Marked3 line 1  --> <!--
             <div class="col-lg-6 offset-lg-3 " >
                 <div class="row">
                     <div class="col-lg-4 input-group-text"  >Marked3</div>
@@ -240,6 +241,7 @@
                 </div>
             </div>
         </div>
+        -->
         <div class="row mt-1"> <!-- Week line 1  -->
             <div class="col-lg-6 offset-lg-3 " >
                 <div class="row">
@@ -489,8 +491,8 @@
         document.getElementById("id_marked1_color").style.color = setContrast(hexToRgb("{{config_prj.marked1_color}}"))
         document.getElementById("id_marked2_color").style.backgroundColor = "{{config_prj.marked2_color}}";
         document.getElementById("id_marked2_color").style.color = setContrast(hexToRgb("{{config_prj.marked2_color}}"))
-        document.getElementById("id_marked3_color").style.backgroundColor = "{{config_prj.marked3_color}}";
-        document.getElementById("id_marked3_color").style.color = setContrast(hexToRgb("{{config_prj.marked3_color}}"))
+       //document.getElementById("id_marked3_color").style.backgroundColor = "{{config_prj.marked3_color}}";
+        //document.getElementById("id_marked3_color").style.color = setContrast(hexToRgb("{{config_prj.marked3_color}}"))
         document.getElementById("id_week_color").style.backgroundColor = "{{config_prj.week_color}}";
         document.getElementById("id_week_color").style.color = setContrast(hexToRgb("{{config_prj.week_color}}"))
 
@@ -616,13 +618,13 @@
         }
         marked2_w= document.getElementById("id_marked2_w").value
         if(marked2_w == ""){marked2_w = "1"}
-        marked3_color = document.getElementById("id_marked3_color").value
+        /*marked3_color = document.getElementById("id_marked3_color").value
         if(isHexColor(marked3_color)== false){
             flag_color = false
         }
         marked3_w= document.getElementById("id_marked3_w").value
         if(marked3_w == ""){marked3_w = "1"}
-
+        */
         week_color = document.getElementById("id_week_color").value
         if(isHexColor(week_color)== false){
             flag_color = false
@@ -640,8 +642,8 @@
                         marked1_w,
                         marked2_color,
                         marked2_w,
-                        marked3_color,
-                        marked3_w,
+                        //marked3_color,
+                        //marked3_w,
                         week_color,
                         week_s,
 
@@ -736,10 +738,10 @@ function validURL(str) {
         document.getElementById("id_marked2_w").value = '1'
         document.getElementById("id_marked2_color").style.backgroundColor ='#5feb4c'
         document.getElementById("id_marked2_color").style.color = setContrast(hexToRgb('#5feb4c'))
-        document.getElementById("id_marked3_color").value = '#eb4cc2'
-        document.getElementById("id_marked3_w").value = '1'
-        document.getElementById("id_marked3_color").style.backgroundColor ='#eb4cc2'
-        document.getElementById("id_marked3_color").style.color = setContrast(hexToRgb('#eb4cc2'))
+        //document.getElementById("id_marked3_color").value = '#eb4cc2'
+        //document.getElementById("id_marked3_w").value = '1'
+        //document.getElementById("id_marked3_color").style.backgroundColor ='#eb4cc2'
+        //document.getElementById("id_marked3_color").style.color = setContrast(hexToRgb('#eb4cc2'))
 
         document.getElementById("id_week_color").value = '#bbe0e3'
         document.getElementById("id_week_color").style.backgroundColor ='#bbe0e3'

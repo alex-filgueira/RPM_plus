@@ -124,28 +124,32 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 
 #Para testear envio de mail
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-"""
+
 #gmail_send/settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_HOST_USER = 'alexandrefilgueiralago@gmail.com'
-#EMAIL_HOST_PASSWORD = 'ksutjkmlmfabxnczg' #past the key or password app here
-#EMAIL_PORT = 587
+#EMAIL_HOST = 'smtp.mailtrap.io'
+#EMAIL_HOST = 'smtp.googlemail.com'
+EMAIL_HOST = 'smtp.live.com'
+
+
+#EMAIL_HOST_USER = 
+#EMAIL_HOST_PASSWORD =  lalala #past the key or password app here
+EMAIL_PORT = '25'
 EMAIL_USE_TLS = True
 #DEFAULT_FROM_EMAIL = 'default from email'
 
 
-EMAIL_HOST_USER = 'alexandre.filgueira@seat.es'
-EMAIL_HOST_PASSWORD = '42840121Alex'
+#EMAIL_HOST_USER = 'alexandre.filgueira@seat.es'
+#EMAIL_HOST_PASSWORD = '42840121Alex'
 
-EMAIL_HOST = 'smtp.office365.com'
+#EMAIL_HOST = 'smtp.office365.com'
 
-EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = 'alexandre.filgueira@seat.es'
-SERVER_EMAIL = 'alexandre.filgueira@seat.es'
-"""
+#EMAIL_PORT = 587
+#DEFAULT_FROM_EMAIL = 'alexandre.filgueira@seat.es'
+#SERVER_EMAIL = 'alexandre.filgueira@seat.es'
+
 
 
 

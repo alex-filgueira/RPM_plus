@@ -93,6 +93,8 @@ def change_pass(request):
         return HttpResponseRedirect(reverse('login') )
 
 
+from django.core.mail import send_mail
+from django.conf import settings
 
 def user_profile(request):
     print("user_profile()")
@@ -159,9 +161,21 @@ def user_profile(request):
             'date_joined':date_joined,
             #'group':group,
             'flag_first_time_profile':flag_first_time_profile,
+        }
 
-        } 
+        #test send mails
+        """
+        print("test mail")
 
+        subject = 'That’s your subject' 
+        email_from = settings.EMAIL_HOST_USER
+        to = 'alexandre.filgueira@seat.es'
+        plain_message = "lalala"
+
+        print(send_mail(subject, plain_message, email_from, [to], ))
+
+        print("send mail")
+        """
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto
         return render(request,'user_profile.html',context=context)
     else:

@@ -29,7 +29,7 @@
         </ul>
         <ul class="navbar-nav ml-auto justify-content-right">
             <li class="nav-item">
-              <a class="nav-link" id="id_tutorial" href="#">Tutorial?</a>
+              <a class="nav-link" id="id_tutorial" href="#">Tutorial</a>
             </li>
         </ul>
       </div>
@@ -94,14 +94,14 @@
 <div class="container-fluid " >
     <div class="row" >
         <div class="col-lg-10 p-0" data-title="Project info" data-intro="Here you have some project info.">
-            <div class="row" >
+            <div class="row">
                 <div class="col-lg-2 input-group-text" id="id_prj_owner">Owner: </div>
                 <div class="col-lg-3 input-group-text" id="id_prj_date_created">Date Created: {{date_created}}</div>
             </div>
         </div>
         <div class="col-lg-2 p-0">
             <div class="row">
-                <div class="col-lg-6 offset-lg-5 p-0">
+                <div class="col-lg-6 offset-lg-5 p-0" data-title="Generate PPTx" data-intro="This button is for generate the result of all this APP. and yes, it is important.">
                     <button type="button" name="pptGen"  class="btn btn-outline-danger" onclick="pptGenerator()" style="width:100%;">Generate PPTx</button>
                 </div>
             </div>
@@ -151,7 +151,7 @@
                     <input type="text" class="form-control"  name = "versname" placeholder="Version name..." value="{{version_name}}" id="id_vers_name_input" size=2  data-intro="You can write a new name more appropriate.">
                 </div>
                 <div class="col-lg-2 p-0">
-                    <button type="button" name="update" id="id_updateVersion"  class="btn btn-success " onclick="updateVersion()" style="width:100%;" data-intro="Please, click here after change someone name.">Update</button>
+                    <button type="button" name="update" id="id_updateVersion"  class="btn btn-success " onclick="updateVersion()" style="width:100%;" data-intro="Please, click here after change something.">Update</button>
                 </div>
                 <div class="col-lg-1 p-0">
                     <button type="button" name="remove" id="id_removeVersion" class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;" data-intro="The X not need more info...">X</button>
@@ -171,7 +171,7 @@
     <div class="container-fluid " >
         <div class="row">
             <div class="col-lg-12 p-0" >
-                <div class="row" > <!--Date -->
+                <div class="row" data-title="Project dates" data-intro="Here you can select the dates that will be show up in your pptx."> <!--Date -->
                     <div class="col-lg-1 input-group-text" >Start</div>
                     <div class="col-lg-2 p-0">
                         <input type="date" class="form-control" id="id_date_ini" name="date" placeholder="DD/MM/YYY"  value={{date_ini}} onchange="updateDatesPrint()"/>
@@ -186,7 +186,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-1" > <!--CW -->
+                <div class="row mt-1" data-intro="Can change the dates with the calendars or with the week format (week-year)."> <!--CW -->
                     <div class="col-lg-1 input-group-text" >Start CW-Y</div>
                     <div class="col-lg-1 p-0">
                         <input class="form-control" type="number" min="0" step="1" id="id_cw_ini"  value={{cw_ini}}  onchange="updateWeeksPrint()" style="max-width:100%;" >
@@ -212,11 +212,11 @@
 
                 <div class="row mt-3" >
                     <div class="col-lg-2 input-group-text" >Factor weeks</div>
-                    <div class="col-lg-1 p-0">
+                    <div class="col-lg-1 p-0"  data-title="Factor weeks" data-intro="If you put 1 will be displayed every week, if 2, will be displayed 1 of 2 weeks etc.">
                         <input class="form-control" type="number" min="1"  id="id_factor_weeks" value={{factor_weeks}} onchange="updateDatesPrint()"  >
                     </div>
                     <div class="col-lg-2 input-group-text" >Max ECUs in Slide</div>
-                    <div class="col-lg-1 p-0">
+                    <div class="col-lg-1 p-0" data-title="Max ECUs" data-intro="Select the max. number of ECUs lines in each slide.">
                         <input class="form-control" type="number" min="1" id="id_max_ecu_slide"  value={{max_ecu_slide}} onchange="updateDatesPrint()" >
                     </div>
                     <div class="col-lg-3 p-0">
@@ -234,7 +234,7 @@
     <div class="container-fluid " >
         <div class="row">
             <div class="col-lg-12 p-0" >
-                <div class="row" >
+                <div class="row"  data-intro="Click me for see all the ECUs availables. Please, click me now!" >
                         <a class="btn btn-primary" data-toggle="collapse" href="#collapseECUs" role="button" aria-expanded="false" aria-controls="collapseECUs"  style="width:100%;"> <!-- collapse control-->
                             <i class="bi bi-arrows-angle-expand"></i>
                         </a>
@@ -247,7 +247,7 @@
         <form name="ecu_list" id="id_ecu_list"> {% csrf_token %} <!-- Abre form.-->
         <div class="row mt-3">
             <div class="col-lg-4 p-0">
-                <div class="row" >
+                <div class="row" data-title="ECU manager" data-intro="You can create a new ECU line but don´t forget save all after the changes.">
                     <div class="col-lg-3 offset-lg-0  p-0" >
                         <button type="button" name="add" id="add" class="btn btn-primary" style="width:100%;" title="Add new line">Add</button>
                     </div>
@@ -258,7 +258,7 @@
             </div>
             <div class="col-lg-8 p-0">
                 <div class="row" >
-                    <div class="col-lg-2 offset-lg-10 p-0">
+                    <div class="col-lg-2 offset-lg-10 p-0" data-intro="You can import the ECU list from the other projects.">
                         <button type="button" id="id_importeculist" class="btn btn-warning" onclick="ImportECUlist()" style="width:100%;" title="Import from the other project" >Import</button>
                     </div>
                 </div>
@@ -299,7 +299,7 @@
 <div class="container-fluid " >
     <div class="row">
         <div class="col-lg-12 p-0" >
-            <div class="row" >
+            <div class="row" data-title="Release Plan manager" data-intro="You can find something, add or remove new line/row. Also you can select the autosave method or save all manually.">
                 <div class="col-lg-2 p-0" >
                     <input type="text" class="form-control" placeholder="Search.." aria-label="Username" aria-describedby="basic-addon1" id="search_field"  maxlength="4" size="4">
                 </div>
@@ -321,7 +321,7 @@
                     <button type="button" class="btn btn-success"  onclick="sendDataReleaselist()" style="width:100%;">Save</button>
                 </div>
                 <div class="col-lg-3 ms-2" >
-                    <div class="row" >
+                    <div class="row"data-intro="With Export you will create a new .csv file with all the data. You could import it in excel and work with them and after all you can re import it here." >
                         <div class="col-lg-6 p-0" >
                             <button type="button" class="btn btn-outline-warning"  onclick="exportDataReleaselist()" style="width:100%;">Export (csv)</button>
                         </div>
@@ -333,7 +333,7 @@
             </div>
             
             <div class="row" >
-                <div class="col-lg-12 offset-lg-0 p-0  mt-2 text-center" >
+                <div class="col-lg-12 offset-lg-0 p-0  mt-2 text-center" data-title="Release Plan" data-intro="This is the main part of this APP. You can do a lot of things with it, I could explain all but.. is better that you play with it and if you have some doubts, please aske me -> alexandre.filgueira@seat.es">
                     <div style=" height:800px; overflow: hidden; " id = "ResultadoTabla" ></div> <!-- Tabla !!!. height:487px width: 805px-->
                     <!-- <div style=" overflow: hidden; width: 100%;" id = "ResultadoTabla" ></div> --><!-- Tabla !!!. width: 805px-->
                 </div>

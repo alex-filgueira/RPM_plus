@@ -29,7 +29,7 @@
         </ul>
         <ul class="navbar-nav ml-auto justify-content-right">
             <li class="nav-item">
-              <a class="nav-link" id="id_tutorial" href="#">Tutorial?</a>
+              <a class="nav-link" id="id_tutorial" href="#">Tutorial</a>
             </li>
         </ul>
       </div>
@@ -41,7 +41,7 @@
 {% block content %}
 
 
-<div class="card card-body" data-step="2" data-title="Shape format" data-intro="Here you can configure all the parameters....." > <!-- card item-->
+<div class="card card-body" data-step="2" data-title="Shape format" data-intro="Here you can configure all the parameters for the figures that you will be use in the APP." > <!-- card item-->
 <div class="container-fluid">
     <div class="row mb-3"> <!-- canvas fig -->
         <div class="col-lg-6 offset-lg-3" >
@@ -56,8 +56,8 @@
         </div>
     </div>
 
-    <div class="row"> <!-- Type line 1  -->
-        <div class="col-lg-6 offset-lg-3" >
+    <div class="row"  > <!-- Type line 1  -->
+        <div class="col-lg-6 offset-lg-3" data-intro="The Type is associated with the form." >
             <div class="row">
                 <div class="col-lg-3 input-group-text"  >Type</div>
                 <div class="col-lg-3 p-0" >
@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    <div class="row"> <!-- Type line 2  -->
+    <div class="row" > <!-- Type line 2  -->
         <div class="col-lg-6 offset-lg-3" >
             <div class="row">
                 <div class="col-lg-3 input-group-text"  >Shape</div>
@@ -122,7 +122,7 @@
     </div>
 
     <div class="row mt-3"> <!-- Plan line 1  -->
-        <div class="col-lg-6 offset-lg-3" >
+        <div class="col-lg-6 offset-lg-3" data-intro="The Plan is associated with the colors." >
             <div class="row">
                 <div class="col-lg-2 input-group-text"  >Plan</div>
                 <div class="col-lg-4 p-0" >
@@ -183,7 +183,7 @@
         <div class="row mt-3"> <!-- Color picker -->
             <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
-                    <div id="colorpicker"  style=" width:100%;" class="d-flex justify-content-center"></div> <!-- center --> <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
+                    <div id="colorpicker"  style=" width:100%;" class="d-flex justify-content-center" data-intro="Click in the color picker and after, click in someone cell of color for change it." ></div> <!-- center --> <!-- http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/-->
                 </div>
             </div>
         </div>
@@ -192,7 +192,7 @@
 
 
 <div class="card card-body"> <!-- card item-->
-    <div class="container-fluid " >
+    <div class="container-fluid " data-intro="You can see what is each name in the picture at the end of the web.">
         <div class="row"> <!-- Title line  -->
             <div class="col-lg-6 offset-lg-3" >
                 <div class="row ">
@@ -273,7 +273,7 @@
 
 <div class="card card-body"> <!-- card item-->
     <div class="container-fluid">
-        <div class="row mt-3"> <!-- title -->
+        <div class="row mt-3" data-intro="Here you can change and select if will be print in the PPTx someone of this fields."> <!-- title -->
             <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
                     <div class="col-lg-2 input-group-text" >Title</div>
@@ -348,7 +348,7 @@
         <div class="row mt-3"> <!-- Image ppt-->
             <div class="col-lg-6 offset-lg-3" >
                 <div class="row">
-                    <img id="id_img_ppt" src="/static/brand/ppt_example.PNG" class="img-fluid" alt="PPTX example">
+                    <img id="id_img_ppt" src="/static/brand/ppt_example.PNG" class="img-fluid" alt="PPTX example" data-intro="Image with the definition of the different tags. Click for enlarge.">
                 </div>
             </div>
         </div>

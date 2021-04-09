@@ -151,6 +151,41 @@ def user_profile(request):
              user_extra.flag_first_time_profile = False
              user_extra.save()
 
+        #Statistics
+        total_prjs = MProject.objects.all().count()
+        user_prjs =  MProject.objects.filter(id_user = request.user.id).count()
+        print("total_prjs:",total_prjs)
+        print("user_prjs:",user_prjs)
+        factor_prjs = 0
+        if user_prjs == 0:
+            factor_prjs = 0
+        else:
+            factor_prjs = user_prjs * 100 / total_prjs
+
+        total_ecus = MECU.objects.all().count()
+        user_ecus =  MECU.objects.filter(created_by = request.user.id).count()
+        print("total_ecus:",total_ecus)
+        print("user_ecus:",user_ecus)
+        factor_ecus = 0
+        if user_ecus == 0:
+            factor_ecus = 0
+        else:
+            factor_ecus = user_ecus * 100 / total_ecus
+
+        total_ri = MRelease_input.objects.all().count()
+        user_ri =  MRelease_input.objects.filter(created_by = request.user.id).count()
+        print("total_ri:",total_ri)
+        print("user_ri:",user_ri)
+        factor_ri = 0
+        if user_ri == 0:
+            factor_ri = 0
+        else:
+            factor_ri = user_ri * 100 / total_ri
+        
+        print("factor_prjs:",factor_prjs)
+        print("factor_ecus:",factor_ecus)
+        print("factor_ri:",factor_ri)
+        
         context = {
             'ok':True,
             'username':username,
@@ -162,6 +197,9 @@ def user_profile(request):
             'date_joined':date_joined,
             #'group':group,
             'flag_first_time_profile':flag_first_time_profile,
+            'factor_prjs':str(factor_prjs)+"%",
+            'factor_ecus':str(factor_ecus)+"%",
+            'factor_ri':str(factor_ri)+"%",
         }
 
         #test send mails

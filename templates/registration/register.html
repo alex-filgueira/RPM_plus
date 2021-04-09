@@ -158,7 +158,8 @@
       function validate_email(email){
           //search @ 
           user = email.split('@')[0]
-          document.getElementById("id_user").value = user
+          //document.getElementById("id_user").value = user
+          document.getElementById("id_user").value = email
 
           //validate email
           if(validateEmail(email) == true){

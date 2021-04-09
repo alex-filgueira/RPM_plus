@@ -978,32 +978,32 @@ def create_predef_plan(user_id):
                 plan_ = MPlan2()
                 plan_.id_user_id = user_id
                 plan_.name = "vbv"
-                plan_.fig1_color_1 = "00b0f0" #fill color //azul
-                plan_.fig1_color_2 = "000000" #border color //negro
+                plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "#000000" #border color //negro
                 plan_.fig1_border_w = 1.75 #border w
                 plan_.save()
                 #create te.vbv
                 plan_ = MPlan2()
                 plan_.id_user_id = user_id
                 plan_.name = "te.vbv"
-                plan_.fig1_color_1 = "00b0f0" #fill color //azul
-                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
                 plan_.fig1_border_w = 0.75 #border w
                 plan_.save()
                 #create planned
                 plan_ = MPlan2()
                 plan_.id_user_id = user_id
                 plan_.name = "planned"
-                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
-                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
                 plan_.fig1_border_w = 0.75 #border w
                 plan_.save()
                 #create additional
                 plan_ = MPlan2()
                 plan_.id_user_id = user_id
                 plan_.name = "additional"
-                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
-                plan_.fig1_color_2 = "ff0000" #border color //rojo
+                plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "#ff0000" #border color //rojo
                 plan_.fig1_border_w = 1.75 #border w
                 plan_.save()
 
@@ -1073,32 +1073,32 @@ def register(request):
                 plan_ = MPlan2()
                 plan_.id_user_id = user.id
                 plan_.name = "vbv"
-                plan_.fig1_color_1 = "00b0f0" #fill color //azul
-                plan_.fig1_color_2 = "000000" #border color //negro
+                plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "#000000" #border color //negro
                 plan_.fig1_border_w = 1.75 #border w
                 plan_.save()
                 #create te.vbv
                 plan_ = MPlan2()
                 plan_.id_user_id = user.id
                 plan_.name = "te.vbv"
-                plan_.fig1_color_1 = "00b0f0" #fill color //azul
-                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_color_1 = "#00b0f0" #fill color //azul
+                plan_.fig1_color_2 = "#37f7f7f" #border color //gris oscuro
                 plan_.fig1_border_w = 0.75 #border w
                 plan_.save()
                 #create planned
                 plan_ = MPlan2()
                 plan_.id_user_id = user.id
                 plan_.name = "planned"
-                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
-                plan_.fig1_color_2 = "7f7f7f" #border color //gris oscuro
+                plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
                 plan_.fig1_border_w = 0.75 #border w
                 plan_.save()
                 #create additional
                 plan_ = MPlan2()
                 plan_.id_user_id = user.id
                 plan_.name = "additional"
-                plan_.fig1_color_1 = "d9d9d9" #fill color //gris
-                plan_.fig1_color_2 = "ff0000" #border color //rojo
+                plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "#ff0000" #border color //rojo
                 plan_.fig1_border_w = 1.75 #border w
                 plan_.save()
 

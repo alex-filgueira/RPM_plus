@@ -1121,7 +1121,7 @@ def register(request):
                 plan_.id_user_id = user.id
                 plan_.name = "te.vbv"
                 plan_.fig1_color_1 = "#00b0f0" #fill color //azul
-                plan_.fig1_color_2 = "#37f7f7f" #border color //gris oscuro
+                plan_.fig1_color_2 = "#7f7f7f" #border color //gris oscuro
                 plan_.fig1_border_w = 0.75 #border w
                 plan_.save()
                 #create planned

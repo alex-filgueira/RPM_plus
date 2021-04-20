@@ -46,8 +46,8 @@
     </main>
 
 <script>
+    /*
       $(document).ready(function() {
-
         //check browser
         var browser=get_browser();
         console.log("browser:",browser.name);
@@ -56,6 +56,18 @@
         self.location="{% url 'ie_warning' %}"
         }
         })
+        */
+        window.onload = function() {
+            //check browser
+            var browser=get_browser();
+            console.log("browser:",browser.name);
+            if(browser.name == "IE"){
+            //alert("You are using Internet Explorer, please, change to Firefox or Edge!");
+            self.location="{% url 'ie_warning' %}"
+            //window.location.replace("{% url 'ie_warning' %}");
+
+            }
+        }
 
         function get_browser() {
         var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 

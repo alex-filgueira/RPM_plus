@@ -1,0 +1,81 @@
+{% extends "base_generic.html" %}
+
+{% block head %}
+{{ block.super }}
+{% load static %}
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+{% endblock %}
+
+
+{% block body %}
+{% load static %}
+<body class="container-fluid  text-white bg-dark text-center" >
+
+    
+    <main class="form-signin">
+        <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {% if messages %}
+           <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+           </ul>
+       {% endif %}
+
+        <img class="mb-4" src="{% static 'brand/logo.svg' %}" alt="" width="82" height="82">
+
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+        <label for="inputUser" class="visually-hidden">User name</label>
+        <input type="text" id="inputUser" class="form-control" placeholder="Email" required autofocus name="username" value="{{ username }}" >
+
+        <label for="inputPassword" class="visually-hidden">Password</label>
+        <input type="password"  id="inputPassword" class="form-control" placeholder="Password" required name="password" value="{{ password }}" >
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit" name="next" value="{{ next }}" >Sign in</button>
+        
+      </form>
+      <br>
+      <h1 class="h3 mb-3 fw-normal">Don't have an account?</h1>
+      <button class="w-100 btn btn-lg btn-primary" onclick="location.href='{% url 'register' %}'" type="button" name="" value="" >Sign up</button>
+
+      <p class="mt-5 mb-3 text-muted">&copy; 2020–2021</p>
+      <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+    </main>
+
+<script>
+      $(document).ready(function() {
+
+        //check browser
+        var browser=get_browser();
+        console.log("browser:",browser.name);
+        if(browser.name == "IE"){
+        //alert("You are using Internet Explorer, please, change to Firefox or Edge!");
+        self.location="{% url 'ie_warning' %}"
+        }
+        })
+
+        function get_browser() {
+        var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+        if(/trident/i.test(M[1])){
+            tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+            return {name:'IE',version:(tem[1]||'')};
+            }   
+        if(M[1]==='Chrome'){
+            tem=ua.match(/\bOPR|Edge\/(\d+)/)
+            if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+            }   
+        M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+        if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+        return {
+        name: M[0],
+        version: M[1]
+        };
+        }
+</script>
+
+</body>
+
+{% endblock %}

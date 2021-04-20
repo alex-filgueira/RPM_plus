@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'k7vt$7cy^d&0q4)(_1s!pn&(g2fog#yj4lfu72()(_f*l9v5y@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True # -> False
 
 ALLOWED_HOSTS = [] #ej: '192.168.1.2'
 
@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'RPM_plus_01.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',#'django.db.backends.sqlite3',
+        'NAME': 'mysql_django',#BASE_DIR / 'db.sqlite3',
+        'USER': 'django_admin',
+        'PASSWORD': '4284Django!',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -150,6 +154,6 @@ EMAIL_USE_TLS = True
 #DEFAULT_FROM_EMAIL = 'alexandre.filgueira@seat.es'
 #SERVER_EMAIL = 'alexandre.filgueira@seat.es'
 
-
-
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

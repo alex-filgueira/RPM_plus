@@ -1,0 +1,291 @@
+{% extends "base_generic.html" %}
+
+{% block head %}
+{{ block.super }}
+{% load static %}
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+{% endblock %}
+
+
+
+{% block body %}
+{% load static %}
+
+<body class="container-fluid  text-white bg-dark text-center" >
+    <main class="form-signin">
+        <div class="row" >
+            <div class="col-lg-12 offset-lg-0"  >
+                <div class="row">
+                    <div class="col-lg-12" >
+                        <img class="lg-4" src="{% static 'brand/logo.svg' %}" alt="" width="82" height="82">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12" >
+                        <h1 class="h3 lg-3 fw-normal">Please sign up</h1>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-12" >
+                        <input type="text" id="id_email" class="form-control" placeholder="Email" required autofocus name="email" value="" >
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-12" >
+                        <input type="text" id="id_user" class="form-control" placeholder="Username" required autofocus name="username" value="" disabled >
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-12" >
+                        <input type="password" id="id_pass1" class="form-control" placeholder="Password" required autofocus name="password" value=""title="8 characteres min"  >
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-12" >
+                        <input type="password" id="id_pass2" class="form-control" placeholder="Repeat Password" required autofocus name="password2" value="" >
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-lg-12" >
+                        <button class="w-100 btn btn-lg btn-primary" onclick="register()" type="button" name="" value="" >Register</button>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-lg-12" >
+                        
+                        <ul id="id_notes">
+                            {% if notes %}
+                            {% for message in notes %}
+                            <li>{{ message }}</li>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                        
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-lg-12" >
+                        <p class="mt-5 mb-3 text-muted">&copy; 2020–2021</p>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-12" >
+                        <p><a href="{% url 'login' %}">Log in?</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</main>
+
+
+{% csrf_token %}
+
+
+<script>
+    $(document).ready(function() {
+
+      //check browser
+      var browser=get_browser();
+      console.log("browser:",browser.name);
+      if(browser.name == "IE"){
+      //alert("You are using Internet Explorer, please, change to Firefox or Edge!");
+      self.location="{% url 'ie_warning' %}"
+      }
+      })
+
+      function get_browser() {
+      var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+      if(/trident/i.test(M[1])){
+          tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+          return {name:'IE',version:(tem[1]||'')};
+          }   
+      if(M[1]==='Chrome'){
+          tem=ua.match(/\bOPR|Edge\/(\d+)/)
+          if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+          }   
+      M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+      if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+      return {
+      name: M[0],
+      version: M[1]
+      };
+      }
+</script>
+
+<script type="text/javascript">
+      //Configuro ajax con el CSRFToken---------------------
+      // using jQuery get csrftoken from your HTML
+      var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+      function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              // if not safe, set csrftoken
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+      //-------------------------------------------------------
+
+
+
+
+      document.getElementById("id_email").addEventListener("keyup",function(event){
+          email = document.getElementById("id_email").value
+          validate_email(email)
+      },false);
+
+      document.getElementById("id_pass1").addEventListener("keyup",function(event){
+          pass1 = document.getElementById("id_pass1").value
+          validate_pass1(pass1)
+          pass2 = document.getElementById("id_pass2").value
+          validate_pass2(pass2)
+      },false);
+
+      document.getElementById("id_pass2").addEventListener("keyup",function(event){
+          pass2 = document.getElementById("id_pass2").value
+          validate_pass2(pass2)
+      },false);
+
+      function validate_email(email){
+          //search @ 
+          user = email.split('@')[0]
+          //document.getElementById("id_user").value = user
+          document.getElementById("id_user").value = email
+
+          //validate email
+          if(validateEmail(email) == true){
+            document.getElementById("id_email").style.backgroundColor  = " #b3ffb3";
+            return true
+          }
+          else{
+            document.getElementById("id_email").style.backgroundColor  = " white";
+          }
+          return false
+      }
+
+
+      function validate_pass1(pass){
+          //validate pass
+          if(validatePass(pass) == true){
+            document.getElementById("id_pass1").style.backgroundColor  = " #b3ffb3";
+            return true
+          }
+          else{
+            document.getElementById("id_pass1").style.backgroundColor  = " white";
+          }
+          return false
+      }
+
+      function validate_pass2(pass){
+        if(validatePass(pass) == true){
+              if(document.getElementById("id_pass1").value == pass2){
+                  
+                document.getElementById("id_pass2").style.backgroundColor  = " #b3ffb3";
+                return true
+              }
+              else{
+                document.getElementById("id_pass2").style.backgroundColor  = " white";
+              }
+              return false
+          }
+          return false
+      }
+
+
+      //general functions
+    function validateEmail(email) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    function validatePass(pass) {
+        flag_pass = false
+        if(pass.length >= 8){flag_pass = true}
+
+        return flag_pass
+    }
+
+
+    function register(){
+        error = []
+        email = document.getElementById("id_email").value
+        if(validate_email(email) == false){
+            document.getElementById("id_email").style.backgroundColor  = " red";
+            error.push("Email incorrect")
+        }
+
+        pass1 = document.getElementById("id_pass1").value
+        if(validate_pass1(pass1) == false){
+            document.getElementById("id_pass1").style.backgroundColor  = " red";
+            error.push("pass1 incorrect")
+        }
+
+        pass2 = document.getElementById("id_pass2").value
+
+        if(validate_pass2(pass2) == false){
+            console.log("pass2 false")
+            document.getElementById("id_pass2").style.backgroundColor  = " red";
+            error.push("pass2 incorrect")
+        }
+
+        if(error.length>0){
+            console.log("error:",error)
+            ul = document.getElementById("id_notes")
+            ul.innerHTML  ="\n" //clean
+            for(i in error){
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(error[i]));
+                ul.appendChild(li);
+            }
+        }
+        else{
+            user = document.getElementById("id_user").value
+            //send
+            console.log("send")
+            $.ajax({
+                    type: "POST",
+                    url: "{% url 'register' %}",
+                    name: "testname",
+                    data: JSON.stringify( {
+                        email,
+                        user,
+                        pass1,
+                    } ),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(resp){
+
+                        console.log("Informacion actualizada:" + resp.flag_ok);
+                        if(resp.flag_ok == true){
+                            //rederigir a login
+                            self.location="{% url 'login' %}"
+                        }
+                        console.log("Informacion actualizada:" + resp.notes);
+                        ul = document.getElementById("id_notes")
+                        ul.innerHTML  ="" //clean
+                        for(i in resp.notes){
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode(resp.notes[i]));
+                            ul.appendChild(li);
+                        }
+                    },
+                    failure: function(resp){console.log("Hay un error:" + resp);},
+            });
+        }
+
+    }
+    
+</script>
+
+</body>
+{% endblock %}
+

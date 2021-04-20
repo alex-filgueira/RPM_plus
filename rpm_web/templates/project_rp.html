@@ -1131,6 +1131,10 @@ function ImportECUlist(){
         var RelInList_marked2 = "{{ RelInList_marked2}}".split(";");
         var RelInList_marked3 = "{{ RelInList_marked3}}".split(";");
 
+        var RelInList_extra1 = "{{ RelInList_extra1 }}".split(";");
+        var RelInList_extra2 = "{{ RelInList_extra2 }}".split(";");
+        var RelInList_extra3 = "{{ RelInList_extra3 }}".split(";");
+
         var RelInList_created_by = "{{ RelInList_created_by}}".split(";");
         var RelInList_created_by_name = "{{ RelInList_created_by_name}}".split(";");
         var RelInList_date_created = "{{ RelInList_date_created}}".split(";");
@@ -1198,6 +1202,10 @@ function ImportECUlist(){
                 "RelInList_comment":RelInList_comment[i],
                 "RelInList_marked1":RelInList_marked1[i],
 
+                "RelInList_extra1":RelInList_extra1[i],
+                "RelInList_extra2":RelInList_extra2[i],
+                "RelInList_extra3":RelInList_extra3[i],
+
                 "RelInList_created_by":RelInList_created_by[i],
                 "RelInList_created_by_name":RelInList_created_by_name[i],
                 "RelInList_date_created":RelInList_date_created[i],
@@ -1215,9 +1223,9 @@ function ImportECUlist(){
         config_resultados = {
             data: data_table,
             //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
-            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null,RelInList_date_w: null,  RelInList_type_name: null, RelInList_plan: null, RelInList_visual: true, RelInList_comment: null, RelInList_marked1:null,RelInList_created_by:null,RelInList_created_by_name:null, RelInList_date_created:null,},
+            dataSchema: {RelInList_id: 0, RelInList_id_ecu: null, RelInList_dx: null, RelInList_ecu_name: null, RelInList_n_version: null, RelInList_date: null,RelInList_date_w: null,  RelInList_type_name: null, RelInList_plan: null, RelInList_visual: true, RelInList_comment: null, RelInList_marked1:null,RelInList_created_by:null,RelInList_created_by_name:null, RelInList_date_created:null, RelInList_extra1: null,RelInList_extra2: null,RelInList_extra3: null,},
             //colHeaders:['ID','ecu_name', 'type_version', 'n_version', 'date_beantragt', 'plan', 'flag_visual', 'dx_ecu', 'week', 'comment'],
-            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','date_week','type','plan','visual', 'comment', 'marked1', 'created_by','created_by_name', 'date_created'],
+            colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','date_week','type','plan','visual', 'comment', 'marked1', 'created_by','created_by_name', 'date_created','extra1','extra2','extra3',],
             columns:[
                 /* Comented for evit the first load in false
                 {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
@@ -1512,6 +1520,10 @@ function ImportECUlist(){
                         "RelInList_marked2":resp.RelInList_marked2[i],
                         "RelInList_marked3":resp.RelInList_marked3[i],
 
+                        "RelInList_extra1":resp.RelInList_extra1[i],
+                        "RelInList_extra2":resp.RelInList_extra2[i],
+                        "RelInList_extra3":resp.RelInList_extra3[i],
+
                         "RelInList_created_by":resp.RelInList_created_by[i],
                         "RelInList_created_by_name":resp.RelInList_created_by_name[i],
                         "RelInList_date_created":resp.RelInList_date_created[i],
@@ -1630,7 +1642,38 @@ function ImportECUlist(){
                 {data: "RelInList_marked1",type: 'checkbox',allowEmpty:true},
                 {data: "RelInList_created_by",allowEmpty:true, readOnly: true,}, //Is hidden!!!!
                 {data: "RelInList_created_by_name",allowEmpty:true, readOnly: true}, 
-                {data: "RelInList_date_created",allowEmpty:true, readOnly: true}, 
+                {data: "RelInList_date_created",allowEmpty:true, readOnly: true},
+
+                {data: "RelInList_extra1",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('extra1 Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                },
+                {data: "RelInList_extra2",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('extra2 Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                }, 
+                {data: "RelInList_extra3",allowEmpty:true, validator: function (value, callback) {
+                    if(value != null){
+                        if (value.length > 200) {
+                            alert('extra1 Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                        }
+                    }
+                    callback(true);
+                },
+                }, 
 
                 ],
                 hiddenColumns: {
@@ -1878,6 +1921,22 @@ function import_csv(content_file){
                     flag_heads = false
                     heads_needed.push("date_created")
                 }
+                if ("extra1" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("extra1")
+                }
+                if ("extra2" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("extra2")
+                }
+                if ("extra3" in data_csv[0]) {}
+                else{
+                    flag_heads = false
+                    heads_needed.push("extra3")
+                }
+
                 if(flag_heads == false){
                     console.log("need heads:",heads_needed)
                     bootbox.alert({
@@ -2008,7 +2067,11 @@ function import_csv(content_file){
 
                                     "RelInList_dx":data_csv[i].Dx_ecu, 
                                     "RelInList_created_by_name":data_csv[i].created_by_name, 
-                                    "RelInList_date_created":data_csv[i].date_created, 
+                                    "RelInList_date_created":data_csv[i].date_created,
+
+                                    "RelInList_extra1":data_csv[i].extra1,
+                                    "RelInList_extra2":data_csv[i].extra2,
+                                    "RelInList_extra3":data_csv[i].extra3,
 
                                     "RelInList_id": 0,
                                    // "RelInList_id_ecu":resp.RelInList_id_ecu[i],

@@ -1734,6 +1734,9 @@ def update_version_form(request):
                         new_Ri.flag_marked3 = obj.flag_marked3
                         new_Ri.created_by = obj.created_by
                         new_Ri.date_created = obj.date_created
+                        new_Ri.extra1 = obj.extra1
+                        new_Ri.extra2 = obj.extra2
+                        new_Ri.extra3 = obj.extra3
                         
 
                         new_Ri.save()
@@ -2046,6 +2049,10 @@ def update_ECU_list(request):
                 RelInList_marked2 = []
                 RelInList_marked3 = []
 
+                RelInList_extra1 = []
+                RelInList_extra2 = []
+                RelInList_extra3 = []
+
                 RelInList_created_by = []
                 RelInList_created_by_name = []
                 RelInList_date_created = []
@@ -2072,6 +2079,10 @@ def update_ECU_list(request):
                         RelInList_marked1.append(str(elt.flag_marked1))
                         RelInList_marked2.append(str(elt.flag_marked2))
                         RelInList_marked3.append(str(elt.flag_marked3))
+
+                        RelInList_extra1.append(elt.extra1)
+                        RelInList_extra2.append(elt.extra2)
+                        RelInList_extra3.append(elt.extra3)
 
                         if elt.created_by != None:
                             RelInList_created_by.append(str(elt.created_by.id))
@@ -2160,6 +2171,10 @@ def update_ECU_list(request):
                     'RelInList_marked1': RelInList_marked1,
                     'RelInList_marked2': RelInList_marked2,
                     'RelInList_marked3': RelInList_marked3,
+
+                    'RelInList_extra1':RelInList_extra1,
+                    'RelInList_extra2':RelInList_extra2,
+                    'RelInList_extra3':RelInList_extra3,
 
                     'RelInList_created_by': RelInList_created_by,
                     'RelInList_created_by_name':RelInList_created_by_name,
@@ -2300,6 +2315,11 @@ def update_Release_list(request):
                         aux_string =  row['RelInList_comment'].replace('\n', ' ').replace('\r', '')
                         RI_selected.comment = aux_string
                         RI_selected.flag_marked1= flag_marked1
+
+                        RI_selected.extra1= row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
+                        RI_selected.extra2= row['RelInList_extra2'].replace('\n', ' ').replace('\r', '')
+                        RI_selected.extra3= row['RelInList_extra3'].replace('\n', ' ').replace('\r', '')
+
                         RI_selected.save()
 
                         #RI_model.save()
@@ -2309,6 +2329,10 @@ def update_Release_list(request):
                         print("ecu_id:",ecu_id)
                         aux_string_ver =  row['RelInList_n_version'].replace('\n', ' ').replace('\r', '')
                         aux_string_com =  row['RelInList_comment'].replace('\n', ' ').replace('\r', '')
+
+                        aux_string_extra1 =  row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
+                        aux_string_extra2 =  row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
+                        aux_string_extra3 =  row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
 
                         RI_model = MRelease_input(
                             #id = row['RelInList_id'],
@@ -2323,6 +2347,10 @@ def update_Release_list(request):
                             flag_marked1 = flag_marked1,
                             created_by = request.user,
                             date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                            extra1 = aux_string_extra1,
+                            extra2 = aux_string_extra2,
+                            extra3 = aux_string_extra3,
+
                         )
                         RI_model.save()
 
@@ -2340,6 +2368,10 @@ def update_Release_list(request):
             RelInList_marked1 = []
             RelInList_marked2 = []
             RelInList_marked3 = []
+
+            RelInList_extra1 = []
+            RelInList_extra2 = []
+            RelInList_extra3 = []
 
             RelInList_created_by = []
             RelInList_created_by_name = []
@@ -2376,6 +2408,10 @@ def update_Release_list(request):
                     RelInList_marked1.append(str(elt.flag_marked1))
                     RelInList_marked2.append(str(elt.flag_marked2))
                     RelInList_marked3.append(str(elt.flag_marked3))
+
+                    RelInList_extra1.append(elt.extra1)
+                    RelInList_extra2.append(elt.extra2)
+                    RelInList_extra3.append(elt.extra3)
 
                     if elt.created_by != None:
                         RelInList_created_by.append(str(elt.created_by.id))
@@ -2442,6 +2478,10 @@ def update_Release_list(request):
                     'RelInList_marked1': RelInList_marked1,
                     'RelInList_marked2': RelInList_marked2,
                     'RelInList_marked3': RelInList_marked3,
+
+                    'RelInList_extra1': RelInList_extra1,
+                    'RelInList_extra2': RelInList_extra2,
+                    'RelInList_extra3': RelInList_extra3,
 
                     'RelInList_created_by': RelInList_created_by,
                     'RelInList_created_by_name':RelInList_created_by_name,

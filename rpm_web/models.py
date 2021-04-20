@@ -181,6 +181,10 @@ class MRelease_input(models.Model):
     d2 = now.strftime('%d/%m/%Y-%H:%M')
     date_created = models.CharField(max_length = 50,default=d2, blank=True)
 
+    extra1 = models.CharField(max_length = 200,default='',blank=True)
+    extra2 = models.CharField(max_length = 200,default='',blank=True)
+    extra3 = models.CharField(max_length = 200,default='',blank=True)
+
 
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Release_input"

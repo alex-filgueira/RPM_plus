@@ -2331,8 +2331,8 @@ def update_Release_list(request):
                         aux_string_com =  row['RelInList_comment'].replace('\n', ' ').replace('\r', '')
 
                         aux_string_extra1 =  row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
-                        aux_string_extra2 =  row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
-                        aux_string_extra3 =  row['RelInList_extra1'].replace('\n', ' ').replace('\r', '')
+                        aux_string_extra2 =  row['RelInList_extra2'].replace('\n', ' ').replace('\r', '')
+                        aux_string_extra3 =  row['RelInList_extra3'].replace('\n', ' ').replace('\r', '')
 
                         RI_model = MRelease_input(
                             #id = row['RelInList_id'],

@@ -1446,10 +1446,12 @@ function ImportECUlist(){
                 //console.log("p:",prop)
                 //console.log(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name'))
                 if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != '{user}'){
-                    changes[0] = null;
-                    column = tblExcel.propToCol('RelInList_created_by_name')
-                    cell = tblExcel.getCell(row, column)
-                    cell.style.color = 'red';
+                    if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != null){
+                        changes[0] = null;
+                        column = tblExcel.propToCol('RelInList_created_by_name')
+                        cell = tblExcel.getCell(row, column)
+                        cell.style.color = 'red';
+                    }
                 }
                 });
             },

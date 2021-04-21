@@ -91,7 +91,7 @@
       //check browser
       var browser=get_browser();
       console.log("browser:",browser.name);
-      if(browser.name == "IE"){
+      if((browser.name == "IE") ||(browser.name == "MSIE")){
       //alert("You are using Internet Explorer, please, change to Firefox or Edge!");
       self.location="{% url 'ie_warning' %}"
       }

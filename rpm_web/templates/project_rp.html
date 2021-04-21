@@ -1445,7 +1445,8 @@ function ImportECUlist(){
                 //console.log("r:",row)
                 //console.log("p:",prop)
                 //console.log(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name'))
-                if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != '{user}'){
+                //console.log("{{ user }}")
+                if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != "{{ user }}"){
                     if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != null){
                         changes[0] = null;
                         column = tblExcel.propToCol('RelInList_created_by_name')

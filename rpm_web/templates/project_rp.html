@@ -1446,12 +1446,20 @@ function ImportECUlist(){
                 //console.log("p:",prop)
                 //console.log(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name'))
                 //console.log("{{ user }}")
-                if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != "{{ user }}"){
-                    if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != null){
-                        changes[0] = null;
-                        column = tblExcel.propToCol('RelInList_created_by_name')
-                        cell = tblExcel.getCell(row, column)
-                        cell.style.color = 'red';
+
+                //only update if the user is the owner project
+                flag_disable = false
+                if("{{flag_disabled}}" == "True"){
+                    flag_disable = true
+                }
+                if(flag_disable == true){ //if the user is not the project owner
+                    if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != "{{ user }}"){
+                        if(tblExcel.getDataAtRowProp(row, 'RelInList_created_by_name') != null){
+                            changes[0] = null;
+                            column = tblExcel.propToCol('RelInList_created_by_name')
+                            cell = tblExcel.getCell(row, column)
+                            cell.style.color = 'red';
+                        }
                     }
                 }
                 });

@@ -622,7 +622,7 @@ function get_project_owner(){
                                     dataType: "json",
                                     success: function(resp){
                                         console.log("resp:" + resp)
-                                        document.getElementById('id_prj_owner').innerHTML = 'Owner: ' + resp.prj_owner
+                                        document.getElementById('id_prj_owner').innerHTML = 'Owner: &nbsp <b>' + resp.prj_owner + '</b>'
                                     },
                                     failure: function(resp){console.log("Hay un error:" + resp);},
                             });
@@ -1562,6 +1562,11 @@ function ImportECUlist(){
                     callback(false);
                     return;
                     }
+                    if (value.length > 200) {
+                            alert('n_version Must be 200 character or less. Extra characters will be removed');
+                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
+                    }
+                    
                     callback(true);
                 },
                 },
@@ -1667,7 +1672,7 @@ function ImportECUlist(){
                 {data: "RelInList_extra3",allowEmpty:true, validator: function (value, callback) {
                     if(value != null){
                         if (value.length > 200) {
-                            alert('extra1 Must be 200 character or less. Extra characters will be removed');
+                            alert('extra3 Must be 200 character or less. Extra characters will be removed');
                             this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
                         }
                     }
@@ -1842,12 +1847,14 @@ function import_csv(content_file){
             var data_csv = ""
             //var data_table = []
             //if is posible that the user save the csv with ; or ,
-            if(content_file.split(",").length > 4){
-                console.log("separator (,)")
-                data_csv = $.csv.toObjects(content_file,{'separator':','}); //need csv separet it by (,) -> https://github.com/typeiii/jquery-csv
-            }
-            if(content_file.split(";").length > 4){
+            if(content_file.split(";").length > 13){
+                console.log("separator (;)")
                 data_csv = $.csv.toObjects(content_file,{'separator':';'}); //need csv separet it by (,) -> https://github.com/typeiii/jquery-csv
+            }
+            else{
+                if(content_file.split(",").length > 13){
+                    data_csv = $.csv.toObjects(content_file,{'separator':','}); //need csv separet it by (,) -> https://github.com/typeiii/jquery-csv
+                }
             }
             if(data_csv == ""){
                 bootbox.alert({
@@ -1961,7 +1968,7 @@ function import_csv(content_file){
                             if ("Dx_ecu" in data_csv[0]) {Dx_ecu_csv = data_csv[i].Dx_ecu}
                              
                             var ecu_name_csv = ""
-                            if ("ecu_name" in data_csv[0]) {ecu_name_csv = data_csv[i].ecu_name}
+                            if ("ecu_name" in data_csv[0]) {ecu_name_csv = data_csv[i].ecu_name.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-]+)/gi, '')}
                             var flag_ecu_in = false
                             for (var j = 0; j< ecu_list.length ; j++) {
                                 //console.log(element.name)
@@ -1980,23 +1987,25 @@ function import_csv(content_file){
                                     }
                             }
                             if(flag_ecu_in == false){
-                                console.log("Need add ecu:",ecu_name_csv)
-                                ecu_list_csv.push(ecu_name_csv)
+                                if((ecu_name_csv != "") && (ecu_name_csv != null)){
+                                    console.log("Need add ecu:",ecu_name_csv)
+                                    ecu_list_csv.push(ecu_name_csv)
 
-                                //add line in ecu_list
-                                console.log("add line name:",ecu_name_csv)
-                                id_i_ecu++
-                                if(Dx_ecu_csv == ""){
-                                    $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" value="'+ecu_name_csv+'" style= '+'width:30em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="Dx"style= '+'width:2em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:30em'+'  maxlength="199"   ></td><td ><input type="text"  name="created_by_name"  placeholder="" style= '+'width:10em'+'  maxlength="199"  disabled >  </td><td><input type="text" id="id_created_by_'+id_i_ecu+'" name="created_by"  placeholder="" style= '+'width:0em'+'  maxlength="199" disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+                                    //add line in ecu_list
+                                    console.log("add line name:",ecu_name_csv)
+                                    id_i_ecu++
+                                    if(Dx_ecu_csv == ""){
+                                        $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" value="'+ecu_name_csv+'" style= '+'width:30em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="Dx"style= '+'width:2em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:30em'+'  maxlength="199"   ></td><td ><input type="text"  name="created_by_name"  placeholder="" style= '+'width:10em'+'  maxlength="199"  disabled >  </td><td><input type="text" id="id_created_by_'+id_i_ecu+'" name="created_by"  placeholder="" style= '+'width:0em'+'  maxlength="199" disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+                                    }
+                                    else{
+                                        $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" value="'+ecu_name_csv+'" style= '+'width:30em'+'  maxlength="199"  ></td><td><input type="text" name="dx" value='+Dx_ecu_csv+'  placeholder="Dx"style= '+'width:2em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"   placeholder="ECU comment" style= '+'width:30em'+'  maxlength="199"></td><td ><input type="text"  name="created_by_name"  placeholder="" style= '+'width:10em'+'  maxlength="199"  disabled >  </td><td><input type="text" id="id_created_by_'+id_i_ecu+'" name="created_by"  placeholder="" style= '+'width:0em'+'  maxlength="199" disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
+                                    }   
+
+
+                                    //save ecu_list
+                                    //sendDataECUlist() //guarda antes en la tabla de que recargue post guardar la ecu_list asincronismo..
+                                    flag_REimport = true
                                 }
-                                else{
-                                    $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" value="'+ecu_name_csv+'" style= '+'width:30em'+'  maxlength="199"  ></td><td><input type="text" name="dx" value='+Dx_ecu_csv+'  placeholder="Dx"style= '+'width:2em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"   placeholder="ECU comment" style= '+'width:30em'+'  maxlength="199"></td><td ><input type="text"  name="created_by_name"  placeholder="" style= '+'width:10em'+'  maxlength="199"  disabled >  </td><td><input type="text" id="id_created_by_'+id_i_ecu+'" name="created_by"  placeholder="" style= '+'width:0em'+'  maxlength="199" disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-                                }   
-
-
-                                //save ecu_list
-                                //sendDataECUlist() //guarda antes en la tabla de que recargue post guardar la ecu_list asincronismo..
-                                flag_REimport = true
                             }
                     }
 
@@ -2017,6 +2026,19 @@ function import_csv(content_file){
                             if(data_csv[i].marked1 == '1'){data_csv[i].marked1  = 'True'}
                             if(data_csv[i].marked1 == 'true'){data_csv[i].marked1  = 'True'}
 
+                            //check SW, sw formats
+                            
+                            if(data_csv[i].type == 'sw'){data_csv[i].type  = 'SW'}
+                            if(data_csv[i].type == 'Sw'){data_csv[i].type  = 'SW'}
+                            if(data_csv[i].type == 'sW'){data_csv[i].type  = 'SW'}
+                            if(data_csv[i].type == 'hw'){data_csv[i].type  = 'HW'}
+                            if(data_csv[i].type == 'Hw'){data_csv[i].type  = 'HW'}
+                            if(data_csv[i].type == 'hW'){data_csv[i].type  = 'HW'}
+                            if(data_csv[i].type == 'zdc'){data_csv[i].type  = 'ZDC'}
+                            if(data_csv[i].type == 'Zdc'){data_csv[i].type  = 'ZDC'}
+                            if(data_csv[i].type == 'ZDc'){data_csv[i].type  = 'ZDC'}
+                            
+
 
                         
                             //check date and date_week-------------
@@ -2032,46 +2054,53 @@ function import_csv(content_file){
                                 date_week = w + '-' + y
                             }
                             if(date_week != data_csv[i].date_week){
-                                //hay diferencias entre date and date_week -> prevalece date_week
-                                //take week and convert to date
-                                newVal = data_csv[i].date_week
-                                date = newVal
-                                date_format = date
-                                if((date != "") && (date != null)){
+                                if((data_csv[i].date_week != "") && (data_csv[i].date_week != null)){
+                                    //hay diferencias entre date and date_week -> prevalece date_week
+                                    //take week and convert to date
+                                    newVal = data_csv[i].date_week
+                                    date = newVal
+                                    date_format = date
+                                    if((date != "") && (date != null)){
 
-                                    date = getDateOfISOWeek(newVal.split("-")[0],newVal.split("-")[1]) //week, year
-                                    date_format = formatDate2(date)
+                                        date = getDateOfISOWeek(newVal.split("-")[0],newVal.split("-")[1]) //week, year
+                                        date_format = formatDate2(date)
+                                    }
+                                    data_csv[i].date = date_format
+                                    error_date_list_import.push(i)
                                 }
-                                data_csv[i].date = date_format
-                                error_date_list_import.push(i)
                             }
 
                             
                             if(check_row_import_csv(data_csv[i])){
                                 //create new row
                                 //push to data_table that it is global
+
+                                //check if the row is empty
+                                if((data_csv[i].ecu_name != "") && (data_csv[i].ecu_name != null)){
+
                                 data_table.push({
-                                    "RelInList_n_version":data_csv[i].n_version,
+                                    "RelInList_n_version":data_csv[i].n_version.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-/]+)/gi, ''), 
                                     "RelInList_date":data_csv[i].date,
                                     "RelInList_date_w":data_csv[i].date_week,
 
                                     "RelInList_plan":data_csv[i].plan,
                                     "RelInList_visual":data_csv[i].visual,
                                     
-                                    "RelInList_comment":data_csv[i].comment,
+                                    
+                                    "RelInList_comment":data_csv[i].comment.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-/]+)/gi, ''), 
                                     "RelInList_marked1":data_csv[i].marked1,
 
 
-                                    "RelInList_ecu_name":data_csv[i].ecu_name,
+                                    "RelInList_ecu_name":data_csv[i].ecu_name.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-]+)/gi, ''),
                                     "RelInList_type_name":data_csv[i].type,
 
                                     "RelInList_dx":data_csv[i].Dx_ecu, 
-                                    "RelInList_created_by_name":data_csv[i].created_by_name, 
-                                    "RelInList_date_created":data_csv[i].date_created,
+                                    "RelInList_created_by_name":data_csv[i].created_by_name.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-]+)/gi, ''), 
+                                    "RelInList_date_created":data_csv[i].date_created.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-]+)/gi, ''),
 
-                                    "RelInList_extra1":data_csv[i].extra1,
-                                    "RelInList_extra2":data_csv[i].extra2,
-                                    "RelInList_extra3":data_csv[i].extra3,
+                                    "RelInList_extra1":data_csv[i].extra1.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-/]+)/gi, ''),
+                                    "RelInList_extra2":data_csv[i].extra2.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-/]+)/gi, ''),
+                                    "RelInList_extra3":data_csv[i].extra3.replace(/([^a-z0-9 \|&\$%@<>\(\)\+:.-/]+)/gi, ''),
 
                                     "RelInList_id": 0,
                                    // "RelInList_id_ecu":resp.RelInList_id_ecu[i],
@@ -2082,6 +2111,7 @@ function import_csv(content_file){
                                     //"RelInList_marked3":resp.RelInList_marked3[i],
 
                                 })
+                                }  
 
 
 
@@ -2123,7 +2153,7 @@ function import_csv(content_file){
                             message: "Founded new ECUs that will be imported: "+ecu_list_csv ,
                         });
                         */
-
+                        /*
                         bootbox.alert({
                             closeButton: false,
                             title: "Import ECUs",
@@ -2133,6 +2163,7 @@ function import_csv(content_file){
                                 import_csv(content_file) //lo pongo aquí para retrasarlo y darle tiempo a recargar despues de hacer sendDataECUlist()
                             }
                         })
+                        */
                     }
 
                     if(error_list_import.length>0){

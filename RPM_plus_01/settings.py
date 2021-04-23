@@ -25,7 +25,7 @@ SECRET_KEY = 'k7vt$7cy^d&0q4)(_1s!pn&(g2fog#yj4lfu72()(_f*l9v5y@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # -> False
 
-ALLOWED_HOSTS = ['10.202.255.105','localhost',] #ej: '192.168.1.2'
+ALLOWED_HOSTS = ['10.202.255.105','localhost','127.0.0.1'] #ej: '192.168.1.2'
 
 
 # Application definition
@@ -74,6 +74,7 @@ WSGI_APPLICATION = 'RPM_plus_01.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+''' MYSQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',#'django.db.backends.sqlite3',
@@ -82,6 +83,13 @@ DATABASES = {
         'PASSWORD': '4284Django!',
         'HOST': 'localhost',
         'PORT': '3306',
+    }
+}
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

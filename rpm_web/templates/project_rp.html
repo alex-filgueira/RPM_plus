@@ -1451,6 +1451,7 @@ function ImportECUlist(){
             
             beforeChange:function(changes, source){
                 console.log("beforeChange");
+                console.log("source:",source);
                 changes.forEach(([row, prop, oldValue, newValue]) => {
                 // Some logic...
                 //console.log("r:",row)
@@ -1470,6 +1471,10 @@ function ImportECUlist(){
                             column = tblExcel.propToCol('RelInList_created_by_name')
                             cell = tblExcel.getCell(row, column)
                             cell.style.color = 'red';
+                            //console.log("oldValue:",oldValue);
+                            //console.log("newValue:",newValue);
+                            //cell = tblExcel.getCell(row, tblExcel.propToCol(prop))
+                            //console.log("cell:",tblExcel.getValue(cell));
                         }
                     }
                 }

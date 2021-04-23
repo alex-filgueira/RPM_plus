@@ -1602,7 +1602,12 @@ function ImportECUlist(){
                     callback(false);
                     return;
                     }
-                    callback(true);
+                    //console.log('source:',resp.ecuList_name)
+                    if(resp.ecuList_name.includes(value)){
+                        callback(true);
+                        return;
+                    }
+                    callback(false);
                     },
                 },
                 {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
@@ -1669,7 +1674,11 @@ function ImportECUlist(){
                     callback(false);
                     return;
                     }
-                    callback(true);
+                    if(resp.type_list_name.includes(value)){
+                        callback(true);
+                        return;
+                    }
+                    callback(false);
                     },
                 },
                 //{data: "RelInList_plan",allowEmpty:true},
@@ -1679,7 +1688,11 @@ function ImportECUlist(){
                     callback(false);
                     return;
                     }
-                    callback(true);
+                    if(resp.plan_list_name.includes(value)){
+                        callback(true);
+                        return;
+                    }
+                    callback(false);
                     },
                 },
                 {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},

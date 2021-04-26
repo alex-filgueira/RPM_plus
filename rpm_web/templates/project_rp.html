@@ -3082,9 +3082,9 @@ function check_row_import_csv(csv_line){
         var week_ini = Number(m_ini.format('W'))
         console.log("week_ini: ",week_ini)
 
-        var m_status = moment(d2, 'YYYY-MM-DD')
-        var week_status = Number(m_status.format('W'))
-        console.log("week_status: ",week_status)
+        var m_end = moment(d2, 'YYYY-MM-DD')
+        var week_end = Number(m_end.format('W'))
+        console.log("week_end: ",week_end)
 
         var diff_weeks = 0
 
@@ -3094,23 +3094,24 @@ function check_row_import_csv(csv_line){
         console.log("week_ini_last: ",week_ini_last)
 
         var d2_year = moment(d2).format('YYYY')
-        var m_status_last = moment(d2_year+'-12-31', 'YYYY-MM-DD')
-        var week_status_last = Number(m_status_last.format('W'))
-        console.log("week_status_last: ",week_status_last)
+        var m_end_last = moment(d2_year+'-12-31', 'YYYY-MM-DD')
+        var week_end_last = Number(m_end_last.format('W'))
+        console.log("week_end_last: ",week_end_last)
 
         if(d1_year < d2_year){
-            week_ini = week_ini - week_ini_last
+            week_ini = week_ini - (week_ini_last * (d2_year - d1_year)) //fixed bug with 2 or more dif years
         }
 
         if(week_ini > week_ini_last){
             //estas en la primera semana iso (ej: 01/02/03- 01-21 -> week 53 pero 31/12/21 -> week 52)
             week_ini = 0
         }
-        if(week_status > week_status_last){
+        if(week_end > week_end_last){
             //estas en la primera semana iso (ej: 01/02/03- 01-21 -> week 53 pero 31/12/21 -> week 52)
-            week_status = 0
+            week_end = 0
         }
-        diff_weeks = week_status - week_ini
+
+        diff_weeks = week_end - week_ini
 
         //console.log("diff_weeks: ",diff_weeks)
         return(diff_weeks)

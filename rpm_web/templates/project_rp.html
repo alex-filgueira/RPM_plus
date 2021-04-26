@@ -156,7 +156,7 @@
                     <button type="button" name="remove" id="id_removeVersion" class="btn btn-danger btn_remove" onclick="removeVersion()" style="width:100%;" data-intro="The X not need more info...">X</button>
                 </div>
                 <div class="col-lg-1 p-0">
-                    <button type="button" name="new" id="id_newVersion" class="btn btn-primary " onclick="newVersion()" style="width:100%;" title="Create new version based on this" data-intro="And if you click here, a new version will be created. Will be a copy to the version selected (same ECUs, etc. but until this moment, both will be diferents and not connected. ).">New</button>
+                    <button type="button" name="new" id="id_newVersion" class="btn btn-primary " onclick="newVersion()" style="width:100%;" title="Create new version based on this" data-intro="And if you click here, a new version will be created. Will be a copy to the version selected (same data, but until this moment, both will be diferents and not connected. ).">New</button>
                 </div>
             </div>
         </div>
@@ -210,12 +210,13 @@
                 </div>
 
                 <div class="row mt-3" >
-                    <div class="col-lg-2 input-group-text" >Factor weeks</div>
+                    <!--<div class="col-lg-2 input-group-text" >Factor weeks</div>-->
+                    <div class="col-lg-2 input-group-text" >Print 1 of n weeks</div>
                     <div class="col-lg-1 p-0"  data-title="Factor weeks" data-intro="If you put 1 will be displayed every week, if 2, will be displayed 1 of 2 weeks etc.">
                         <input class="form-control" type="number" min="1"  id="id_factor_weeks" value={{factor_weeks}} onchange="updateDatesPrint()"  >
                     </div>
-                    <div class="col-lg-2 input-group-text" >Max ECUs in Slide</div>
-                    <div class="col-lg-1 p-0" data-title="Max ECUs" data-intro="Select the max. number of ECUs lines in each slide.">
+                    <div class="col-lg-2 input-group-text" >Max Main-Lines in Slide</div>
+                    <div class="col-lg-1 p-0" data-title="Max Main-Lines" data-intro="Select the max. number of Main-Lines in each slide.">
                         <input class="form-control" type="number" min="1" id="id_max_ecu_slide"  value={{max_ecu_slide}} onchange="updateDatesPrint()" >
                     </div>
                     <div class="col-lg-3 p-0">
@@ -233,7 +234,7 @@
     <div class="container-fluid " >
         <div class="row">
             <div class="col-lg-12 p-0" >
-                <div class="row"  data-intro="Click me for see all the ECUs availables. Please, click me now!" >
+                <div class="row"  data-intro="Click me for see all the Main items availables. Please, click me now!" >
                         <a class="btn btn-primary" data-toggle="collapse" href="#collapseECUs" role="button" aria-expanded="false" aria-controls="collapseECUs"  style="width:100%;"> <!-- collapse control-->
                             <i class="bi bi-arrows-angle-expand"></i>
                         </a>
@@ -246,7 +247,7 @@
         <form name="ecu_list" id="id_ecu_list"> {% csrf_token %} <!-- Abre form.-->
         <div class="row mt-3">
             <div class="col-lg-4 p-0">
-                <div class="row" data-title="ECU manager" data-intro="You can create a new ECU line but don´t forget save all after the changes.">
+                <div class="row" data-title="ECU manager" data-intro="You can create a new Main item line but don´t forget save all after the changes.">
                     <div class="col-lg-3 offset-lg-0  p-0" >
                         <button type="button" name="add" id="add" class="btn btn-primary" style="width:100%;" title="Add new line">Add</button>
                     </div>
@@ -257,7 +258,7 @@
             </div>
             <div class="col-lg-8 p-0">
                 <div class="row" >
-                    <div class="col-lg-2 offset-lg-10 p-0" data-intro="You can import the ECU list from the other projects.">
+                    <div class="col-lg-2 offset-lg-10 p-0" data-intro="You can import the Main items list from the other projects.">
                         <button type="button" id="id_importeculist" class="btn btn-warning" onclick="ImportECUlist()" style="width:100%;" title="Import from the other project" >Import</button>
                     </div>
                 </div>

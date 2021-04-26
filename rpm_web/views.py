@@ -95,6 +95,8 @@ from django.conf import settings
 def user_profile(request):
     print("user_profile()")
     if request.user.is_authenticated:
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
         #if request.method == 'POST':
         print("user:",request.user)
         user_obj = User.objects.filter(username = request.user) # https://docs.djangoproject.com/en/3.1/ref/contrib/auth/
@@ -195,6 +197,7 @@ def user_profile(request):
             'factor_prjs':str(factor_prjs)+"%",
             'factor_ecus':str(factor_ecus)+"%",
             'factor_ri':str(factor_ri)+"%",
+            'access_state':access_state,
         }
 
         #test send mails
@@ -274,6 +277,7 @@ def get_type(request):
     else:
         return HttpResponseRedirect(reverse('login') )
 
+'''
 def create_basics(request):
     print("create_basics()")
     if request.user.is_authenticated:
@@ -343,6 +347,7 @@ def create_basics(request):
         })
     else:
         return HttpResponseRedirect(reverse('login') )
+'''
 
 def reset_basics_shapes(request):
     print("reset_basics_shapes()")
@@ -353,7 +358,10 @@ def reset_basics_shapes(request):
             print("type_list If is empty, create")
             #create diamond -> SW
             #type_ = MType_input2()
-            type_list = MType_input2.objects.filter(id_user = request.user.id)
+            user_extra = MUser_extra.objects.get(id_user = request.user.id)
+            access_state = user_extra.access_state
+
+            type_list = MType_input2.objects.filter(id_user = request.user.id,access_state=access_state)
             for type_ in type_list:
                 if type_.name == "SW":
                     type_.fig1_name = "pptx.ShapeType.diamond"
@@ -373,7 +381,7 @@ def reset_basics_shapes(request):
             print("plan_list If is empty, create")
             #create vbv
             #plan_ = MPlan2()
-            plan_list = MPlan2.objects.filter(id_user = request.user.id)
+            plan_list = MPlan2.objects.filter(id_user = request.user.id,access_state=access_state)
             for plan_ in plan_list:
                 if plan_.name == "vbv":
                     plan_.fig1_color_1 = "#00b0f0" #fill color //azul
@@ -484,6 +492,9 @@ def create_type(request):
             type_id = 0
             if 'type_name' in json_table:
                 #save Type data
+                user_extra = MUser_extra.objects.get(id_user = request.user.id)
+                access_state = user_extra.access_state
+
                 type_ = MType_input2()
                 type_.id_user_id = request.user.id
                 type_.name = json_table['type_name']
@@ -491,6 +502,8 @@ def create_type(request):
                     type_.fig1_name = json_table['fig1_name']
                 if 'fig1_s' in json_table:
                     type_.fig1_s = json_table['fig1_s']
+
+                type_.access_state = access_state
                 type_.save()
                 type_id = type_.id
             
@@ -512,6 +525,9 @@ def create_plan(request):
             plan_id = 0
             if 'plan_name' in json_table:
                 #save Plan data
+                user_extra = MUser_extra.objects.get(id_user = request.user.id)
+                access_state = user_extra.access_state
+
                 plan_ = MPlan2()
                 plan_.id_user_id = request.user.id
                 plan_.name = json_table['plan_name']
@@ -523,6 +539,8 @@ def create_plan(request):
                     plan_.fig1_color_3 = json_table['fig1_color_3']
                 if 'fig1_border_w' in json_table:
                     plan_.fig1_border_w = json_table['fig1_border_w']
+                
+                plan_.access_state = access_state
                 plan_.save()
                 plan_id = plan_.id
             
@@ -537,6 +555,10 @@ def create_plan(request):
 def config_prj(request):
     print("config_prj()")
     if request.user.is_authenticated:
+
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
+
         if request.method == 'POST':
             json_table = json.loads(request.body)
             print("json_table:",json_table)
@@ -606,10 +628,10 @@ def config_prj(request):
 
         #type_list = []
         create_predef_type(request.user.id)
-        type_list = MType_input2.objects.filter(id_user=request.user.id)
+        type_list = MType_input2.objects.filter(id_user=request.user.id, access_state = access_state)
         #plan_list = []
         create_predef_plan(request.user.id)
-        plan_list = MPlan2.objects.filter(id_user=request.user.id)
+        plan_list = MPlan2.objects.filter(id_user=request.user.id, access_state = access_state)
 
         context = {
             'ok':True,
@@ -617,6 +639,7 @@ def config_prj(request):
             'type_list':type_list,
             'plan_list':plan_list,
             'flag_first_time_conf':flag_first_time_conf,
+            'access_state': access_state,
         } 
 
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto
@@ -893,10 +916,12 @@ def generatePptData(request):
         prj_logo_url= MConfig_prj.objects.get(id_user_id=request.user.id).logo_url 
 
 
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
 
         #type list
         type_list = []
-        type_obj_list = MType_input2.objects.filter(id_user_id=request.user.id)
+        type_obj_list = MType_input2.objects.filter(id_user_id=request.user.id, access_state=access_state)
         for elem in type_obj_list:
             type_list.append(elem.name)
             type_list.append(elem.fig1_name)
@@ -904,7 +929,7 @@ def generatePptData(request):
 
         #plan list
         plan_list = []
-        plan_obj_list = MPlan2.objects.filter(id_user_id=request.user.id)
+        plan_obj_list = MPlan2.objects.filter(id_user_id=request.user.id, access_state=access_state)
         for elem in plan_obj_list:
             plan_list.append(elem.name)
             plan_list.append(elem.fig1_color_1)
@@ -979,7 +1004,8 @@ from .forms import CustomUserCreationForm
 from django.contrib import messages
 
 def create_predef_type(user_id):
-            type_list = MType_input2.objects.filter(id_user=user_id)
+            #RPM plus
+            type_list = MType_input2.objects.filter(id_user=user_id, access_state=1)
             if(len(type_list) == 0):
                 print("type_list If is empty, create")
                 #create diamond -> SW
@@ -1004,8 +1030,22 @@ def create_predef_type(user_id):
                 type_.fig1_s = 0.28
                 type_.save()
 
+            #TL
+            type_list = MType_input2.objects.filter(id_user=user_id, access_state=2)
+            if(len(type_list) == 0):
+                print("type_list If is empty, create")
+                #create diamond -> SW
+                type_ = MType_input2()
+                type_.id_user_id = user_id
+                type_.name = "T_init"
+                type_.fig1_name = "pptx.ShapeType.diamond"
+                type_.fig1_s = 0.28
+                type_.access_state = 2
+                type_.save()
+
 def create_predef_plan(user_id):
-            plan_list = MPlan2.objects.filter(id_user=user_id)
+            #RPM
+            plan_list = MPlan2.objects.filter(id_user=user_id, access_state=1)
             if(len(plan_list) == 0):
                 print("plan_list If is empty, create")
                 #create vbv
@@ -1041,7 +1081,19 @@ def create_predef_plan(user_id):
                 plan_.fig1_border_w = 1.75 #border w
                 plan_.save()
 
-
+            #TL
+            plan_list = MPlan2.objects.filter(id_user=user_id, access_state=2)
+            if(len(plan_list) == 0):
+                print("plan_list If is empty, create")
+                #create additional
+                plan_ = MPlan2()
+                plan_.id_user_id = user_id
+                plan_.name = "P_init"
+                plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "#ff0000" #border color //rojo
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.access_state = 2
+                plan_.save()
 
 
 
@@ -1075,7 +1127,7 @@ def register(request):
                 config_prj.id_user_id = user.id
                 config_prj.save()
             
-            type_list = MType_input2.objects.filter(id_user=user.id)
+            type_list = MType_input2.objects.filter(id_user=user.id, access_state=1)
             if(len(type_list) == 0):
                 print("type_list If is empty, create")
                 #create diamond -> SW
@@ -1099,8 +1151,21 @@ def register(request):
                 type_.fig1_name = "pptx.ShapeType.hexagon"
                 type_.fig1_s = 0.28
                 type_.save()
+
+            #TL
+            type_list = MType_input2.objects.filter(id_user=user_id, access_state=2)
+            if(len(type_list) == 0):
+                print("type_list If is empty, create")
+                #create diamond -> SW
+                type_ = MType_input2()
+                type_.id_user_id = user_id
+                type_.name = "init"
+                type_.fig1_name = "pptx.ShapeType.diamond"
+                type_.fig1_s = 0.28
+                type_.access_state = 2
+                type_.save()
             
-            plan_list = MPlan2.objects.filter(id_user=user.id)
+            plan_list = MPlan2.objects.filter(id_user=user.id, access_state=1)
             if(len(plan_list) == 0):
                 print("plan_list If is empty, create")
                 #create vbv
@@ -1134,6 +1199,20 @@ def register(request):
                 plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
                 plan_.fig1_color_2 = "#ff0000" #border color //rojo
                 plan_.fig1_border_w = 1.75 #border w
+                plan_.save()
+
+            #TL
+            plan_list = MPlan2.objects.filter(id_user=user_id, access_state=2)
+            if(len(plan_list) == 0):
+                print("plan_list If is empty, create")
+                #create additional
+                plan_ = MPlan2()
+                plan_.id_user_id = user_id
+                plan_.name = "additional"
+                plan_.fig1_color_1 = "#d9d9d9" #fill color //gris
+                plan_.fig1_color_2 = "#ff0000" #border color //rojo
+                plan_.fig1_border_w = 1.75 #border w
+                plan_.access_state = 2
                 plan_.save()
 
             print("Create user_extra")
@@ -1344,6 +1423,39 @@ def register_old(request):
 #------------------------------------------------------------------------
 import os
 import glob
+
+def frontpage(request):
+    print("frontpage()")
+    if request.user.is_authenticated:
+
+        if request.method == "POST":
+            json_request= json.loads(request.body)
+            access_state = json_request['access_state'] #ID project to return
+            print("access_state: ",access_state)
+            
+            user_extra = MUser_extra.objects.get(id_user = request.user.id)
+            user_extra.access_state = access_state
+            user_extra.save()
+
+            user_extra = MUser_extra.objects.get(id_user = request.user.id)
+            access_state = user_extra.access_state
+            return JsonResponse({
+                'access_state':access_state,
+            })
+
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
+        context = {
+            'access_state': access_state,
+        } 
+
+        # Renderiza la plantilla HTML index.html con los datos en la variable contexto
+        return render(request,'frontpage_pre.html',context=context)
+
+    else:
+        return HttpResponseRedirect(reverse('login') )
+
+'''
 def frontpage(request):
     if request.user.is_authenticated:
         # Genera contadores de algunos de los objetos principales
@@ -1364,12 +1476,17 @@ def frontpage(request):
              user_extra.flag_first_time = False
              user_extra.save()
 
-        print("flag_first_time:",flag_first_time)
+        #print("flag_first_time:",flag_first_time)
+
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
+
         context = {
             'num_users':num_users,
             'num_projects':num_projects,
             'num_visits':num_visits,
             'flag_first_time':flag_first_time,
+            'access_state': access_state,
         } 
 
         # Renderiza la plantilla HTML index.html con los datos en la variable contexto
@@ -1377,6 +1494,7 @@ def frontpage(request):
 
     else:
         return HttpResponseRedirect(reverse('login') )
+'''
 
 #------------Configurar proyectos----------------------------------------
 #------------------------------------------------------------------------
@@ -1465,10 +1583,15 @@ def projects_rp_load(request,pk):
     if request.user.is_authenticated:
         print("user.id:",request.user.id)
 
-        project_list = MProject.objects.filter(id_user_id=request.user.id)
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
+
+        project_list = MProject.objects.filter(id_user_id=request.user.id, access_state=access_state)
         print("project_list:",project_list)
 
-        project_list_extra = MProject.objects.exclude(id_user_id=request.user.id)
+        project_list_extra = []
+        if access_state == 1:
+            project_list_extra = MProject.objects.exclude(id_user_id=request.user.id)
 
         flag_first_time_prj = False
         if pk != "-1" and pk != "0": #Is here because if pk= -1 or pk = 0 the page will be reload and the tutorial aborted
@@ -1495,7 +1618,7 @@ def projects_rp_load(request,pk):
                 flag_administradores = True
 
 
-        if flag_integradores == True:
+        if flag_integradores == True or access_state == 2:
             if pk == "-1":#Select the first or create new
                 print("Select first project")
                 if len(project_list) > 0:
@@ -1510,6 +1633,9 @@ def projects_rp_load(request,pk):
                 new_prj.name = "Auto-"+dt_string
                 new_prj.id_user_id = request.user.id #need id_user_id not id_user
                 new_prj.date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+                new_prj.access_state = access_state
+
                 new_prj.save()
 
                 pk = new_prj.id
@@ -1520,6 +1646,22 @@ def projects_rp_load(request,pk):
                     pk = project_list_extra[0].id
                 else:
                     pk = "0"
+
+            '''
+            if pk == "0" and  access_state == 2:#Crea nuevo project
+                print("Create new project")
+                new_prj = MProject()
+                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                new_prj.name = "Auto-"+dt_string
+                new_prj.id_user_id = request.user.id #need id_user_id not id_user
+                new_prj.date_created = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+                new_prj.access_state = access_state
+
+                new_prj.save()
+
+                pk = new_prj.id
+            '''
 
 
         #Check if the user is the owner for the project
@@ -1586,9 +1728,6 @@ def projects_rp_load(request,pk):
 
         date_created = prj_objt_selected.date_created
 
-
-
-        print("context")
         context = {
             'project_list':project_list,
             'project_list_extra':project_list_extra,
@@ -1617,6 +1756,8 @@ def projects_rp_load(request,pk):
             'date_created':date_created,
 
             'flag_first_time_prj':flag_first_time_prj,
+
+            'access_state': access_state,
         }
 
         return render(request,'project_rp.html',context=context)
@@ -1881,6 +2022,8 @@ def updatedataproject(request):
 def update_ECU_list(request):
     print("update_ECU_list()")
     if request.user.is_authenticated:
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
         if request.method == "POST":
                 print("POST")
                 print("body:",request.body)
@@ -1919,9 +2062,9 @@ def update_ECU_list(request):
                 cont_ecu = 0
                 for row in json_allData:
                     cont_ecu = cont_ecu + 1
-                    print("cont_ecu:",cont_ecu)
+                    #print("cont_ecu:",cont_ecu)
                     flag_empty_row = True
-                    print("row:",row)
+                    #print("row:",row)
 
 
                     for prop in row:
@@ -1936,7 +2079,7 @@ def update_ECU_list(request):
                     #print("flag_empty_row:",flag_empty_row)
                     if flag_empty_row == False:
                         if int(row['id'])!= 0:
-                            print("update value")
+                            #print("update value")
                             #print("int(row['id']): ",int(row['id']))
                             ecu_obj = MECU.objects.get(id=int(row['id'])) 
                             aux_string =  row['name'].replace('\n', ' ').replace('\r', '')
@@ -2061,7 +2204,7 @@ def update_ECU_list(request):
                 RelInList_type_name = []#Extra
                 
                 for ecu_id in ecuList_id:
-                    print("filter id:",ecu_id)
+                    #print("filter id:",ecu_id)
                     RelInputs_objt_selected = MRelease_input.objects.filter(id_ecu=ecu_id)
                     for elt in RelInputs_objt_selected:
                         RelInList_id.append(str(elt.id))
@@ -2072,7 +2215,7 @@ def update_ECU_list(request):
                         #RelInList_plan.append(elt.plan)
                         RelInList_id_plan.append(str(elt.id_plan_id))
                         RelInList_visual.append(str(elt.flag_visual))
-                        print("visual:",elt.flag_visual) #¿?¿?¿?
+                        #print("visual:",elt.flag_visual) #¿?¿?¿?
 
                         #RelInList_dx.append(elt.dx_ecu)
                         RelInList_comment.append(elt.comment)
@@ -2097,7 +2240,8 @@ def update_ECU_list(request):
                         RelInList_ecu_name.append(ecu_name)
                         #print("elt.id_ecu:",elt.id_ecu_id)
                         #type_name = MType_input.objects.get(id=elt.id_type_input_id).name 
-                        if MType_input2.objects.filter(id = elt.id_type_input_id).count() > 0:
+
+                        if MType_input2.objects.filter(id = elt.id_type_input_id, access_state=access_state).count() > 0:
                             type_name = MType_input2.objects.get(id=elt.id_type_input_id).name
                             RelInList_type_name.append(type_name)
                         else:
@@ -2105,7 +2249,7 @@ def update_ECU_list(request):
                             RelInList_type_name.append("")
 
                         #plan_name = MPlan.objects.get(id=elt.id_plan_id).name
-                        if MPlan2.objects.filter(id = elt.id_plan_id).count() > 0:
+                        if MPlan2.objects.filter(id = elt.id_plan_id, access_state=access_state).count() > 0:
                             plan_name = MPlan2.objects.get(id=elt.id_plan_id).name
                             RelInList_plan.append(plan_name)
                         else:
@@ -2123,7 +2267,7 @@ def update_ECU_list(request):
                 type_list_comment = []#Extra
                 #type_list_obj = MType_input2.objects.all()
                 #type_list_obj = MType_input2.objects.filter(id_user = request.user.id)
-                type_list_obj = MType_input2.objects.filter(id_user = request.user.id)
+                type_list_obj = MType_input2.objects.filter(id_user = request.user.id, access_state=access_state)
 
                 for elt in type_list_obj:
                     type_list_id.append(str(elt.id))
@@ -2136,7 +2280,7 @@ def update_ECU_list(request):
                 plan_list_name = []#Extra
                 plan_list_comment = []#Extra
                 #plan_list_obj = MPlan2.objects.all()
-                plan_list_obj = MPlan2.objects.filter(id_user = request.user.id)
+                plan_list_obj = MPlan2.objects.filter(id_user = request.user.id, access_state=access_state)
                 
                 for elt in plan_list_obj:
                     plan_list_id.append(str(elt.id))
@@ -2203,7 +2347,8 @@ def update_ECU_list(request):
 def update_Release_list(request):
    print("update_Release_list()")
    if request.user.is_authenticated:
-   
+        user_extra = MUser_extra.objects.get(id_user = request.user.id)
+        access_state = user_extra.access_state
         if request.method == "POST":
             print("POST")
             #print(request.POST)
@@ -2263,7 +2408,7 @@ def update_Release_list(request):
                         print("ecu_id:",ecu_id)
 
                     #Find type, por si se cambió
-                    user_type_list = MType_input2.objects.filter(id_user = request.user.id)
+                    user_type_list = MType_input2.objects.filter(id_user = request.user.id, access_state=access_state)
                     type_id = 0
                     for t in user_type_list:
                         if t.name == row['RelInList_type_name']:
@@ -2271,7 +2416,7 @@ def update_Release_list(request):
                             print("type_id:",type_id)
 
                     #Find plan, por si se cambió
-                    user_plan_list = MPlan2.objects.filter(id_user = request.user.id)
+                    user_plan_list = MPlan2.objects.filter(id_user = request.user.id, access_state=access_state)
                     plan_id = 0
                     for p in user_plan_list:
                         if p.name == row['RelInList_plan']:
@@ -2300,7 +2445,7 @@ def update_Release_list(request):
                         flag_marked1 = False
 
                     if int(row['RelInList_id'])!= 0: #añadir checkeo de vacio ""
-                        print("update value")
+                        #print("update value")
                         RI_selected = MRelease_input.objects.get(id = int(row['RelInList_id']))
 
                         RI_selected.id_ecu_id = int(ecu_id)
@@ -2438,7 +2583,7 @@ def update_Release_list(request):
             type_list_id = []#Extra
             type_list_name = []#Extra
             type_list_comment = []#Extra
-            type_list_obj = MType_input2.objects.filter(id_user = request.user.id)
+            type_list_obj = MType_input2.objects.filter(id_user = request.user.id, access_state=access_state)
                 
             for elt in type_list_obj:
                 type_list_id.append(str(elt.id))
@@ -2450,7 +2595,7 @@ def update_Release_list(request):
             plan_list_name = []#Extra
             plan_list_comment = []#Extra
             #plan_list_obj = MPlan2.objects.all()
-            plan_list_obj = MPlan2.objects.filter(id_user = request.user.id)
+            plan_list_obj = MPlan2.objects.filter(id_user = request.user.id, access_state=access_state)
             
             for elt in plan_list_obj:
                 plan_list_id.append(str(elt.id))
@@ -2518,8 +2663,11 @@ def get_prj_list_user(request):
             #print("body:",request.body)
 
             #get the proyects for the user
-            #prj_list = MProject.objects.filter(id_user=request.user.id)
-            prj_list = MProject.objects.all()
+            user_extra = MUser_extra.objects.get(id_user = request.user.id)
+            access_state = user_extra.access_state
+
+            prj_list = MProject.objects.filter(id_user=request.user.id, access_state = access_state)
+            #prj_list = MProject.objects.all()
             prj_name_list = []
             prj_id_list = []
             for obj in prj_list:

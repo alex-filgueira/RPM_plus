@@ -169,9 +169,11 @@
             <div class="row">
                 <button type="button" class="btn btn-success " onclick="updateFig()">Save</button>
             </div>
-            <div class="row">
-                <button type="button" class="btn btn-warning " onclick="resetbasicsshapes()">  (Reset shapes) </button>
-            </div>
+            {% if access_state == 1 %} <!-- access_state=1: RPM access_state=2: TL-->
+                <div class="row">
+                    <button type="button" class="btn btn-warning " onclick="resetbasicsshapes()">  (Reset shapes) </button>
+                </div>
+            {% endif %}
         </div>
     </div>
   </div>
@@ -1091,7 +1093,7 @@ function validURL(str) {
                 else{
                     bootbox.alert({
                     closeButton: false,
-                    message: "You can´t remove the predef shapes."
+                    message: "You can´t remove the predef. shapes."
                 });
                 }
             }
@@ -1132,7 +1134,7 @@ function validURL(str) {
                 else{
                     bootbox.alert({
                     closeButton: false,
-                    message: "You can´t remove the predef shapes."
+                    message: "You can´t remove the predef. shapes."
                 });
                 }
             }

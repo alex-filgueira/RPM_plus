@@ -22,6 +22,8 @@ class MType_input2(models.Model):
     #graphic
     fig1_name= models.CharField(max_length = 100,default='pptx.ShapeType.ellipse',blank=True)
     fig1_s= models.FloatField(default=0.28)
+
+    access_state = models.IntegerField(default=1) # 1: Release Plan Maker. 2: Time-line Tool
    
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Type_input2"
@@ -42,6 +44,8 @@ class MPlan2(models.Model):
     fig1_color_2 = models.CharField(max_length = 10,default='#000000',blank=True) #border color
     fig1_color_3 = models.CharField(max_length = 10,default='#dc143c',blank=True)
     fig1_border_w = models.FloatField(default=1)
+
+    access_state = models.IntegerField(default=1) # 1: Release Plan Maker. 2: Time-line Tool
    
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Plan2"
@@ -106,6 +110,8 @@ class MProject(models.Model):
     now = datetime.now()
     d2 = now.strftime('%d/%m/%Y-%H:%M')
     date_created = models.CharField(max_length = 50,default=d2, blank=True)
+
+    access_state = models.IntegerField(default=1) # 1: Release Plan Maker. 2: Time-line Tool
 
     class Meta: # This class will let you force the name of the table to what you like.
         db_table = "Project"
@@ -203,6 +209,9 @@ class MUser_extra(models.Model):
     flag_first_time_prj = models.BooleanField(default=True,blank=True)
     flag_first_time_conf = models.BooleanField(default=True,blank=True)
     flag_first_time_profile = models.BooleanField(default=True,blank=True)
+
+    access_state = models.IntegerField(default=1) # 1: Release Plan Maker. 2: Time-line Tool
+
 
 
     class Meta: # This class will let you force the name of the table to what you like.

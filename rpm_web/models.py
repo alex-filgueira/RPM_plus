@@ -32,7 +32,7 @@ class MType_input2(models.Model):
         return self.name
 
     def __str__(self):
-        return '%s, %s' % (self.id, self.name)
+        return 'ID:%s, Name:%s' % (self.id, self.name)
 
 class MPlan2(models.Model):
     id = models.AutoField(primary_key=True)

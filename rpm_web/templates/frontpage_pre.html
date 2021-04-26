@@ -1,0 +1,82 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="card card-body"> <!-- card item-->
+<div class="container-fluid text-center" style="text-shadow: none;">
+  <p>Welcome to <em><b>RPM_plus</b></em>, a website for the new Release Plan Maker.</p>
+  <br>
+
+  <div class="row" >
+    <div class="col-lg-6 offset-lg-0" style="border:0px solid">
+      <button type="button"  id=id_launchProjectTimeLine class="btn btn-success " onclick="launchProjectTimeLine()" style="width:100%; height: 500px; background-color: blueviolet;">Free Time-Line Tool</button>
+    </div>
+    <div class="col-lg-6 offset-lg-0"  >
+      <button type="button" id=id_launchReleasePlanMaker  class="btn btn-success " onclick="launchReleasePlanMaker ()" style="width:100%; height: 500px; background-color: burlywood;">Release Plan Maker Plus</button>
+    </div>
+  </div>
+
+</div>
+</div>
+{% csrf_token %} 
+
+<script type="text/javascript">
+  //Configuro ajax con el CSRFToken---------------------
+  // using jQuery get csrftoken from your HTML
+  var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+  function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+          // if not safe, set csrftoken
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+  //-------------------------------------------------------
+
+$(document).ready(function() {
+  //document.getElementById("id_navHome").style.display = "none"
+  //document.getElementById("id_navProject").style.display = "none"
+  //document.getElementById("id_navConfProject").style.display = "none"
+  //document.getElementById("id_navProfile").style.display = "none"
+
+})
+
+
+function launchProjectTimeLine(){
+  send_access_state(2)
+  //self.location="{% url 'frontpage' %}"
+}
+
+function launchReleasePlanMaker(){
+  send_access_state(1)
+  //self.location="{% url 'frontpage' %}"
+}
+
+function send_access_state(state){
+  access_state = state
+    $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'frontpage' %}"  ,
+                                    
+                                    name: "testname",
+                                    data: JSON.stringify( { access_state } ),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function(resp){
+                                        console.log("resp:" + resp)
+                                        self.location=self.location
+                                    },
+                                    failure: function(resp){console.log("Hay un error:" + resp);},
+                            });
+
+}
+</script>
+
+
+{% endblock %}

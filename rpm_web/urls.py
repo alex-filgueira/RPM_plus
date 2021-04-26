@@ -4,7 +4,12 @@ from . import views
 
 
 urlpatterns = [
+    #re_path(r'^$', views.frontpage_pre, name='frontpage_pre'),
+    #re_path(r'^$', views.frontpage, name='frontpage'),
+    #re_path(r'^$', views.frontpage_pre, name='frontpage'),
     re_path(r'^$', views.frontpage, name='frontpage'),
+
+
     #re_path(r'^projects/$', views.ProjectListView.as_view(), name='projects'), # las vistas genéricas buscan plantillas en /application_name/the_model_name_list.html
     
     #re_path(r'^projects/$', views.projectlist, name='projects'),
@@ -55,7 +60,7 @@ urlpatterns += [
     re_path(r'^remove_type/$', views.remove_type, name='remove_type'), 
     re_path(r'^remove_plan/$', views.remove_plan, name='remove_plan'),     
     re_path(r'^update_fig/$', views.update_fig, name='update_fig'),  
-    re_path(r'^create_basics/$', views.create_basics, name='create_basics'),
+    #re_path(r'^create_basics/$', views.create_basics, name='create_basics'),
     re_path(r'^reset_basics_shapes/$', views.reset_basics_shapes, name='reset_basics_shapes'),
     re_path(r'^get_type/$', views.get_type, name='get_type'),
     re_path(r'^get_plan/$', views.get_plan, name='get_plan'),

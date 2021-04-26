@@ -127,10 +127,20 @@
             <div id="id_svg_min"></div>
           </a>
         </div>
-        <div class="col-lg-1 p-0">
+        <div class="col-lg-2 p-0">
           <div class="row">
             <div class="col-lg-12 p-0">
-              <p style=" text-align:left">User: {{ user.get_username }}</p>
+              <p style=" text-align:left">User: <b>{{ user.get_username }}</b></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 p-0">
+              {% if access_state == 1 %} <!-- access_state=1: RPM access_state=2: TL-->
+              <p style=" text-align:left">App:  <b>Release Plan Maker +</b></p>
+              {% else %}
+              <p style=" text-align:left">App: <b>Time-Line Tool</b></p>
+              {% endif %}
+
             </div>
           </div>
           <!--
@@ -142,7 +152,7 @@
         -->
           
         </div>
-        <div class="col-lg-2 offset-lg-3 p-0">
+        <div class="col-lg-2 offset-lg-2 p-0">
           <a href="{% url 'frontpage' %}">
             <img class="mb-4"  src="{% static 'brand/logo.svg' %}" alt="" width="82" height="82" data-step="1" data-title="WELCOME!" data-intro='I know that is your first time here. This app is a "little"complex. So I would like that you do this tutorial. PS: You can start this tutorial in any moment clicking in the button "Tutorial?" at the corner top right.'>
          </a>
@@ -328,16 +338,16 @@ function get_browser() {
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item" data-step="2" data-title="Home" data-intro="Click here and you will go to this main page.">
+            <li class="nav-item" id="id_navHome" data-step="2" data-title="Home" data-intro="Click here and you will go to this main page.">
               <a class="nav-link active" href="{% url 'frontpage' %}">Home</a>
             </li>
-            <li class="nav-item" data-step="3" data-title="Projects" data-intro="Here for go inside the projects area.">
+            <li class="nav-item" id="id_navProject" data-step="3" data-title="Projects" data-intro="Here for go inside the projects area.">
               <a class="nav-link" href="{% url 'projects_rp_load' -1 %}">Projects</a>  <!--projects_rp_load tiene 1 argumento, el id del proyecto: -1 = carga el primero -->
             </li>
-            <li class="nav-item" data-step="4" data-title="Conf Projects" data-intro="Click here and you will be able to config a lot of things.">
+            <li class="nav-item" id="id_navConfProject"  data-step="4" data-title="Conf Projects" data-intro="Click here and you will be able to config a lot of things.">
               <a class="nav-link" href="{% url 'config_prj'%}">Conf Projects</a> 
             </li>
-            <li class="nav-item" data-step="5" ata-title="Profile" data-intro="Here are your personal data.">
+            <li class="nav-item" id="id_navProfile" data-step="5" ata-title="Profile" data-intro="Here are your personal data.">
               <a class="nav-link" href="{% url 'user_profile'%}">Profile</a>
             </li>
             <li class="nav-item" data-step="6" data-title="Login/Logout" data-intro="Click here to said goodbye.">

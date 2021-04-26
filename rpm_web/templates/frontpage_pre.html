@@ -8,22 +8,46 @@
 
   <div class="row" >
     <div class="col-lg-6 offset-lg-0" style="border:0px solid">
-      <button type="button"  id=id_launchProjectTimeLine class="btn btn-success " onclick="launchProjectTimeLine()" style="width:100%; height: 500px; background-color: blueviolet;">
+      <button type="button"  id=id_launchProjectTimeLine class="btn btn-success " onclick="launchProjectTimeLine()" style="width:100%;  background-color: blueviolet;">
         <h2>Free Time-Line Tool</h2>
         <p>Here you can create / save / modify your own (personal) projects.</p>
+        <p><img id="id_img_ppt_TL" src="/static/brand/ppt_example_TL_tool.PNG" style="width: 75%;"></p>
       </button>
     </div>
     <div class="col-lg-6 offset-lg-0"  >
-      <button type="button" id=id_launchReleasePlanMaker  class="btn btn-success " onclick="launchReleasePlanMaker ()" style="width:100%; height: 500px; background-color: rgb(219, 169, 103);">
+      <button type="button" id=id_launchReleasePlanMaker  class="btn btn-success " onclick="launchReleasePlanMaker ()" style="width:100%; background-color: rgb(219, 169, 103);">
         <h2>Release Plan Maker Plus</h2>
         <p>This is the App for the Release Plans (EE-32).</p>
-        
+        <p><img id="id_img_ppt_RPM" src="/static/brand/ppt_example_RPM.PNG"  style="width: 75%;"></p>
       </button>
     </div>
   </div>
 
 </div>
 </div>
+
+
+
+
+<style>
+  /* Style the Image Used to Trigger the Modal */
+  #id_img_ppt_TL {
+   border-radius: 5px;
+   cursor: pointer;
+   transition: 0.3s;
+ }
+ #id_img_ppt_TL:hover {opacity: 1.0;transform: scale(1.5); }
+
+ #id_img_ppt_RPM {
+   border-radius: 5px;
+   cursor: pointer;
+   transition: 0.3s;
+ }
+ #id_img_ppt_RPM:hover {opacity: 1.0;transform: scale(1.5); }
+
+
+ </style>
+
 {% csrf_token %} 
 
 <script type="text/javascript">

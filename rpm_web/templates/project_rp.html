@@ -3099,7 +3099,17 @@ function check_row_import_csv(csv_line){
         console.log("week_end_last: ",week_end_last)
 
         if(d1_year < d2_year){
-            week_ini = week_ini - (week_ini_last * (d2_year - d1_year)) //fixed bug with 2 or more dif years
+            var dif_year = d2_year - d1_year
+            console.log("dif_year:",dif_year)
+            
+            var d;
+            for (d = 0; d < dif_year; d++) {
+                m_x_last = moment(d1_year+i+'-12-31', 'YYYY-MM-DD')
+                week_x_last = Number(m_x_last.format('W'))
+                week_ini = week_ini - week_x_last
+            } 
+            
+            //week_ini = week_ini - (week_ini_last * (d2_year - d1_year)) //fixed bug with 2 or more dif years
         }
 
         if(week_ini > week_ini_last){

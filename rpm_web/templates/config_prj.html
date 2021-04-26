@@ -59,32 +59,17 @@
     <div class="row"  > <!-- Type line 1  -->
         <div class="col-lg-6 offset-lg-3" data-intro="The Type is associated with the form." >
             <div class="row">
-                <div class="col-lg-3 input-group-text"  >Type</div>
-                <div class="col-lg-3 p-0" >
+                <div class="col-lg-2 input-group-text"  >Type</div>
+                <div class="col-lg-2 p-0" >
                     <select class="form-select" id= "id_type_list"  onchange="changesSelectType()" style="max-width:100%;" > 
                         {% for types in type_list %}
                             <option value="{{ types.id }}" id="{{ types.name }}" >{{ types.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-lg-1 p-0" >
-                    <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeType()"  style="width:100%;">X</button>
-                </div>
-                <div class="col-lg-2 p-0" >
-                    <button type="button" class="btn btn-success " onclick="createType()" style="width:100%;">Add</button>
-                </div>
-                <div class="col-lg-3 p-0" >
-                    <input type="text" class="form-control" placeholder="Type name..." value="" id="id_type_name" style="width:100%;">
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row" > <!-- Type line 2  -->
-        <div class="col-lg-6 offset-lg-3" >
-            <div class="row">
-                <div class="col-lg-3 input-group-text"  >Shape</div>
-                <div class="col-lg-3 p-0" >
+                <div class="col-lg-2 input-group-text"  >Shape</div>
+                <div class="col-lg-2 p-0" >
                     <select class="form-select" id= "id_ShapeType_list"  onchange="changesSelectShape()" style="max-width:100%;">
                         {% if type_list.0.fig1_name == "pptx.ShapeType.ellipse" %}
                         <option value="pptx.ShapeType.ellipse" id="id_ellipse" selected>ellipse</option>
@@ -113,9 +98,27 @@
                         {% endif %}
                     </select>
                 </div>
-                <div class="col-lg-3 input-group-text" >Size</div>
-                <div class="col-lg-3 p-0" >
+                <div class="col-lg-1 input-group-text" >Size</div>
+                <div class="col-lg-2 p-0" >
                     <input class="form-control" type="number" min="0.18" step="0.01" id="id_shape_s"  value="{{type_list.0.fig1_s}}"  onchange="changeShape_s(this)" style="max-width:100%;" >
+                </div>
+
+                <div class="col-lg-1 p-0" >
+                    <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removeType()"  style="width:100%;">X</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row" > <!-- Type line 2  -->
+        <div class="col-lg-6 offset-lg-3" >
+            <div class="row">
+                <div class="col-lg-2 p-0" >
+                    <button id='id_add_new_type' type="button" class="btn btn-success " onclick="createType()" style="width:100%;" disabled>Add</button>
+                </div>
+                <div class="col-lg-3 p-0" >
+                    <input type="text" class="form-control" placeholder="Type name..." value="" id="id_type_name" style="width:100%;">
                 </div>
             </div>
         </div>
@@ -135,12 +138,6 @@
                 <div class="col-lg-1 p-0" >
                     <button type="button" name="remove"  class="btn btn-danger btn_remove" onclick="removePlan()" style="width:100%;">X</button>
                 </div>
-                <div class="col-lg-2 p-0" >
-                    <button type="button" class="btn btn-success " onclick="createPlan()" style="width:100%;">Add</button>
-                </div>
-                <div class="col-lg-3 p-0" >
-                    <input type="text" class="form-control" placeholder="Plan name..." value="" id="id_plan_name" style="width:100%;"> 
-                </div>
             </div>
         </div>
     </div>
@@ -159,6 +156,16 @@
                 <div class="col-lg-2 input-group-text"  >Width</div>
                 <div class="col-lg-2 p-0" >
                     <input class="form-control" type="number" min="0" step="0.25" id="id_border_w"  value="{{plan_list.0.fig1_border_w}}" onchange="changeBorder_w()"style="width:100%;" >
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-lg-2 p-0" >
+                    <button id='id_add_new_plan' type="button" class="btn btn-success " onclick="createPlan()" style="width:100%;" disabled>Add</button>
+                </div>
+                <div class="col-lg-3 p-0" >
+                    <input type="text" class="form-control" placeholder="Plan name..." value="" id="id_plan_name" style="width:100%;"> 
                 </div>
             </div>
         </div>
@@ -547,6 +554,28 @@
             showProgress: true,
           }).start().goToStep(2); //estart in step 2
 
+        },false);
+
+        document.getElementById('id_type_name').addEventListener("input",function(event){
+            type_name = document.getElementById('id_type_name').value
+            console.log('id_type_name:',type_name)
+            if(type_name.length > 0){
+                document.getElementById('id_add_new_type').disabled = false
+            }
+            else{
+                document.getElementById('id_add_new_type').disabled = true
+            }
+        },false);
+
+        document.getElementById('id_plan_name').addEventListener("input",function(event){
+            plan_name = document.getElementById('id_plan_name').value
+            console.log('id_plan_name:',plan_name)
+            if(plan_name.length > 0){
+                document.getElementById('id_add_new_plan').disabled = false
+            }
+            else{
+                document.getElementById('id_add_new_plan').disabled = true
+            }
         },false);
 
         //ppt example img
@@ -1028,12 +1057,18 @@ function validURL(str) {
 
     function createType(){
         type_name = document.getElementById("id_type_name").value
+        fig1_name = document.getElementById("id_ShapeType_list").value
+        fig1_s = document.getElementById("id_shape_s").value
+        document.getElementById('id_add_new_type').disabled = true
+        document.getElementById('id_type_name').value = ''
         $.ajax({
                     type: "POST",
                     url: "{% url 'create_type' %}",
                     name: "testname",
                     data: JSON.stringify( {
                         type_name,
+                        fig1_name,
+                        fig1_s,
                     } ),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -1045,6 +1080,8 @@ function validURL(str) {
                         option.text = type_name;
                         option.value = resp.type_id
                         list.add(option); 
+                        
+                        list.selectedIndex = list.length-1
                     },
                     failure: function(resp){console.log("Hay un error:" + resp.d);},
             });
@@ -1052,12 +1089,20 @@ function validURL(str) {
 
     function createPlan(){
         plan_name = document.getElementById("id_plan_name").value
+        fig1_color_1 = document.getElementById("id_shape_color").value
+        fig1_color_2 = document.getElementById("id_border_color").value
+        fig1_border_w = document.getElementById("id_border_w").value
+        document.getElementById('id_add_new_plan').disabled = true
+        document.getElementById('id_plan_name').value = ''
         $.ajax({
                     type: "POST",
                     url: "{% url 'create_plan' %}",
                     name: "testname",
                     data: JSON.stringify( {
                         plan_name,
+                        fig1_color_1,
+                        fig1_color_2,
+                        fig1_border_w,
                     } ),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -1070,7 +1115,7 @@ function validURL(str) {
                         option.value = resp.plan_id
                         list.add(option); 
 
-                        
+                        list.selectedIndex = list.length-1
                     },
                     failure: function(resp){console.log("Hay un error:" + resp.d);},
             });
@@ -1086,16 +1131,16 @@ function validURL(str) {
             if(element.selected == true){
                 //not remove predef
                 type_name = element.id
-                if((type_name != 'SW') && (type_name != 'HW') && (type_name != 'ZDC')){
+                //if((type_name != 'SW') && (type_name != 'HW') && (type_name != 'ZDC')){
                     type_id = element.value
                     element.remove();
-                }
-                else{
-                    bootbox.alert({
-                    closeButton: false,
-                    message: "You can´t remove the predef. shapes."
-                });
-                }
+                //}
+                //else{
+                //bootbox.alert({
+                //    closeButton: false,
+                //    message: "You can´t remove the predef. shapes."
+                //});
+                //}
             }
         }
         console.log("remove:", type_name)
@@ -1127,16 +1172,16 @@ function validURL(str) {
             if(element.selected == true){
                 //not remove predef
                 plan_name = element.id
-                if((plan_name != 'vbv') && (plan_name != 'te.vbv') && (plan_name != 'planned')&& (plan_name != 'additional')){
+                //if((plan_name != 'vbv') && (plan_name != 'te.vbv') && (plan_name != 'planned')&& (plan_name != 'additional')){
                 plan_id = element.value
                 element.remove();
-                }
-                else{
-                    bootbox.alert({
-                    closeButton: false,
-                    message: "You can´t remove the predef. shapes."
-                });
-                }
+                //}
+                //else{
+                //    bootbox.alert({
+                //    closeButton: false,
+                //    message: "You can´t remove the predef. shapes."
+                //});
+                //}
             }
         }
         console.log("remove:", plan_name)

@@ -9,15 +9,33 @@
   <div class="row" >
     <div class="col-lg-6 offset-lg-0" style="border:0px solid">
       <button type="button"  id=id_launchProjectTimeLine class="btn btn-success " onclick="launchProjectTimeLine()" style="width:100%;  background-color: blueviolet;">
-        <h2>Free Time-Line Tool</h2>
-        <p>Here you can create / save / modify your own (personal) projects.</p>
+        <div class="row" >
+          <div class="col-lg-2 offset-lg-0" style="border:0px solid">
+            {% if access_state == 2 %}
+            <img id="id_img_ppt_RPM" src="/static/brand/logo_check.png"  style="width: 70%;float:left"> 
+            {% endif %}
+          </div>
+          <div class="col-lg-8 offset-lg-0" style="border:0px solid">
+            <h2>Free Time-Line Tool</h2>
+            <p>Here you can create your own (personal) projects.</p>
+          </div>
+        </div>
         <p><img id="id_img_ppt_TL" src="/static/brand/ppt_example_TL_tool.PNG" style="width: 75%;"></p>
       </button>
     </div>
     <div class="col-lg-6 offset-lg-0"  >
       <button type="button" id=id_launchReleasePlanMaker  class="btn btn-success " onclick="launchReleasePlanMaker ()" style="width:100%; background-color: rgb(219, 169, 103);">
-        <h2>Release Plan Maker Plus</h2>
-        <p>This is the App for the Release Plans (EE-32).</p>
+        <div class="row" >
+          <div class="col-lg-2 offset-lg-0" style="border:0px solid">
+            {% if access_state == 1 %}
+            <img id="id_img_ppt_RPM" src="/static/brand/logo_check.png"  style="width: 70%;float:left"> 
+            {% endif %}
+          </div>
+          <div class="col-lg-8 offset-lg-0" style="border:0px solid">
+            <h2 >Release Plan Maker Plus</h2>
+            <p>This is the App for the Release Plans (EE-32).</p>
+          </div>
+        </div>
         <p><img id="id_img_ppt_RPM" src="/static/brand/ppt_example_RPM.PNG"  style="width: 75%;"></p>
       </button>
     </div>

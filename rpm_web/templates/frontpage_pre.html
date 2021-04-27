@@ -12,7 +12,7 @@
         <div class="row" >
           <div class="col-lg-2 offset-lg-0" style="border:0px solid">
             {% if access_state == 2 %}
-            <img id="id_img_ppt_RPM" src="/static/brand/logo_check.png"  style="width: 70%;float:left"> 
+            <img id="id_img_logo_check" src="/static/brand/logo_check.png"  style="width: 70%;float:left"> 
             {% endif %}
           </div>
           <div class="col-lg-8 offset-lg-0" style="border:0px solid">
@@ -28,7 +28,7 @@
         <div class="row" >
           <div class="col-lg-2 offset-lg-0" style="border:0px solid">
             {% if access_state == 1 %}
-            <img id="id_img_ppt_RPM" src="/static/brand/logo_check.png"  style="width: 70%;float:left"> 
+            <img id="id_img_logo_check" src="/static/brand/logo_check.png"  style="width: 70%;float:left"> 
             {% endif %}
           </div>
           <div class="col-lg-8 offset-lg-0" style="border:0px solid">
@@ -62,6 +62,14 @@
    transition: 0.3s;
  }
  #id_img_ppt_RPM:hover {opacity: 1.0;transform: scale(1.5); }
+
+
+#id_launchReleasePlanMaker:hover {
+    background-color: rgb(163, 125, 76) !important; /*!important rule, it will override ALL previous styling rules for that specific property on that element!*/
+}
+#id_launchProjectTimeLine:hover {
+    background-color: rgb(97, 30, 160) !important; 
+}
 
 
  </style>

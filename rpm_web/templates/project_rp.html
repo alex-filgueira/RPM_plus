@@ -332,7 +332,7 @@
                   </div>
                 </div>              
                 <div class="col-lg-2 p-0 " >
-                    <button type="button" class="btn btn-success"  onclick="sendDataReleaselist()" style="width:100%;">Save</button>
+                    <button type="button" id="id_sendataReleaseList" class="btn btn-success"  onclick="sendDataReleaselist()" style="width:100%;">Save</button>
                 </div>
                 <div class="col-lg-3 ms-2" >
                     <div class="row"data-intro="With Export you will create a new .csv file with all the data. You could import it in excel and work with them and after all you can re import it here." >
@@ -348,8 +348,7 @@
             
             <div class="row" >
                 <div class="col-lg-12 offset-lg-0 p-0  mt-2 text-center" data-title="Release Plan" data-intro="This is the main part of this APP. You can do a lot of things with it, I could explain all but.. is better that you play with it and if you have some doubts, please aske me -> alexandre.filgueira@seat.es">
-                    <div style=" height:800px; overflow: hidden; " id = "ResultadoTabla" ></div> <!-- Tabla !!!. height:487px width: 805px-->
-                    <!-- <div style=" overflow: hidden; width: 100%;" id = "ResultadoTabla" ></div> --><!-- Tabla !!!. width: 805px-->
+                    <div style=" height:800px; overflow: hidden; " id = "id_resultadoTabla" ></div> <!-- Tabla !!!. height:487px width: 805px-->
                 </div>
 
             </div>
@@ -958,7 +957,6 @@ function sendDataECUlist(){
                         }
                     }
 
-
                     if(element.value == ""){
                         flag_name_empty = true;
                         element.style.border = "1px solid red";
@@ -999,9 +997,10 @@ function sendDataECUlist(){
                 }
             } 
             console.log("flag_name_rep: ",flag_name_rep)
-            
+            var flag_send = false
             if((flag_name_rep != true) && (flag_name_blank != true)){
                 if(flag_name_empty != true){
+                    flag_send = true
                     console.log("SEND!")
                     $.ajax({  
                         url: "{% url 'update_ECU_list' %}", 
@@ -1044,6 +1043,13 @@ function sendDataECUlist(){
                 document.getElementById("id_total_body").style.visibility = "visible" //make appear the document when have load all data
                 //document.getElementById("id_load_spinner").style.visibility = "hidden"
                 $('#myModal').modal('hide');
+            }
+            if(flag_send == false){
+                //change color send button
+                $("#id_enviareculist").removeClass("btn btn-success").addClass("btn btn-danger");
+            }
+            else{
+                $("#id_enviareculist").removeClass("btn btn-danger").addClass("btn btn-success");
             }
     }
 
@@ -1259,7 +1265,6 @@ function ImportECUlist(){
             colHeaders_ = ['ID', 'id_ecu','Identifier','main_name','n_version','date','date_week','type','plan','visual', 'comment', 'marked1', 'created_by','created_by_name', 'date_created','extra1','extra2','extra3',]
         }
         
-
         config_resultados = {
             data: data_table,
             //dataSchema: {ID: null, ecu_name: "XXX_name", type_version: type_version_array[0], n_version: "XXX", date_beantragt: today, plan: null, flag_visual: true, dx_ecu: "xx-xx", week: 1, comment: "test"},
@@ -1267,45 +1272,7 @@ function ImportECUlist(){
             //colHeaders:['ID', 'id_ecu','Dx_ecu','ecu_name','n_version','date','date_week','type','plan','visual', 'comment', 'marked1', 'created_by','created_by_name', 'date_created','extra1','extra2','extra3',],
             colHeaders: colHeaders_,
             columns:[
-                /* Comented for evit the first load in false
-                {data: "RelInList_id", type: 'numeric', readOnly: true, editor: false,allowEmpty:true },
-                //{data: "ecu_name",allowEmpty:true },
-                //{data: "ecu_name",type:'dropdown',source: ecu_name_list_array, allowEmptyboolean:true},
-                //{data: "type_version",type:'dropdown',source: [type_version_array[0], type_version_array[1], type_version_array[2]],allowEmptyboolean:true},
-                //{data: "type_version",type:'dropdown',source: type_version_array,allowEmptyboolean:true},
-                {data: "RelInList_id_ecu", type: 'numeric', readOnly: true, editor: false,allowEmpty:true},
-                {data: "RelInList_dx", readOnly: true, editor: false,allowEmpty:true},
-                //{data: "RelInList_n_version",allowEmpty:true},
-                {data: "RelInList_ecu_name",type:'dropdown',source: ecuList_name, strict:true, },
-                //{data: "RelInList_n_version", allowEmpty:false},
-                {data: "RelInList_n_version",allowEmpty:false, validator: function (value, callback) {
-                    if (value === '' || value == null) {
-                    callback(this.allowEmpty);
-                    return;
-                    }
-                    callback(true);
-                },
-                },
-
-                //{data: "RelInList_date",validator: Handsontable.validators.DateValidator, allowInvalid: true},
-                {data: "RelInList_date",type:'date',allowEmpty:true},
-                {data: "RelInList_type_name",type:'dropdown',source: type_list_name,  strict:true,},
-                //{data: "RelInList_plan",allowEmpty:true},
-                {data: "RelInList_plan",type:'dropdown',source: plan_list_name,  strict:true,},
-                {data: "RelInList_visual",type: 'checkbox',allowEmpty:true},
-                //{data: "RelInList_dx",allowEmpty:true},
-                //{data: "week",type: 'numeric',allowEmpty:true},
-                {data: "RelInList_comment",allowEmpty:true, validator: function (value, callback) {
-                    if(value != null){
-                        if (value.length > 200) {
-                            alert('comment Must be 200 character or less. Extra characters will be removed');
-                            this.instance.setDataAtCell(this.row, this.col, value.substring(0, 200), null);
-                        }
-                    }
-                    callback(true);
-                },
-                },
-                {data: "RelInList_marked1",type: 'checkbox',allowEmpty:true},
+                /* Removed for evit the first load in false
                 */
             ],
             fillHandle: {
@@ -1506,42 +1473,10 @@ function ImportECUlist(){
                 }
                 });
             },
-
-
-            /*
-            afterValidate:function(){
-                console.log("afterValidate"); //Visual index of starter row.
-            },
-            
-            afterLoadData:function(sourceData,initialLoad){
-                console.log("afterLoadData sourceData:",sourceData," initialLoad:",initialLoad); //Visual index of starter row.
-            },
-            
-            afterCreateRow: function(registrosModificados,accionesHandsontable){
-                console.log("afterCreateRow");
-                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
-                //sendDataReleaselist();
-                //add_empty_last_row_Releaselist();
-                }
-            },
-            afterRemoveRow: function(registrosModificados,accionesHandsontable){
-                console.log("afterRemoveRow");
-                if(accionesHandsontable != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
-                sendDataReleaselist();
-                add_empty_last_row_Releaselist();
-                }
-            },
-            afterValidate: function(isValid, value, row, prop){
-                if(!isValid){
-                    console.log(row, tblExcel.propToCol(prop))
-                }
-            },
-            */
-            
         };
 
-        //Add table for ResultadoTabla
-        tblExcel = new Handsontable(document.getElementById('ResultadoTabla'),config_resultados);
+        //Add table for id_resultadoTabla
+        tblExcel = new Handsontable(document.getElementById('id_resultadoTabla'),config_resultados);
 
         tblExcel.render();
 
@@ -1734,7 +1669,9 @@ function ImportECUlist(){
                 },
                 {data: "RelInList_marked1",type: 'checkbox',allowEmpty:true},
                 {data: "RelInList_created_by",allowEmpty:true, readOnly: true,}, //Is hidden!!!!
-                {data: "RelInList_created_by_name",allowEmpty:true, readOnly: true}, 
+
+                {data: "RelInList_created_by_name",allowEmpty:true, readOnly: true,}, 
+
                 {data: "RelInList_date_created",allowEmpty:true, readOnly: true},
 
                 {data: "RelInList_extra1",allowEmpty:true, validator: function (value, callback) {
@@ -1871,8 +1808,11 @@ function ImportECUlist(){
             //remove_empty_last_row_Releaselist();
 
             //Validate all cells and only pass if all are valids
+            var flag_send = false
             tblExcel.validateCells((valid) => {
             if (valid) {
+                flag_send = true
+                console.log("send")
                 //is valid
                 //flag_empty = validate_table_propia()
                 //console.log("flag_empty: ",flag_empty)
@@ -1910,7 +1850,17 @@ function ImportECUlist(){
                     message: "One or more cells values are invalid!",
                 });
             }
+            if(flag_send == false){
+                //change color send button
+                console.log("not send")
+                $("#id_sendataReleaseList").removeClass("btn btn-success").addClass("btn btn-danger");
+            }
+            else{
+                $("#id_sendataReleaseList").removeClass("btn btn-danger").addClass("btn btn-success");
+            }
+
             })
+
         }
 
 function exportDataReleaselist(){

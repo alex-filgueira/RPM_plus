@@ -59,12 +59,19 @@
      
     <!-- [+] for create new projects only if the user is in group "integradores"-->
     <li class="nav-item" >
+        {% if access_state == 1%}
+        
         {% if flag_integradores %}
         <a href="{% url 'projects_rp_load' 0 %}" class="nav-link" id="id_create_project" value="0">
             <i class="bi bi-plus-square" ></i>
         </a>
         {%else%}
         <a  class="nav-link" id="id_create_project" value="0">
+            <i class="bi bi-plus-square" ></i>
+        </a>
+        {% endif %}
+        {%else%}
+        <a href="{% url 'projects_rp_load' 0 %}" class="nav-link" id="id_create_project" value="0">
             <i class="bi bi-plus-square" ></i>
         </a>
         {% endif %}
@@ -455,12 +462,14 @@
         //listener---
         document.getElementById("id_create_project").addEventListener("click", function(){
             console.log("{{flag_integradores}}")
-            if("{{flag_integradores}}" == 'False'){
-                bootbox.alert({
-                    closeButton: false,
-                    message: "Only the users in the group 'integradores' can create new projects. If you need create a project, please write to: alexandre.filgueira@seat.es"
-                });
-            }   
+            if("{{access_state}}" == 1){
+                if("{{flag_integradores}}" == 'False'){
+                    bootbox.alert({
+                        closeButton: false,
+                        message: "Only the users in the group 'integradores' can create new projects. If you need create a project, please write to: alexandre.filgueira@seat.es"
+                    });
+                }   
+            }
         }); 
 
         document.getElementById("id_tutorial").addEventListener("click",function(event){
@@ -542,13 +551,7 @@
         //add ecu list control
         $('#add').click(function(){  
             id_i_ecu++;
-            //$('#id_ecu_table').append('<tr id="row'+i+'"><td style="width:  10%"><input type="text" name="id"  required="required" size="2" value = '+0+ ' disabled  ></td><td style="width:  40%"><input type="text" name="name"  placeholder="required" required="required" pattern="[A-Za-z0-9]{1,20}" size="10"></td><td style="width:  40%" ><input type="text" name="comment"  placeholder="ECU comment" size="10" ></td><td style="width:  10%"><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-            //$('#id_ecu_table').append('<tr id="row'+i+'"><td><input type="text" name="id"  required="required" size="3" value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="required" required="required" style= '+'width:20em'+'  maxlength="199"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:40em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-            //$('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled  ></td><td><input type="text" name="name"  placeholder="ECU name (required)" required="required" style= '+'width:17em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder="ECU Dx"style= '+'width:10em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="ECU comment" style= '+'width:20em'+'  maxlength="199"   ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-            $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled hidden ></td><td><input type="text" name="name"  placeholder="name (required)" required="required" style= '+'width:30em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder=""style= '+'width:2em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="comment (optional)" style= '+'width:30em'+'  maxlength="199"</td><td ><input type="text"  name="created_by_name"  placeholder="" style= '+'width:10em'+'  maxlength="199"  disabled >  </td><td><input type="text" id="id_created_by_'+id_i_ecu+'" name="created_by"  placeholder="" style= '+'width:0em'+'  maxlength="199" disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
-
-
-            //document.getElementById("id_enviareculist").disabled = false
+            $('#id_ecu_table').append('<tr id="row'+id_i_ecu+'"   ><td><input type="text" id="id_'+id_i_ecu+'" name="id"  required="required" size="3" style= '+'width:3em'+' value = '+0+ ' disabled hidden ></td><td><input type="text" name="name"  placeholder="name (required)" required="required" style= '+'width:30em'+'  maxlength="199"  ></td><td><input type="text" name="dx"  placeholder=""style= '+'width:2em'+'  maxlength="49"  ></td><td ><input type="text" name="comment"  placeholder="comment (optional)" style= '+'width:30em'+'  maxlength="199"</td><td ><input type="text"  name="created_by_name"  placeholder="" style= '+'width:10em'+'  maxlength="199"  disabled >  </td><td><input type="text" id="id_created_by_'+id_i_ecu+'" name="created_by"  placeholder="" style= '+'width:0em'+'  maxlength="199" disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+id_i_ecu+'" class="btn btn-danger btn_remove">X</button></td></tr>');   
         });  
 
 
@@ -902,7 +905,15 @@ function load_ecu_list(id_list,name_list,comment_list, dx_list, created_by_list,
             }
         }
         else{
-            $('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required"  style= '+'width:3em'+' value = '+id+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:30em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder=""  style= '+'width:2em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="comment (optional)" style= '+'width:30em'+'  maxlength="199"  value = "'+ comment +'""  ></td>  <td ><input type="text"  name="created_by_name"  placeholder="created_by" style= '+'width:10em'+'  maxlength="199"  value = "'+ created_by_name +'" " disabled >  </td><td><input type="text" id="id_created_by_'+i+'"  name="created_by"  placeholder="created_by" style= '+'width:0em'+'  maxlength="199"  value = "'+ created_by +'" " disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+            if(created_by_name == "{{ user }}"){ 
+                $('#id_ecu_table').append('<tr id="row'+i+'" style="background-color: #99e699" ><td ><input type="text" id="id_'+i+'" name="id"  required="required"  style= '+'width:3em'+' value = '+id+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:30em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder=""  style= '+'width:2em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="comment (optional)" style= '+'width:30em'+'  maxlength="199"  value = "'+ comment +'""  ></td>  <td ><input type="text"  name="created_by_name"  placeholder="created_by" style= '+'width:10em'+'  maxlength="199"  value = "'+ created_by_name +'" " disabled >  </td><td><input type="text" id="id_created_by_'+i+'"  name="created_by"  placeholder="created_by" style= '+'width:0em'+'  maxlength="199"  value = "'+ created_by +'" " disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+
+            }
+            else{
+                $('#id_ecu_table').append('<tr id="row'+i+'" style="background-color: #ffb366"><td ><input type="text" id="id_'+i+'" name="id"  required="required"  style= '+'width:3em'+' value = '+id+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:30em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder=""  style= '+'width:2em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="comment (optional)" style= '+'width:30em'+'  maxlength="199"  value = "'+ comment +'""  ></td>  <td ><input type="text"  name="created_by_name"  placeholder="created_by" style= '+'width:10em'+'  maxlength="199"  value = "'+ created_by_name +'" " disabled >  </td><td><input type="text" id="id_created_by_'+i+'"  name="created_by"  placeholder="created_by" style= '+'width:0em'+'  maxlength="199"  value = "'+ created_by +'" " disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+
+            }
+            //$('#id_ecu_table').append('<tr id="row'+i+'"><td ><input type="text" id="id_'+i+'" name="id"  required="required"  style= '+'width:3em'+' value = '+id+ ' disabled hidden  ></td><td><input type="text" name="name"  placeholder="required" required="required"  style= '+'width:30em'+'  maxlength="199"   value = "'+name+ '" ></td><td><input type="text" name="dx"  placeholder=""  style= '+'width:2em'+'  maxlength="49"   value = "'+dx+ '" ></td><td ><input type="text" name="comment"  placeholder="comment (optional)" style= '+'width:30em'+'  maxlength="199"  value = "'+ comment +'""  ></td>  <td ><input type="text"  name="created_by_name"  placeholder="created_by" style= '+'width:10em'+'  maxlength="199"  value = "'+ created_by_name +'" " disabled >  </td><td><input type="text" id="id_created_by_'+i+'"  name="created_by"  placeholder="created_by" style= '+'width:0em'+'  maxlength="199"  value = "'+ created_by +'" " disabled hidden ></td><td><button type="button" name="remove_ecu" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
         }
 
     }

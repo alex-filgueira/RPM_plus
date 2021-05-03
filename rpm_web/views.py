@@ -669,6 +669,8 @@ def updatedatevalues(request):
             factor_weeks = json_table['factor_weeks']
             max_ecu_slide = json_table['max_ecu_slide']
 
+            quatri = json_table['quatri']
+
             prj_id = json_table['prj_id']
             MProject_objt_selected = MProject.objects.get(id=prj_id)
 
@@ -678,6 +680,9 @@ def updatedatevalues(request):
 
             MProject_objt_selected.factor_weeks = factor_weeks
             MProject_objt_selected.max_ecu_slide = max_ecu_slide
+            
+            MProject_objt_selected.flag_quatri = quatri
+
 
             MProject_objt_selected.save()
 
@@ -1746,6 +1751,7 @@ def projects_rp_load(request,pk):
 
             'factor_weeks': prj_objt_selected.factor_weeks, #new
             'max_ecu_slide': prj_objt_selected.max_ecu_slide, #new
+            'quatri': prj_objt_selected.flag_quatri, #new
 
             'version_list': v_objt_selected,
             'version_name': version_name,

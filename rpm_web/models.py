@@ -107,6 +107,8 @@ class MProject(models.Model):
     max_ecu_slide = models.IntegerField(default=8,validators=[MinValueValidator(1), MaxValueValidator(100)])
     factor_weeks = models.IntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(100)])
 
+    flag_quatri = models.BooleanField(default=False,blank=True)
+
     now = datetime.now()
     d2 = now.strftime('%d/%m/%Y-%H:%M')
     date_created = models.CharField(max_length = 50,default=d2, blank=True)

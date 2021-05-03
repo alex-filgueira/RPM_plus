@@ -226,9 +226,11 @@
                     <div class="col-lg-1 p-0" data-title="Max Main-Lines" data-intro="Select the max. number of Main-Lines in each slide.">
                         <input class="form-control" type="number" min="1" id="id_max_ecu_slide"  value={{max_ecu_slide}} onchange="updateDatesPrint()" >
                     </div>
-                    <div class="col-lg-3 p-0">
-                        <!--<button type="button" name="update"  class="btn btn-success " onclick="updateDatesPrint()"  style="width:100%;">Update</button>-->
+
+                    <div class="col-lg-1 input-group-text" data-title="Qn/YY" data-intro="Select if you want print the quatrimester.">Qn/YY &nbsp
+                        <input class="form-check-input pl-2" type="checkbox" value="" id="id_quatri" onchange="updateDatesPrint()" >
                     </div>
+
                 </div>
         </div>
     </div>
@@ -324,12 +326,12 @@
                     <button class="btn btn-outline-danger" type="button" id="button-addon2" onclick="removeRow_RI()" style="width:100%;">- row</button>
                 </div>
                 <div class="col-lg-2  p-1 "style="border: 1px solid; ">
-                <div class="form-check"  >
-                    <input class="form-check-input" type="checkbox" value="" id="id_autosave" >
-                    <label class="form-check-label" for="id_autosave" style="width:100%;">
-                      Autosave
-                    </label>
-                  </div>
+                    <div class="form-check"  >
+                        <input class="form-check-input" type="checkbox" value="" id="id_autosave" >
+                        <label class="form-check-label" for="id_autosave" style="width:100%;">
+                        Autosave
+                        </label>
+                    </div>
                 </div>              
                 <div class="col-lg-2 p-0 " >
                     <button type="button" id="id_sendataReleaseList" class="btn btn-success"  onclick="sendDataReleaselist()" style="width:100%;">Save</button>
@@ -450,6 +452,8 @@
         document.getElementById("id_removeVersion").disabled = flag_disable
         document.getElementById("id_newVersion").disabled = flag_disable
         document.getElementById("id_importeculist").disabled = flag_disable
+
+        if("{{quatri}}" == "True"){document.getElementById("id_quatri").checked = true;}
         
 
         get_project_owner()
@@ -1344,13 +1348,16 @@ function ImportECUlist(){
                             }
                             //take data and convert to week
                             date_week = newVal
-                            console.log("pre date_week:",date_week)
+                            //console.log("pre date_week:",date_week)
                             if((date_week != "") && (date_week != null)){
                                 d_list = date_week.split("/")
                                 d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
                                 d_m = moment(d);
                                 w = d_m.format('WW') //ISO week
                                 y = d_m.format('GGGG')
+                                //q = d_m.format('Q') //get quarter
+                                //console.log("q:",q)
+
                                 date_week = w + '-' + y
                                 if(w == 'Invalid date'){
                                     tblExcel.setDataAtCell(row,pos_c,'')
@@ -1362,7 +1369,6 @@ function ImportECUlist(){
                             else{
                                 tblExcel.setDataAtCell(row,pos_c,date_week) 
                             }
-                            console.log("post date_week:",date_week)
                             //tblExcel.setDataAtCell(row,pos_c,date_week) //this launch a afterchange
                         }
 
@@ -2571,6 +2577,7 @@ function check_row_import_csv(csv_line){
 
                 var s_week_mark = 0.28
                 var cont_factor_weeks = 0
+                var quarter = ''
                 //linea semanas
                 for (s = 0; s < n_weeks; s++) {
                     var m_ini = moment(date_ini, 'YYYY-MM-DD').add(7*s, 'd');
@@ -2582,6 +2589,26 @@ function check_row_import_csv(csv_line){
                         //resp.RelInList_plan_fig1_color_1[j]
                         //slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w: s_week_mark, h: s_week_mark, fill: { color: "bbe0e3" }, line: { color: "7f7f7f", width: 0.50  } });
                         slide[slideIndex].addText(week_s, {margin: 0, align:'center', fontSize: 10, color: "000000", bold:true, shape: pptx.ShapeType.ellipse, x: margin_l + margin_l2 + w_weeks * s, y: 1.01, w:  resp.prj_week_s, h:  resp.prj_week_s, fill: { color: resp.prj_week_color }, line: { color: "7f7f7f", width: 0.50  } });
+                        
+                        //Quatrimester
+                        var checkbox_quatri = document.querySelector("input[id=id_quatri]");
+                        if (checkbox_quatri.checked) {
+                            console.log("checkbox_quatri is checked..");
+                            q = m_ini.format('Q') //get quarter
+                            //console.log("q:",q)
+                            y = m_ini.format('YY')
+                            //console.log("q/y:",q+'/'+y)
+                            var aux_q = 'Q'+q+'/'+y
+                            if(quarter != aux_q){
+                                quarter = aux_q
+                                slide[slideIndex].addText(quarter, {margin: 0, align:'center', fontSize: 7, color: "000000", bold:true, x: margin_l + margin_l2 + w_weeks * s, y: 0.8, w:  resp.prj_week_s, h:  resp.prj_week_s,  });
+                            }
+                        } else {
+                            console.log("checkbox_quatri is not checked..");
+                        }
+                        //test quarter
+
+
                     }
                     if(cont_factor_weeks == factor_weeks){
                         cont_factor_weeks = 0
@@ -3209,9 +3236,20 @@ function updateWeeksPrint(){
         date_ini = document.getElementById("id_date_ini").value
         date_status = document.getElementById("id_date_status").value
         date_end = document.getElementById("id_date_end").value
+        var quatri = false
+        var checkbox_quatri = document.querySelector("input[id=id_quatri]");
+        if (checkbox_quatri.checked) {
+            console.log("checkbox_quatri is checked..");
+            quatri = true;
+        } else {
+            console.log("checkbox_quatri is not checked..");
+            quatri = false;
+        }
+
         console.log("date_ini:",date_ini)
         console.log("date_status:",date_status)
         console.log("date_end:",date_end)
+        console.log("quatri:",quatri)
 
         //update weeks
         date_ini_date = new Date(date_ini);
@@ -3314,6 +3352,7 @@ function updateWeeksPrint(){
                         date_end,
                         factor_weeks,
                         max_ecu_slide,
+                        quatri,
                     } ),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",

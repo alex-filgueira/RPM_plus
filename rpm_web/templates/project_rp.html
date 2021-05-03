@@ -1310,88 +1310,97 @@ function ImportECUlist(){
             licenseKey: 'non-commercial-and-evaluation',
             
             afterChange: function(changes,source){
-                //console.log("afterChange");
+                console.log("afterChange");
+                console.log("source:",source);
                 if(source != 'loadData'){ //Note: For performance reasons, the changes array is null for "loadData" source.
                     if(autosave){
                     sendDataReleaselist();
                     }
                 }
-
-
+                console.log("flag_after_change:",flag_after_change);
                 if(source == 'edit' && flag_after_change == true){
                     flag_after_change = false
 
-                //first check if is valid
-                tblExcel.validateCells((valid) => {
-                if (valid) {
-                    //$.each(changes, function(index, element) {
-                    element = changes[0]
-                    var row = element[0];
-                    var col = element[1];
-                    //console.log("col:",col)
-                    //if change data celss
-                    if(col == 'RelInList_date'){
-                        //var oldVal = element[2];
-                        var newVal = element[3];
-                        var pos_c = 0
-                        var i = 0
-                        //get column for the RelInList_date
-                        for(var key in data_table[0]) {
-                            i++
-                            if(key == 'RelInList_date_w'){
-                                pos_c = i
+                    //first check if is valid
+                    tblExcel.validateCells((valid) => {
+                    if (valid) {
+                        //$.each(changes, function(index, element) {
+                        element = changes[0]
+                        var row = element[0];
+                        var col = element[1];
+                        //console.log("col:",col)
+                        //if change data celss
+                        if(col == 'RelInList_date'){
+                            //var oldVal = element[2];
+                            var newVal = element[3];
+                            var pos_c = 0
+                            var i = 0
+                            //get column for the RelInList_date
+                            for(var key in data_table[0]) {
+                                i++
+                                if(key == 'RelInList_date_w'){
+                                    pos_c = i
+                                }
                             }
-                        }
-                        //take data and convert to week
-                        date_week = newVal
-                        if((date_week != "") && (date_week != null)){
-                            d_list = date_week.split("/")
-                            d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
-                            d_m = moment(d);
-                            w = d_m.format('WW') //ISO week
-                            y = d_m.format('GGGG')
-                            date_week = w + '-' + y
-                        }
-                        tblExcel.setDataAtCell(row,pos_c,date_week) //this launch a afterchange
-                    }
-
-                    //if change week celss
-                    if(col == 'RelInList_date_w'){
-                        //var oldVal = element[2];
-                        var newVal = element[3];
-                        var pos_c = 0
-                        var i = 0
-                        //get column for the RelInList_date
-                        for(var key in data_table[0]) {
-                            i++
-                            if(key == 'RelInList_date'){
-                                pos_c = i
+                            //take data and convert to week
+                            date_week = newVal
+                            console.log("pre date_week:",date_week)
+                            if((date_week != "") && (date_week != null)){
+                                d_list = date_week.split("/")
+                                d = new Date(Date.UTC(d_list[2], d_list[1]-1, d_list[0])); // the month is 0-indexed
+                                d_m = moment(d);
+                                w = d_m.format('WW') //ISO week
+                                y = d_m.format('GGGG')
+                                date_week = w + '-' + y
+                                if(w == 'Invalid date'){
+                                    tblExcel.setDataAtCell(row,pos_c,'')
+                                }
+                                else{
+                                    tblExcel.setDataAtCell(row,pos_c,date_week)
+                                }
                             }
+                            else{
+                                tblExcel.setDataAtCell(row,pos_c,date_week) 
+                            }
+                            console.log("post date_week:",date_week)
+                            //tblExcel.setDataAtCell(row,pos_c,date_week) //this launch a afterchange
                         }
-                        //take week and convert to date
-                        date = newVal
-                        date_format = date
-                        if((date != "") && (date != null)){
 
-                            date = getDateOfISOWeek(newVal.split("-")[0],newVal.split("-")[1]) //week, year
-                            console.log("date:",date)
-                            date_format = formatDate2(date)
-                            console.log("date_format:",date_format)
+                        //if change week celss
+                        if(col == 'RelInList_date_w'){
+                            //var oldVal = element[2];
+                            var newVal = element[3];
+                            var pos_c = 0
+                            var i = 0
+                            //get column for the RelInList_date
+                            for(var key in data_table[0]) {
+                                i++
+                                if(key == 'RelInList_date'){
+                                    pos_c = i
+                                }
+                            }
+                            //take week and convert to date
+                            date = newVal
+                            date_format = date
+                            if((date != "") && (date != null)){
+                                date = getDateOfISOWeek(newVal.split("-")[0],newVal.split("-")[1]) //week, year
+                                console.log("date:",date)
+                                date_format = formatDate2(date)
+                                console.log("date_format:",date_format)
+                            }
+                            tblExcel.setDataAtCell(row,pos_c,date_format) //this launch a afterchange
                         }
-                        tblExcel.setDataAtCell(row,pos_c,date_format) //this launch a afterchange
                     }
-                }})
+                    else{
+                        flag_after_change = true
+                    }
+                    })
                 }
-                
                 else{
                     flag_after_change = true
                 }
-            
-
-                
-
-
             },
+
             afterColumnSort:function(currentSortConfig,destinationSortConfigs){
                 console.log("afterColumnSort");
                 //console.log(currentSortConfig);

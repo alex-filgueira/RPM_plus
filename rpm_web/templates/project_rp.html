@@ -1585,7 +1585,7 @@ function ImportECUlist(){
                     callback(true);
                 },
                 },
-                {data: "RelInList_date",type:'date',allowEmpty:true,
+                {data: "RelInList_date",type:'date',allowEmpty:true, placeholder:'dd/mm/yyyy',
                 dateFormat: 'DD/MM/YYYY', // https://momentjs.com/docs/#/parsing/ + https://github.com/Pikaday/Pikaday + https://handsontable.com/docs/8.3.2/demo-date.html
                 correctFormat: true,
                 //defaultDate: '01/01/2020',
@@ -1602,7 +1602,7 @@ function ImportECUlist(){
                 },
 
                 //date in weeks---
-                {data: "RelInList_date_w",allowEmpty:true,
+                {data: "RelInList_date_w",allowEmpty:true, placeholder:'ww-yyyy',
                     validator: function(value, callback) {
                         if((value == "") || (value == null)){
                             callback(true)
